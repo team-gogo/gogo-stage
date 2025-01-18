@@ -1,0 +1,32 @@
+server:
+  port: 8082
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: http://${EUREKA_HOSTNAME:localhost}:8761/eureka/
+spring:
+  application:
+    name: gogo-stage
+  main:
+    allow-circular-references: true
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    show-sql: true
+    hibernate:
+      ddl-auto: ${DDL_AUTO:create}
+    properties:
+      hibernate:
+        default_batch_fetch_size: 1000
+  datasource:
+    url: jdbc:mysql://${DB_URL:localhost:3306}/${DB_NAME:gogo-stage}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:12345}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
