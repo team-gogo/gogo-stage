@@ -20,7 +20,7 @@ class StageParticipant(
     val studentId: Long,
 
     @Column(name = "point", nullable = false)
-    val point: Int,
+    val point: Long,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),

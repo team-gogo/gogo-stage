@@ -42,7 +42,12 @@ class SecurityConfig(
         http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         http.authorizeHttpRequests { httpRequests ->
+            // health check
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/health").permitAll()
+
+            // server to server
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/point/{stage_id}").permitAll()
+
             httpRequests.anyRequest().denyAll()
         }
 
