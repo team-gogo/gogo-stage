@@ -20,8 +20,14 @@ class StageParticipant(
     val studentId: Long,
 
     @Column(name = "point", nullable = false)
-    val point: Long,
+    var point: Long,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
-)
+) {
+
+    fun minusPoint(point: Long) {
+        this.point -= point
+    }
+
+}
