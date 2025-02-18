@@ -4,7 +4,6 @@ import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.global.error.StageException
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -17,8 +16,8 @@ class ParticipateProcessor(
 
     @Transactional
     fun matchBetting(matchId: Long, studentId: Long, predictedWinTeamId: Long, point: Long) {
-        val match = (matchRepository.findByIdOrNull(matchId)
-            ?: throw StageException("Match Not Found, Match id = $matchId", HttpStatus.NOT_FOUND.value()))
+        val match = matchRepository.findNotEndMatchById(matchId)
+            ?: throw StageException("Match Not Found, Match id = $matchId", HttpStatus.NOT_FOUND.value())
 
         val stage = match.game.stage
         val stageParticipant = stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(stage.id, studentId)
