@@ -25,7 +25,7 @@ class TempPoint(
     val batchId: Long,
 
     @Column(name = "temp_point")
-    val tempPoint: Int,
+    val tempPoint: Long,
 
     @Column(name = "temp_point_expired_date")
     val tempPointExpiredDate: LocalDateTime,

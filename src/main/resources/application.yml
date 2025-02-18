@@ -17,7 +17,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: ${DDL_AUTO:create}
+      ddl-auto: ${DDL_AUTO:update}
     properties:
       hibernate:
         default_batch_fetch_size: 1000
