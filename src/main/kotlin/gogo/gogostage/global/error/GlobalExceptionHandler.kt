@@ -13,7 +13,7 @@ import org.springframework.web.servlet.NoHandlerFoundException
 class GlobalExceptionHandler {
 
     @ExceptionHandler(StageException::class)
-    fun userExceptionHandler(e: StageException): ResponseEntity<ErrorResponse> =
+    fun stageExceptionHandler(e: StageException): ResponseEntity<ErrorResponse> =
         ResponseEntity(ErrorResponse.of(e), HttpStatus.valueOf(e.status))
 
     @ExceptionHandler(BindException::class)
