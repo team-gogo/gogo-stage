@@ -24,15 +24,15 @@ class Game(
     val type: GameType,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "first_place_team_id", nullable = false)
+    @JoinColumn(name = "first_place_team_id", nullable = true)
     val firstPlaceTeam: Team,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "second_place_team_id", nullable = false)
+    @JoinColumn(name = "second_place_team_id", nullable = true)
     val secondPlaceTeam: Team,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "third_place_team_id", nullable = false)
+    @JoinColumn(name = "third_place_team_id", nullable = true)
     val thirdPlaceTeam: Team,
 
     @Column(name = "team_count", nullable = false)

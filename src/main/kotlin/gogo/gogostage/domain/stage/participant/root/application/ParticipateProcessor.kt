@@ -19,7 +19,8 @@ class ParticipateProcessor(
     fun matchBetting(matchId: Long, studentId: Long, predictedWinTeamId: Long, point: Long) {
         val match = matchRepository.findNotEndMatchById(matchId)
             ?: throw StageException("Match Not Found, Match id = $matchId", HttpStatus.NOT_FOUND.value())
-        ableMatchBetting(match)
+        validMatchBettingTime(match)
+        validMatchBetting(match, studentId)
 
         val stage = match.game.stage
         val stageParticipant = stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(stage.id, studentId)
@@ -45,7 +46,7 @@ class ParticipateProcessor(
     }
 
     // 배팅 가능 시간: 경기 시작 24시간 전 ~ 경기 시작 5분 전
-    private fun ableMatchBetting(match: Match) {
+    private fun validMatchBettingTime(match: Match) {
         val now = LocalDateTime.now()
         val startDate = match.startDate
 
@@ -54,6 +55,18 @@ class ParticipateProcessor(
 
         if (now.isBefore(bettingStartTime) || now.isAfter(bettingEndTime)) {
             throw StageException("Not Betting Able Time", HttpStatus.BAD_REQUEST.value())
+        }
+    }
+
+    private fun validMatchBetting(match: Match, studentId: Long) {
+        val aTeam = match.aTeam
+        val bTeam = match.bTeam
+
+        val isATeamParticipant = aTeam.participants.any { participant -> participant.studentId == studentId }
+        val isBTeamParticipant = bTeam.participants.any { participant -> participant.studentId == studentId }
+
+        if (isATeamParticipant || isBTeamParticipant) {
+            throw StageException("Can't Betting Match Player", HttpStatus.BAD_REQUEST.value())
         }
     }
 
