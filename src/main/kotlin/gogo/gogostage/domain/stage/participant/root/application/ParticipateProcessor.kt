@@ -45,7 +45,7 @@ class ParticipateProcessor(
         }
     }
 
-    // 배팅 가능 시간: 경기 시작 24시간 전 ~ 경기 시작 5분 전
+    // 배팅 가능 시간: 매치 시작 24시간 전 ~ 매치 시작 5분 전
     private fun validMatchBettingTime(match: Match) {
         val now = LocalDateTime.now()
         val startDate = match.startDate
@@ -58,6 +58,7 @@ class ParticipateProcessor(
         }
     }
 
+    // 본인이 참여한 매치에는 배팅할 수 없음
     private fun validMatchBetting(match: Match, studentId: Long) {
         val aTeam = match.aTeam
         val bTeam = match.bTeam
