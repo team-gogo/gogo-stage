@@ -1,4 +1,4 @@
-package gogo.gogostage.global.kafka.consumer
+package gogo.gogostage.global.kafka.publisher
 
 import gogo.gogostage.global.kafka.consumer.dto.MatchBettingFailedEvent
 import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BETTING_FAILED

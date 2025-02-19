@@ -5,6 +5,7 @@ import gogo.gogostage.domain.stage.participant.root.application.ParticipateProce
 import gogo.gogostage.global.kafka.consumer.dto.MatchBettingEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBettingFailedEvent
 import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BETTING
+import gogo.gogostage.global.kafka.publisher.StagePublisher
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
