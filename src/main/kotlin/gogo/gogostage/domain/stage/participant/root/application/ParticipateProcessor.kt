@@ -7,6 +7,7 @@ import gogo.gogostage.global.error.StageException
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Component
 class ParticipateProcessor(
@@ -18,6 +19,7 @@ class ParticipateProcessor(
     fun matchBetting(matchId: Long, studentId: Long, predictedWinTeamId: Long, point: Long) {
         val match = matchRepository.findNotEndMatchById(matchId)
             ?: throw StageException("Match Not Found, Match id = $matchId", HttpStatus.NOT_FOUND.value())
+        ableMatchBetting(match)
 
         val stage = match.game.stage
         val stageParticipant = stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(stage.id, studentId)
@@ -39,6 +41,19 @@ class ParticipateProcessor(
             match.addATeamBettingPoint(point)
         } else {
             match.addBTeamBettingPoint(point)
+        }
+    }
+
+    // 배팅 가능 시간: 경기 시작 24시간 전 ~ 경기 시작 5분 전
+    private fun ableMatchBetting(match: Match) {
+        val now = LocalDateTime.now()
+        val startDate = match.startDate
+
+        val bettingStartTime = startDate.minusHours(24)
+        val bettingEndTime = startDate.minusMinutes(5)
+
+        if (now.isBefore(bettingStartTime) || now.isAfter(bettingEndTime)) {
+            throw StageException("Not Betting Able Time", HttpStatus.BAD_REQUEST.value())
         }
     }
 
