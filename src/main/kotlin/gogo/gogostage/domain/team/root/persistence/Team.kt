@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.team.root.persistence
 
 import gogo.gogostage.domain.game.persistence.Game
+import gogo.gogostage.domain.team.participant.persistence.TeamParticipant
 import jakarta.persistence.*
 
 @Entity
@@ -29,4 +30,7 @@ class Team(
 
     @Column(name = "is_participating", nullable = false)
     val isParticipating: Boolean,
+
+    @OneToMany(mappedBy = "team")
+    val participants: MutableList<TeamParticipant>
 )

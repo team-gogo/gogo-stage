@@ -45,11 +45,21 @@ class Match(
     val isEnd: Boolean,
 
     @Column(name = "a_team_betting_point", nullable = false)
-    val aTeamBettingPoint: Int,
+    var aTeamBettingPoint: Long,
 
     @Column(name = "b_team_betting_point", nullable = false)
-    val bTeamBettingPoint: Int,
-)
+    var bTeamBettingPoint: Long,
+) {
+
+    fun addATeamBettingPoint(bettingPoint: Long) {
+        this.aTeamBettingPoint += bettingPoint
+    }
+
+    fun addBTeamBettingPoint(bettingPoint: Long) {
+        this.bTeamBettingPoint += bettingPoint
+    }
+
+}
 
 enum class Round {
     ROUND_OF_32, ROUND_OF_16, QUARTER_FINALS, SEMI_FINALS, FINALS
