@@ -1,12 +1,14 @@
 package gogo.gogostage.global.kafka.consumer.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class MatchBatchEvent(
     val id: String,
     val batchId: Long,
     val matchId: Long,
     val victoryTeamId: Long,
-    val aTeamScore: Int,
-    val bTeamScore: Int,
+    @JsonProperty("ateamScore") val aTeamScore: Int,
+    @JsonProperty("bteamScore") val bTeamScore: Int,
     val students: List<StudentBettingDto>
 )
 

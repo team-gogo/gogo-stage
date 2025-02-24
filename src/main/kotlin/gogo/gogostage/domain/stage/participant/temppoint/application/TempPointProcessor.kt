@@ -36,6 +36,9 @@ class TempPointProcessor(
                 HttpStatus.NOT_FOUND.value()
             )
 
+        match.end()
+        matchRepository.save(match)
+
         val matchResult = MatchResult.of(
             match = match,
             victoryTeam = victoryTeam,
@@ -44,7 +47,8 @@ class TempPointProcessor(
         )
         matchResultRepository.save(matchResult)
 
-        val expiredDate = LocalDateTime.now().plusMinutes(5)
+        // 정산 취소시 동시성 문제 발생을 방지하기 위해 5분 5초 후 만료되도록 설정
+        val expiredDate = LocalDateTime.now().plusMinutes(5).plusSeconds(5)
         val tempPoints = event.students.map { student ->
             val stageParticipant =
                 stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(stage.id, student.studentId)

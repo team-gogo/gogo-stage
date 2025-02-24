@@ -26,7 +26,7 @@ class MatchBatchConsumer(
     @KafkaListener(
         topics = [MATCH_BATCH],
         groupId = "gogo",
-        containerFactory = "matchBettingEventListenerContainerFactory"
+        containerFactory = "matchBatchEventListenerContainerFactory"
     )
     override fun onMessage(data: ConsumerRecord<String, String>, acknowledgment: Acknowledgment?) {
         val (key, event) = data.key() to objectMapper.readValue(data.value(), MatchBatchEvent::class.java)

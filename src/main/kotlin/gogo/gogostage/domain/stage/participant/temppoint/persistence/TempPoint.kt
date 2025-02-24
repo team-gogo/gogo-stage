@@ -31,8 +31,13 @@ class TempPoint(
     val tempPointExpiredDate: LocalDateTime,
 
     @Column(name = "is_applied")
-    val isApplied: Boolean
+    var isApplied: Boolean
 ) {
+
+    fun applied() {
+        isApplied = true
+    }
+
     companion object {
 
         fun of(

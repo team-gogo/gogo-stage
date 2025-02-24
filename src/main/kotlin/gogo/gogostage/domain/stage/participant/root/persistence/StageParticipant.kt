@@ -30,4 +30,8 @@ class StageParticipant(
         this.point -= point
     }
 
+    fun plusPoint(point: Long) {
+        this.point += point
+    }
+
 }
