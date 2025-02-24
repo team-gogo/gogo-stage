@@ -1,0 +1,18 @@
+package gogo.gogostage.domain.match.root.application
+
+import gogo.gogostage.domain.match.root.persistence.Match
+import gogo.gogostage.domain.match.root.persistence.MatchRepository
+import gogo.gogostage.global.error.StageException
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
+
+@Component
+class MatchReader(
+    private val matchRepository: MatchRepository
+) {
+
+    fun read(matchId: Long): Match =
+        matchRepository.findNotEndMatchById(matchId)
+            ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
+
+}

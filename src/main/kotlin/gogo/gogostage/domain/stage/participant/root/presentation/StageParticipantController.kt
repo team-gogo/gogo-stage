@@ -11,7 +11,7 @@ class StageParticipantController(
     private val participantService: ParticipantService
 ) {
 
-    @GetMapping("/point/{stage_id}")
+    @GetMapping("/api/point/{stage_id}")
     fun point(
         @PathVariable("stage_id") stageId: Long,
         @RequestParam("studentId") studentId: Long

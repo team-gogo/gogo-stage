@@ -46,8 +46,8 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/health").permitAll()
 
             // server to server
-            httpRequests.requestMatchers(HttpMethod.GET, "/stage/point/{stage_id}").permitAll()
-            httpRequests.requestMatchers(HttpMethod.GET, "/stage/maintainer").permitAll()
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").permitAll()
 
             httpRequests.anyRequest().denyAll()
         }
