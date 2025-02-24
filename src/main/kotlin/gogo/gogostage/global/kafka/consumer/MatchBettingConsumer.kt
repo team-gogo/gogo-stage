@@ -42,7 +42,7 @@ class MatchBettingConsumer(
             )
 
         } catch (e: Exception) {
-            log.error("Failed to Match Betting metch id  = ${event.matchId}, student id = ${event.studentId}", e)
+            log.error("Failed to Match Betting Match Id  = ${event.matchId}, Student Id = ${event.studentId}", e)
 
             stagePublisher.publishMatchBettingFailedEvent(
                 MatchBettingFailedEvent(

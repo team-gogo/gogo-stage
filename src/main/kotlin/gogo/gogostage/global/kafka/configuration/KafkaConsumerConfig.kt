@@ -1,5 +1,6 @@
 package gogo.gogostage.global.kafka.configuration
 
+import gogo.gogostage.global.kafka.consumer.MatchBatchConsumer
 import gogo.gogostage.global.kafka.consumer.MatchBettingConsumer
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.context.annotation.Bean
@@ -18,6 +19,10 @@ class KafkaConsumerConfig(
 
     @Bean
     fun matchBettingEventListenerContainerFactory(listener: MatchBettingConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
+        makeFactory(listener)
+
+    @Bean
+    fun matchBatchEventListenerContainerFactory(listener: MatchBatchConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
         makeFactory(listener)
 
     private fun makeFactory(listener: AcknowledgingMessageListener<String, String>): ConcurrentKafkaListenerContainerFactory<String, String> {

@@ -3,6 +3,7 @@ package gogo.gogostage.domain.match.result.persistence
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.team.root.persistence.Team
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "tbl_match_result")
@@ -10,7 +11,7 @@ class MatchResult(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id", nullable = false)
@@ -24,5 +25,18 @@ class MatchResult(
     val aTeamScore: Int,
 
     @Column(name = "b_team_score", nullable = false)
-    val bTeamScore: Int
-)
+    val bTeamScore: Int,
+
+    val createdAt: LocalDateTime = LocalDateTime.now()
+) {
+    companion object {
+
+        fun of(match: Match, victoryTeam: Team, aTeamScore: Int, bTeamScore: Int)= MatchResult(
+            match = match,
+            victoryTeam = victoryTeam,
+            aTeamScore = aTeamScore,
+            bTeamScore = bTeamScore
+        )
+
+    }
+}
