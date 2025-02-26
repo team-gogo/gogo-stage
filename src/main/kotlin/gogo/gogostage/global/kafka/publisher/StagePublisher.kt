@@ -1,6 +1,8 @@
 package gogo.gogostage.global.kafka.publisher
 
+import gogo.gogostage.global.kafka.consumer.dto.BatchAdditionTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBettingFailedEvent
+import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_ADDITION_TEMP_POINT_FAILED
 import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BETTING_FAILED
 import gogo.gogostage.global.publisher.TransactionEventPublisher
 import org.springframework.stereotype.Component
@@ -17,6 +19,17 @@ class StagePublisher(
         val key = UUID.randomUUID().toString()
         transactionEventPublisher.publishEvent(
             topic = MATCH_BETTING_FAILED,
+            key = key,
+            event = event
+        )
+    }
+
+    fun publishBatchAdditionTempPointFailedEvent(
+        event: BatchAdditionTempPointFailedEvent
+    ) {
+        val key = UUID.randomUUID().toString()
+        transactionEventPublisher.publishEvent(
+            topic = BATCH_ADDITION_TEMP_POINT_FAILED,
             key = key,
             event = event
         )

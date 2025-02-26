@@ -11,7 +11,7 @@ class TempPoint(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_participant_id")
@@ -31,5 +31,29 @@ class TempPoint(
     val tempPointExpiredDate: LocalDateTime,
 
     @Column(name = "is_applied")
-    val isApplied: Boolean
-)
+    var isApplied: Boolean
+) {
+
+    fun applied() {
+        isApplied = true
+    }
+
+    companion object {
+
+        fun of(
+            stageParticipant: StageParticipant,
+            match: Match,
+            batchId: Long,
+            tempPoint: Long,
+            tempPointExpiredDate: LocalDateTime
+        ) = TempPoint(
+            stageParticipant = stageParticipant,
+            match = match,
+            batchId = batchId,
+            tempPoint = tempPoint,
+            tempPointExpiredDate = tempPointExpiredDate,
+            isApplied = false
+        )
+
+    }
+}

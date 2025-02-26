@@ -42,7 +42,7 @@ class Match(
     val endDate: LocalDateTime,
 
     @Column(name = "is_end", nullable = false)
-    val isEnd: Boolean,
+    var isEnd: Boolean,
 
     @Column(name = "a_team_betting_point", nullable = false)
     var aTeamBettingPoint: Long,
@@ -50,6 +50,10 @@ class Match(
     @Column(name = "b_team_betting_point", nullable = false)
     var bTeamBettingPoint: Long,
 ) {
+
+    fun end() {
+        isEnd = true
+    }
 
     fun addATeamBettingPoint(bettingPoint: Long) {
         this.aTeamBettingPoint += bettingPoint
