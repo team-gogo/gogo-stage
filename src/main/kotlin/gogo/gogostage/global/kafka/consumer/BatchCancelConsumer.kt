@@ -3,6 +3,7 @@ package gogo.gogostage.global.kafka.consumer
 import com.fasterxml.jackson.databind.ObjectMapper
 import gogo.gogostage.domain.stage.participant.temppoint.application.TempPointProcessor
 import gogo.gogostage.global.kafka.consumer.dto.BatchAdditionTempPointFailedEvent
+import gogo.gogostage.global.kafka.consumer.dto.BatchCancelDeleteTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBatchEvent
 import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_CANCEL
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class MatchBatchConsumer(
+class BatchCancelConsumer(
     private val objectMapper: ObjectMapper,
     private val tempPointProcessor: TempPointProcessor,
     private val stagePublisher: StagePublisher
@@ -26,23 +27,23 @@ class MatchBatchConsumer(
     private val log = LoggerFactory.getLogger(this::class.java.simpleName)
 
     @KafkaListener(
-        topics = [MATCH_BATCH],
+        topics = [BATCH_CANCEL],
         groupId = "gogo",
         containerFactory = "batchCancelEventListenerContainerFactory"
     )
     override fun onMessage(data: ConsumerRecord<String, String>, acknowledgment: Acknowledgment?) {
-        val (key, event) = data.key() to objectMapper.readValue(data.value(), MatchBatchEvent::class.java)
-        log.info("${MATCH_BATCH}_topic, key: $key, event: $event")
+        val (key, event) = data.key() to objectMapper.readValue(data.value(), BatchCancelEvent::class.java)
+        log.info("${BATCH_CANCEL}_topic, key: $key, event: $event")
 
         try {
 
-            tempPointProcessor.addTempPoint(event)
+            tempPointProcessor.deleteTempPoint(event)
 
         } catch (e: Exception) {
-            log.error("Failed to Cancelled Batch Delete Temp Point, Batch Id = ${event.batchId}", e)
+            log.error("Failed to Batch Addition Temp Point, Batch Id = ${event.batchId}", e)
 
-            stagePublisher.publishBatchAdditionTempPointFailedEvent(
-                BatchAdditionTempPointFailedEvent(
+            stagePublisher.publishBatchCancelDeleteTempPointFailedEvent(
+                BatchCancelDeleteTempPointFailedEvent(
                     id = UUID.randomUUID().toString(),
                     batchId = event.batchId,
                 )
