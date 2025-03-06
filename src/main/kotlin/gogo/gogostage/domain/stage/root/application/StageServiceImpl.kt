@@ -11,6 +11,7 @@ import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfoReposito
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
+import gogo.gogostage.domain.stage.root.persistence.StageValidator
 import gogo.gogostage.domain.stage.rule.persistence.StageRule
 import gogo.gogostage.domain.stage.rule.persistence.StageRuleRepository
 import gogo.gogostage.global.error.StageException
@@ -28,6 +29,7 @@ class StageServiceImpl(
     private val stageMaintainerRepository: StageMaintainerRepository,
     private val gameRepository: GameRepository,
     private val communityRepository: CommunityRepository,
+    private val stageValidator: StageValidator,
 ) : StageService {
 
     @Transactional
@@ -35,11 +37,9 @@ class StageServiceImpl(
         val student = userUtil.getCurrentStudent()
         val isActiveCoinToss = dto.miniGame.coinToss.isActive
 
-        if (dto.maintainer.size > 5) {
-            throw StageException("스테이지 관리자는 최대 5명까지 가능합니다.", HttpStatus.BAD_REQUEST.value())
-        }
+        stageValidator.valid(dto.maintainer)
 
-        val stage = Stage.fastOf(student.schoolId, dto, isActiveCoinToss)
+        val stage = Stage.fastOf(student, dto, isActiveCoinToss)
         stageRepository.save(stage)
 
         val miniGameInfo = MiniGameInfo.ofFast(stage, isActiveCoinToss)

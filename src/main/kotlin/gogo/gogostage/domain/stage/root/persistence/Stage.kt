@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.stage.root.persistence
 
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -21,6 +22,9 @@ class Stage(
 
     @Column(name = "name", nullable = false)
     val name: String,
+
+    @Column(name = "student_id", nullable = false)
+    val studentId: Long,
 
     @Column(name = "pass_code", nullable = true)
     val passCode: String?,
@@ -46,8 +50,9 @@ class Stage(
 ) {
     companion object {
 
-        fun fastOf(schoolId: Long, dto: CreateFastStageDto, isActiveMiniGame: Boolean) = Stage(
-            schoolId = schoolId,
+        fun fastOf(student: StudentByIdStub, dto: CreateFastStageDto, isActiveMiniGame: Boolean) = Stage(
+            schoolId = student.schoolId,
+            studentId = student.studentId,
             type = StageType.FAST,
             name = dto.stageName,
             passCode = dto.passCode,
