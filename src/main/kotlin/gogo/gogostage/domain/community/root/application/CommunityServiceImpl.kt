@@ -18,5 +18,7 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         val community = communityReader.readCommunityByGameId(gameId)
         boardProcessor.saveCommunityBoard(community, student.studentId, writeCommunityBoardDto)
+
+        // 추후 욕설 필터링 요청 처리 필요
     }
 }
