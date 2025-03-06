@@ -10,7 +10,7 @@ class Game(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false)
@@ -28,22 +28,33 @@ class Game(
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
-    val firstPlaceTeam: Team,
+    val firstPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_place_team_id", nullable = true)
-    val secondPlaceTeam: Team,
+    val secondPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "third_place_team_id", nullable = true)
-    val thirdPlaceTeam: Team,
+    val thirdPlaceTeam: Team? = null,
 
     @Column(name = "team_count", nullable = false)
-    val teamCount: Int,
+    val teamCount: Int = 0,
 
     @Column(name = "is_end", nullable = false)
-    val isEnd: Boolean
-)
+    val isEnd: Boolean = false
+){
+    companion object {
+
+        fun of(stage: Stage, category: GameCategory, name: String, system: GameSystem) = Game(
+            stage = stage,
+            category = category,
+            name = name,
+            system = system
+        )
+
+    }
+}
 
 enum class GameCategory {
     SOCCER, BASKET_BALL, BASE_BALL, VOLLEY_BALL, BADMINTON, LOL, ETC

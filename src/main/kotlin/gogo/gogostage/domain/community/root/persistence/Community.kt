@@ -9,9 +9,17 @@ class Community(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     val game: Game
-)
+) {
+    companion object {
+
+        fun of(game: Game) = Community(
+            game = game
+        )
+
+    }
+}
