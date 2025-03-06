@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
-import kotlin.math.roundToLong
 
 @Component
 class TempPointProcessor(
@@ -31,7 +30,6 @@ class TempPointProcessor(
         val match = (matchRepository.findNotEndMatchById(event.matchId)
             ?: throw StageException("Match Not Found, Match Id = ${event.matchId}", HttpStatus.NOT_FOUND.value()))
         val stage = match.game.stage
-        val totalBettingPoint = match.aTeamBettingPoint + match.bTeamBettingPoint
 
         val victoryTeam = teamRepository.findByIdOrNull(event.victoryTeamId)
             ?: throw StageException(
@@ -50,7 +48,7 @@ class TempPointProcessor(
         )
         matchResultRepository.save(matchResult)
 
-        // * 정산 취소시 동시성 문제 발생을 방지하기 위해 5분 5초 후 만료되도록 설정
+        // * 정산 취소시 동시성 문제 발생을 방지하기 위해 임시 포인트를 5분 5초 후 만료되도록 설정
         val expiredDate = LocalDateTime.now().plusMinutes(5).plusSeconds(5)
         val predictionTempPoints = event.students.map { student ->
             val stageParticipant =
@@ -69,25 +67,6 @@ class TempPointProcessor(
             )
         }
         tempPointRepository.saveAll(predictionTempPoints)
-
-        // * 해당 매치의 승리 팀 선수들은 해당 매치에 배팅된 포인트의 10%씩 임시포인트 지급
-        val victoryTempPoint = victoryTeam.participants.map { participant ->
-            val stageParticipant =
-                stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(stage.id, participant.studentId)
-                    ?: throw StageException(
-                        "Stage Participant Not Found, Stage Id = ${stage.id}, Student Id = ${participant.studentId}",
-                        HttpStatus.NOT_FOUND.value()
-                    )
-
-            TempPoint.of(
-                stageParticipant = stageParticipant,
-                match = match,
-                batchId = event.batchId,
-                tempPoint = (totalBettingPoint * 0.1).roundToLong(),
-                tempPointExpiredDate = expiredDate
-            )
-        }
-        tempPointRepository.saveAll(victoryTempPoint)
     }
 
     @Transactional
