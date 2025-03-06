@@ -15,6 +15,9 @@ class StageRule(
     @JoinColumn(name = "stage_id", nullable = false, unique = true)
     val stage: Stage,
 
-    @Column(name = "maxBettingPoint", nullable = false)
-    val maxBettingPoint: Int
+    @Column(name = "max_betting_point", nullable = false)
+    val maxBettingPoint: Long,
+
+    @Column(name = "min_betting_point", nullable = false)
+    val minBettingPoint: Long
 )

@@ -24,6 +24,9 @@ class Stage(
     @Column(name = "pass_code", nullable = true)
     val passCode: String?,
 
+    @Column(name = "initial_point", nullable = false)
+    val initialPoint: Long,
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     val status: StageStatus,
