@@ -55,6 +55,10 @@ class Match(
         isEnd = true
     }
 
+    fun batchRollback() {
+        isEnd = false
+    }
+
     fun addATeamBettingPoint(bettingPoint: Long) {
         this.aTeamBettingPoint += bettingPoint
     }
