@@ -15,7 +15,7 @@ data class CreateFastStageDto(
 
 data class CreateStageGameDto(
     val category: GameCategory,
-    val etcName: String?,
+    val name: String,
     val system: GameSystem,
     val teamMinCapacity: Int,
     val teamMaxCapacity: Int,
@@ -32,5 +32,5 @@ data class CreateFastStageMiniGameDto(
 
 data class MiniGameInfoDto(
     val isActive: Boolean,
-    val maxBettingPoint: Long,
+    val maxBettingPoint: Long?,
 )

@@ -19,8 +19,8 @@ class Game(
     @Column(name = "category", nullable = false)
     val category: GameCategory,
 
-    @Column(name = "ect_name", nullable = true)
-    val etcName: String? = null,
+    @Column(name = "name", nullable = true)
+    val name: String,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)

@@ -9,7 +9,7 @@ class StageMaintainer(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false, unique = true)
@@ -17,4 +17,13 @@ class StageMaintainer(
 
     @Column(name = "student_id", nullable = false)
     val studentId: Long
-)
+) {
+    companion object {
+
+        fun of(stage: Stage, studentId: Long) = StageMaintainer(
+            stage = stage,
+            studentId = studentId
+        )
+
+    }
+}

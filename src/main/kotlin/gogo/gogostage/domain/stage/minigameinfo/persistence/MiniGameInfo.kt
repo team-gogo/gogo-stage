@@ -9,7 +9,7 @@ class MiniGameInfo(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false, unique = true)
@@ -23,4 +23,15 @@ class MiniGameInfo(
 
     @Column(name = "is_active_plinko", nullable = false)
     val isActivePlinko: Boolean,
-)
+) {
+    companion object {
+
+        fun ofFast(stage: Stage, isActiveCoinToss: Boolean) = MiniGameInfo(
+            stage = stage,
+            isActiveCoinToss = isActiveCoinToss,
+            isActiveYavarwee = false,
+            isActivePlinko = false,
+        )
+
+    }
+}

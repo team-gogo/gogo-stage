@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.root.persistence
 
+import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -9,7 +10,7 @@ class Stage(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(name = "school_id", nullable = false)
     val schoolId: Long,
@@ -42,7 +43,23 @@ class Stage(
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
-)
+) {
+    companion object {
+
+        fun fastOf(schoolId: Long, dto: CreateFastStageDto, isActiveMiniGame: Boolean) = Stage(
+            schoolId = schoolId,
+            type = StageType.FAST,
+            name = dto.stageName,
+            passCode = dto.passCode,
+            initialPoint = dto.initialPoint,
+            status = StageStatus.RECRUITING,
+            participantCount = 0,
+            isActiveMiniGame = isActiveMiniGame,
+            isActiveShop = false,
+        )
+
+    }
+}
 
 enum class StageType {
     FAST, OFFICIAL
