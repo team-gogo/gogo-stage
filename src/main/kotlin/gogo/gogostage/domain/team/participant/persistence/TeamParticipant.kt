@@ -16,5 +16,11 @@ class TeamParticipant(
     val team: Team,
 
     @Column(name = "student_id", nullable = false)
-    val studentId: Long
+    val studentId: Long,
+
+    @Column(name = "position_x", nullable = true)
+    val positionX: String?,
+
+    @Column(name = "position_y", nullable = true)
+    val positionY: String?,
 )

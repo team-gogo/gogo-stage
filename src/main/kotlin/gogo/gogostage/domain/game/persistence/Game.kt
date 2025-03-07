@@ -16,12 +16,15 @@ class Game(
     @JoinColumn(name = "stage_id", nullable = false)
     val stage: Stage,
 
-    @Column(name = "name", nullable = false)
-    val name: String,
+    @Column(name = "category", nullable = false)
+    val category: GameCategory,
+
+    @Column(name = "ect_name", nullable = true)
+    val etcName: String? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
-    val type: GameType,
+    val system: GameSystem,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
@@ -42,6 +45,10 @@ class Game(
     val isEnd: Boolean
 )
 
-enum class GameType {
+enum class GameCategory {
+    SOCCER, BASKET_BALL, BASE_BALL, VOLLEY_BALL, BADMINTON, LOL, ETC
+}
+
+enum class GameSystem {
     TOURNAMENT, FULL_LEAGUE, SINGLE
 }
