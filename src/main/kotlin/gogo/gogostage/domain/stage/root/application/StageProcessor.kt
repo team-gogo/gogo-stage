@@ -26,7 +26,7 @@ class StageProcessor(
     private val communityRepository: CommunityRepository,
 ) {
 
-    fun saveFast(student: StudentByIdStub, dto: CreateFastStageDto) {
+    fun saveFast(student: StudentByIdStub, dto: CreateFastStageDto): Stage {
         val isActiveCoinToss = dto.miniGame.coinToss.isActive
 
         val stage = Stage.fastOf(student, dto, isActiveCoinToss)
@@ -48,6 +48,8 @@ class StageProcessor(
 
         val community = Community.of(game)
         communityRepository.save(community)
+
+        return stage
     }
 
 }
