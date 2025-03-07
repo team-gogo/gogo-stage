@@ -1,4 +1,4 @@
-package gogo.gogostage.domain.stage.root.persistence
+package gogo.gogostage.domain.stage.root.application
 
 import gogo.gogostage.global.error.StageException
 import org.springframework.http.HttpStatus
