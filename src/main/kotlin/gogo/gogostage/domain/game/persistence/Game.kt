@@ -16,6 +16,7 @@ class Game(
     @JoinColumn(name = "stage_id", nullable = false)
     val stage: Stage,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     val category: GameCategory,
 

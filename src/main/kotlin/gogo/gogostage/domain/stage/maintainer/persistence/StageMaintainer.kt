@@ -12,7 +12,7 @@ class StageMaintainer(
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stage_id", nullable = false, unique = true)
+    @JoinColumn(name = "stage_id", nullable = false)
     val stage: Stage,
 
     @Column(name = "student_id", nullable = false)
