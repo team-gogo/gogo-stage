@@ -1,5 +1,7 @@
 package gogo.gogostage.domain.stage.minigameinfo.persistence
 
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageMiniGameDto
+import gogo.gogostage.domain.stage.root.application.dto.MiniGameInfoDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import jakarta.persistence.*
 
@@ -31,6 +33,13 @@ class MiniGameInfo(
             isActiveCoinToss = isActiveCoinToss,
             isActiveYavarwee = false,
             isActivePlinko = false,
+        )
+
+        fun officialOf(stage: Stage, miniGameInfo: CreateOfficialStageMiniGameDto) = MiniGameInfo(
+            stage = stage,
+            isActiveCoinToss = miniGameInfo.coinToss.isActive,
+            isActiveYavarwee = miniGameInfo.yavarwee.isActive,
+            isActivePlinko = miniGameInfo.plinko.isActive,
         )
 
     }

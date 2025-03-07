@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.stage.root.application
 
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.event.CreateStageFastEvent
 import gogo.gogostage.domain.stage.root.event.FastStageMiniGameDto
 import gogo.gogostage.global.util.UserContextUtil
@@ -32,6 +33,13 @@ class StageServiceImpl(
                 )
             )
         )
+    }
+
+    @Transactional
+    override fun createOfficial(dto: CreateOfficialStageDto) {
+        val student = userUtil.getCurrentStudent()
+        stageValidator.valid(dto.maintainer)
+        val stage = stageProcessor.saveOfficial(student, dto)
     }
 
 }

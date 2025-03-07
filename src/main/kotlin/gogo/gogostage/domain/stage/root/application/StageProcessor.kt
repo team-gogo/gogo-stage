@@ -9,6 +9,7 @@ import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerReposit
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfo
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfoRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.domain.stage.rule.persistence.StageRule
@@ -48,6 +49,34 @@ class StageProcessor(
 
         val community = Community.of(game)
         communityRepository.save(community)
+
+        return stage
+    }
+
+    fun saveOfficial(student: StudentByIdStub, dto: CreateOfficialStageDto): Stage {
+        val isActiveMiniGame =
+            dto.miniGame.coinToss.isActive || dto.miniGame.yavarwee.isActive || dto.miniGame.plinko.isActive
+        val isActiveShop =
+            dto.shop.coinToss.isActive || dto.shop.yavarwee.isActive || dto.shop.plinko.isActive
+
+        val stage = Stage.officialOf(student, dto, isActiveMiniGame, isActiveShop)
+        stageRepository.save(stage)
+
+        val miniGameInfo = MiniGameInfo.officialOf(stage, dto.miniGame)
+        miniGameInfoRepository.save(miniGameInfo)
+
+        val stageRule = StageRule.of(stage, dto.rule)
+        stageRuleRepository.save(stageRule)
+
+        val maintainers =
+            dto.maintainer.map { StageMaintainer.of(stage, it) } + StageMaintainer.of(stage, student.studentId)
+        stageMaintainerRepository.saveAll(maintainers)
+
+        val games = dto.game.map { Game.of(stage, it.category, it.name, it.system) }
+        gameRepository.saveAll(games)
+
+        val communities = games.map { Community.of(it) }
+        communityRepository.saveAll(communities)
 
         return stage
     }
