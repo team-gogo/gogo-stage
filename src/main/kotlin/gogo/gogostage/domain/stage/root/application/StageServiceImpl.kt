@@ -23,7 +23,7 @@ class StageServiceImpl(
     @Transactional
     override fun createFast(dto: CreateFastStageDto) {
         val student = userUtil.getCurrentStudent()
-        stageValidator.valid(dto.maintainer)
+        stageValidator.validFast(dto)
         val stage = stageProcessor.saveFast(student, dto)
 
         applicationEventPublisher.publishEvent(
@@ -40,7 +40,7 @@ class StageServiceImpl(
     @Transactional
     override fun createOfficial(dto: CreateOfficialStageDto) {
         val student = userUtil.getCurrentStudent()
-        stageValidator.valid(dto.maintainer)
+        stageValidator.validOfficial(dto)
         val stage = stageProcessor.saveOfficial(student, dto)
 
         applicationEventPublisher.publishEvent(

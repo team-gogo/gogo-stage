@@ -33,7 +33,7 @@ class StageProcessor(
         val stage = Stage.fastOf(student, dto, isActiveCoinToss)
         stageRepository.save(stage)
 
-        val miniGameInfo = MiniGameInfo.ofFast(stage, isActiveCoinToss)
+        val miniGameInfo = MiniGameInfo.fastOf(stage, isActiveCoinToss)
         miniGameInfoRepository.save(miniGameInfo)
 
         val stageRule = StageRule.of(stage, dto.rule)
