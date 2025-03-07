@@ -8,4 +8,5 @@ object KafkaTopics {
     const val BATCH_CANCEL = "batch_cancel"
     const val BATCH_CANCEL_DELETE_TEMP_POINT_FAILED = "batch_cancel_delete_temp_point_failed"
     const val CREATE_STAGE_FAST = "create_stage_fast"
+    const val CREATE_STAGE_OFFICIAL = "create_stage_official"
 }
