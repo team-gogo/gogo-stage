@@ -10,9 +10,8 @@ class CommunityReader(
     private val communityRepository: CommunityRepository
 ) {
 
-    fun readCommunityByGameId(gameId: Long) =
-        communityRepository.findByGameId(gameId)
-            ?: throw StageException("Community Not Found, gameId: $gameId", HttpStatus.NOT_FOUND.value())
-
+    fun readByStageId(stageId: Long) =
+        communityRepository.findByStageId(stageId)
+            ?: throw StageException("Stage Not Found, stageId=$stageId", HttpStatus.NOT_FOUND.value())
 
 }
