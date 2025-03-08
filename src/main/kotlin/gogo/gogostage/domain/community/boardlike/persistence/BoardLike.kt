@@ -1,11 +1,11 @@
-package gogo.gogostage.domain.community.like.persistence
+package gogo.gogostage.domain.community.boardlike.persistence
 
 import gogo.gogostage.domain.community.board.persistence.Board
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "tbl_like")
-class Like(
+@Table(name = "tbl_board_like")
+class BoardLike(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

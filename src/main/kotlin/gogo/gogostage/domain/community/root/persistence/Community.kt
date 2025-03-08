@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.persistence
 
-import gogo.gogostage.domain.game.persistence.Game
+import gogo.gogostage.domain.game.persistence.GameCategory
+import gogo.gogostage.domain.stage.root.persistence.Stage
 import jakarta.persistence.*
 
 @Entity
@@ -12,6 +13,10 @@ class Community(
     val id: Long,
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "game_id", nullable = false)
-    val game: Game
+    @JoinColumn(name = "stage_id", nullable = false)
+    val stage: Stage,
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    val category: GameCategory
 )
