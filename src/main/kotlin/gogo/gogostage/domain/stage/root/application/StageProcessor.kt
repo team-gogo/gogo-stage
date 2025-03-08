@@ -46,7 +46,7 @@ class StageProcessor(
         val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system)
         gameRepository.save(game)
 
-        val community = Community.of(game)
+        val community = Community.of(stage, game.category)
         communityRepository.save(community)
 
         return stage
