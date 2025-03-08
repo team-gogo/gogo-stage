@@ -12,7 +12,7 @@ class Community(
     @Column(name = "id", nullable = false)
     val id: Long,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = [CascadeType.ALL],fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false)
     val stage: Stage,
 
