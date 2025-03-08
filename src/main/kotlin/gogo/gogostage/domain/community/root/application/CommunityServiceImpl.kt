@@ -1,8 +1,11 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardProcessor
+import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardReqDto
+import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
 import gogo.gogostage.global.util.UserContextUtil
+import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,4 +24,12 @@ class CommunityServiceImpl(
 
         // 추후 욕설 필터링 요청 처리 필요
     }
+
+    @Transactional(readOnly = true)
+    override fun getStageBoard(stageId: Long, getCommunityBoardDto: GetCommunityBoardReqDto): Page<GetCommunityBoardResDto> {
+        val community = communityReader.readByStageId(stageId)
+        return communityReader.readBoards(community, getCommunityBoardDto)
+    }
+
+
 }
