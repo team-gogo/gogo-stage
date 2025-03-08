@@ -75,7 +75,8 @@ class StageProcessor(
         val games = dto.game.map { Game.of(stage, it.category, it.name, it.system) }
         gameRepository.saveAll(games)
 
-        val communities = games.map { Community.of(it) }
+        val gameCategories = games.map { it.category }.toSet().toList()
+        val communities = gameCategories.map { Community.of(stage, it) }
         communityRepository.saveAll(communities)
 
         return stage
