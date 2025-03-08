@@ -17,12 +17,12 @@ class CommunityController(
     private val communityService: CommunityService
 ) {
 
-    @PostMapping("/{game_id}")
+    @PostMapping("/{stage_id}")
     fun writeStageBoard(
-        @PathVariable("game_id") gameId: Long,
+        @PathVariable("stage_id") stageId: Long,
         @RequestBody @Valid writeCommunityBoardDto: WriteCommunityBoardDto
     ): ResponseEntity<Void> {
-        communityService.writeCommunityBoard(gameId, writeCommunityBoardDto)
+        communityService.writeCommunityBoard(stageId, writeCommunityBoardDto)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 }
