@@ -20,3 +20,7 @@ class Community(
     @Column(name = "category", nullable = false)
     val category: GameCategory
 )
+
+enum class SortType {
+    LAST, LATEST
+}
