@@ -6,6 +6,7 @@ import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
@@ -33,15 +34,19 @@ class StageValidator(
         validShop(dto)
     }
 
-    fun validJoin(dto: StageJoinDto, stage: Stage) {
+    fun validJoin(student: StudentByIdStub, dto: StageJoinDto, stage: Stage) {
         if (stage.passCode != null && stage.passCode != dto.passCode) {
             throw StageException("입장 코드가 올바르지 않습니다.", HttpStatus.BAD_REQUEST.value())
         }
 
         val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, stage.studentId)
-
         if (isDuplicate) {
             throw StageException("이미 해당 스테이지에 참여 했습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        val isSchool = stage.schoolId == student.schoolId
+        if (isSchool) {
+            throw StageException("해당 스테이지는 현재 소속 중인 학교의 스테이지가 아닙니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 

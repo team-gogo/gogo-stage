@@ -55,8 +55,8 @@ class StageServiceImpl(
         val stage = stageRepository.queryNotEndStageById(stageId)
             ?: throw StageException("Stage Not Found, Stage Id = $stageId", HttpStatus.NOT_FOUND.value())
 
-        stageValidator.validJoin(dto, stage)
         val student = userUtil.getCurrentStudent()
+        stageValidator.validJoin(student, dto, stage)
 
         stageProcessor.join(student, stage)
     }
