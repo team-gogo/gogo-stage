@@ -21,7 +21,7 @@ class CommunityCustomRepositoryImpl(
 
     override fun searchCommunityBoardPage(community: Community, getCommunityBoardReqDto: GetCommunityBoardReqDto): Page<GetCommunityBoardResDto> {
         val boards = queryFactory.select(
-            Projections.constructor(
+            Projections.fields(
                 BoardDto::class.java,
                 board.id,
                 board.studentId,
@@ -35,6 +35,9 @@ class CommunityCustomRepositoryImpl(
             .from(board)
             .join(stage).on(QCommunity.community.stage.id.eq(community.stage.id))
             .join(game).on(stage.id.eq(game.stage.id))
+            .where(
+                QCommunity.community.category.eq(getCommunityBoardReqDto.category)
+            )
             .orderBy(
                 when(getCommunityBoardReqDto.sort) {
                     SortType.LAST -> board.createdAt.asc()
