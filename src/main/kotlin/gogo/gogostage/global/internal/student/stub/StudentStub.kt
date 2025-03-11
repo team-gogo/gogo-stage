@@ -18,11 +18,15 @@ data class StudentByIdStub(
 )
 
 data class StudentByIdsStub(
+    val students: List<StudentByIdsStubDto>
+)
+
+data class StudentByIdsStubDto(
     val studentId: Long,
     val schoolId: Long,
+    val sex: Sex,
     val name: String,
     val deviceToken: String?,
-    val sex: Sex,
     val classNumber: Int,
-    val studentNumber: Int
+    val studentNumber: Int,
 )

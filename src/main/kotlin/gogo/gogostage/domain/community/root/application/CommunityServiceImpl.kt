@@ -1,11 +1,11 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardProcessor
-import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardReqDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
+import gogo.gogostage.domain.community.root.persistence.SortType
+import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.global.util.UserContextUtil
-import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -26,9 +26,8 @@ class CommunityServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getStageBoard(stageId: Long, getCommunityBoardDto: GetCommunityBoardReqDto): Page<GetCommunityBoardResDto> {
-        val community = communityReader.readByStageId(stageId)
-        return communityReader.readBoards(community, getCommunityBoardDto)
+    override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
+        return communityReader.readBoards(stageId, page, size, category, sort)
     }
 
 
