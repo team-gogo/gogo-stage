@@ -1,15 +1,15 @@
 package gogo.gogostage.domain.community.root.persistence
 
-import com.querydsl.core.types.Projections
+import com.querydsl.core.BooleanBuilder
+import com.querydsl.core.types.dsl.BooleanExpression
+import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.root.application.dto.*
-import gogo.gogostage.domain.game.persistence.QGame.game
-import gogo.gogostage.domain.stage.root.persistence.QStage.stage
+import gogo.gogostage.domain.community.root.persistence.QCommunity.community
+import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.global.internal.student.api.StudentApi
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageImpl
-import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
 
 import org.springframework.stereotype.Repository
 
@@ -19,50 +19,61 @@ class CommunityCustomRepositoryImpl(
     private val studentApi: StudentApi
 ): CommunityCustomRepository {
 
-    override fun searchCommunityBoardPage(community: Community, getCommunityBoardReqDto: GetCommunityBoardReqDto): Page<GetCommunityBoardResDto> {
-        val boards = queryFactory.select(
-            Projections.fields(
-                BoardDto::class.java,
-                board.id,
-                board.studentId,
-                game.system,
-                board.title,
-                board.likeCount,
-                board.createdAt,
-                board.isFiltered,
-                stage.type
-            ))
-            .from(board)
-            .join(stage).on(QCommunity.community.stage.id.eq(community.stage.id))
-            .join(game).on(stage.id.eq(game.stage.id))
-            .where(
-                QCommunity.community.category.eq(getCommunityBoardReqDto.category)
-            )
+    override fun searchCommunityBoardPage(stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto {
+        val predicate = BooleanBuilder()
+
+        predicate.and(community.stage.id.eq(stageId))
+
+        category?.let {
+            predicate.and(community.category.eq(it))
+        }
+
+        val boards = queryFactory
+            .selectFrom(board)
+            .where(predicate)
             .orderBy(
-                when(getCommunityBoardReqDto.sort) {
+                when (sort) {
                     SortType.LAST -> board.createdAt.asc()
                     SortType.LATEST -> board.createdAt.desc()
                 }
             )
-
-            .offset((getCommunityBoardReqDto.page.toLong() - 1) * getCommunityBoardReqDto.size.toLong())
-            .limit(getCommunityBoardReqDto.size.toLong())
+            .offset(pageable.offset)
+            .limit(pageable.pageSize.toLong())
             .fetch()
+
+
+
+        val condition = listOfNotNull(
+            stageId?.let { community.stage.id.eq(it) },
+            category?.let { community.category.eq(it) }
+        ).reduceOrNull(BooleanExpression::and) ?: Expressions.TRUE // 조건이 없으면 항상 참
 
         val studentIds = queryFactory
             .select(board.studentId)
             .from(board)
+            .where(condition)
             .fetch()
 
-        val communityStudents = studentApi.queryByStudentsIds(studentIds)
+
+
+        val communityStudents = studentApi.queryByStudentsIds(studentIds.toSet().toList())
 
         val boardDtoList = boards.map { board ->
-            val author = communityStudents.find { it.studentId == board.studentId }?.let {
+            val author = communityStudents.students.find { it.studentId == board.studentId }?.let {
                 AuthorDto(it.studentId, it.name, it.classNumber, it.studentNumber)
             }
 
-            board.copy(author = author!!)
-        }
+            BoardDto(
+                boardId = board.id,
+                studentId = board.studentId,
+                gameCategory = board.community.category,
+                title = board.title,
+                likeCount = board.likeCount,
+                createdAt = board.createdAt,
+                stageType = board.community.stage.type,
+                author = author!!
+            )
+        }.toList()
 
         val totalElement = queryFactory
             .select(board.count())
@@ -71,18 +82,14 @@ class CommunityCustomRepositoryImpl(
             .fetchOne()
             ?: 0L
 
-        val totalPage = if (totalElement.toInt() % getCommunityBoardReqDto.size == 0) {
-            totalElement.toInt() / getCommunityBoardReqDto.size
+        val totalPage = if (totalElement.toInt() % size == 0) {
+            totalElement.toInt() / size
         } else {
-            totalElement.toInt() / getCommunityBoardReqDto.size + 1
+            totalElement.toInt() / size + 1
         }
 
         val infoDto = InfoDto(totalPage, totalElement.toInt())
 
-        val getCommunityBoardResDtoList = listOf(GetCommunityBoardResDto(infoDto, boardDtoList))
-
-        val pageable = PageRequest.of(getCommunityBoardReqDto.page, getCommunityBoardReqDto.size)
-
-        return PageImpl(getCommunityBoardResDtoList, pageable, totalElement)
+        return GetCommunityBoardResDto(infoDto, boardDtoList)
     }
 }
