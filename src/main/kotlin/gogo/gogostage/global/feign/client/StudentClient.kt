@@ -16,5 +16,5 @@ interface StudentClient {
     @GetMapping("/user/student/bundle")
     fun queryCommunityStudentsByStudentId(
         @RequestParam("studentIds") ids: List<Long>
-    ): List<StudentByIdsStub>
+    ): StudentByIdsStub
 }

@@ -13,7 +13,7 @@ class StudentApiImpl(
         return studentClient.queryStudentByUserId(userId)
     }
 
-    override fun queryByStudentsIds(studentIds: List<Long>): List<StudentByIdsStub> {
+    override fun queryByStudentsIds(studentIds: List<Long>): StudentByIdsStub {
         return studentClient.queryCommunityStudentsByStudentId(studentIds)
     }
 }
