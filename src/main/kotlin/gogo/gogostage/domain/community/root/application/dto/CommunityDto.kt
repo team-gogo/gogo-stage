@@ -19,7 +19,7 @@ data class WriteCommunityBoardDto(
 data class GetCommunityBoardReqDto(
     val page: Int,
     val size: Int,
-    val gameCategory: GameCategory,
+    val category: GameCategory,
     val sort: SortType
 )
 
