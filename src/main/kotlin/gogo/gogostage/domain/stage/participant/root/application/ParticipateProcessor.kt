@@ -44,7 +44,7 @@ class ParticipateProcessor(
             stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(event.stageId, event.studentId)
                 ?: throw StageException("Stage Participant Not Found, Stage id = ${event.stageId}, Student id = ${event.studentId}", HttpStatus.NOT_FOUND.value())
 
-        val totalPrice = event.ticketPrice.toLong() * event.purchaseQuantity.toLong()
+        val totalPrice = event.ticketPrice * event.purchaseQuantity.toLong()
 
         stageParticipant.minusPoint(totalPrice)
         stageParticipantRepository.save(stageParticipant)
@@ -56,6 +56,7 @@ class ParticipateProcessor(
                 studentId = event.studentId,
                 shopMiniGameId = event.shopMiniGameId,
                 ticketType = event.ticketType,
+                ticketPrice = event.ticketPrice,
                 purchaseQuantity = event.purchaseQuantity,
             )
         )

@@ -8,5 +8,6 @@ data class TicketPointMinusEvent(
     val studentId: Long,
     val shopMiniGameId: Long,
     val ticketType: TicketType,
+    val ticketPrice: Long,
     val purchaseQuantity: Int
 )

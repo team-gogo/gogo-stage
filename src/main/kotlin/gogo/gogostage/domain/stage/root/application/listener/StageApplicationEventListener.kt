@@ -19,7 +19,7 @@ class StageApplicationEventListener(
     fun createStageFast(event: CreateStageFastEvent) {
         with(event) {
             log.info("published create stage fast application event: {}", id)
-            stagePublisher.publishCreateStageFastEVent(event)
+            stagePublisher.publishCreateStageFastEvent(event)
         }
     }
 
@@ -27,7 +27,7 @@ class StageApplicationEventListener(
     fun createStageOfficial(event: CreateStageOfficialEvent) {
         with(event) {
             log.info("published create stage official application event: {}", id)
-            stagePublisher.publishCreateStageOfficialEVent(event)
+            stagePublisher.publishCreateStageOfficialEvent(event)
         }
     }
 
