@@ -1,8 +1,6 @@
 package gogo.gogostage.domain.community.root.application.dto
 
-import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
-import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.stage.root.persistence.StageType
 import org.jetbrains.annotations.NotNull
 import java.time.LocalDateTime
@@ -14,13 +12,6 @@ data class WriteCommunityBoardDto(
     val content: String,
     @NotNull
     val gameCategory: GameCategory
-)
-
-data class GetCommunityBoardReqDto(
-    val page: Int,
-    val size: Int,
-    val category: GameCategory,
-    val sort: SortType
 )
 
 data class GetCommunityBoardResDto(
@@ -36,11 +27,10 @@ data class InfoDto(
 data class BoardDto(
     val boardId: Long,
     val studentId: Long,
-    val gameType: GameSystem,
+    val gameCategory: GameCategory,
     val title: String,
     val likeCount: Int,
     val createdAt: LocalDateTime,
-    val isFiltered: Boolean,
     val stageType: StageType,
     val author: AuthorDto
 )
