@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.root.application
 
+import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
@@ -9,7 +10,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
 @Component
-class StageValidator {
+class StageValidator(
+    private val stageParticipantRepository: StageParticipantRepository
+) {
 
     fun validFast(dto: CreateFastStageDto) {
         if (dto.maintainer.size > 5) {
@@ -33,6 +36,12 @@ class StageValidator {
     fun validJoin(dto: StageJoinDto, stage: Stage) {
         if (stage.passCode != null && stage.passCode != dto.passCode) {
             throw StageException("입장 코드가 올바르지 않습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, stage.studentId)
+
+        if (isDuplicate) {
+            throw StageException("이미 해당 스테이지에 참여 했습니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
