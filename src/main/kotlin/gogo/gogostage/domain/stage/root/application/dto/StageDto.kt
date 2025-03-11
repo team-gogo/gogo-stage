@@ -96,3 +96,7 @@ data class MiniGameInfoDto(
     val isActive: Boolean,
     val maxBettingPoint: Long?,
 )
+
+data class StageJoinDto(
+    val passCode: String?,
+)
