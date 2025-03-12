@@ -10,4 +10,5 @@ interface CommunityService {
     fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto
     fun likeStageBoard(boardId: Long): LikeResDto
     fun writeBoardComment(boardId: Long, writeBoardCommentDto: WriteBoardCommentReqDto): WriteBoardCommentResDto
+    fun likeBoardComment(commentId: Long): LikeResDto
 }

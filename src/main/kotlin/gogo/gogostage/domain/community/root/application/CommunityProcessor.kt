@@ -1,10 +1,13 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.persistence.Board
+import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
+import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
+import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
 import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
@@ -16,6 +19,7 @@ import java.time.LocalDateTime
 class CommunityProcessor(
     private val boardLikeRepository: BoardLikeRepository,
     private val commentRepository: CommentRepository,
+    private val commentLikeRepository: CommentLikeRepository
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
@@ -73,5 +77,31 @@ class CommunityProcessor(
                 studentNumber = student.studentNumber
             )
         )
+    }
+
+    fun likeBoardComment(student: StudentByIdStub, comment: Comment): LikeResDto {
+        val isExistCommentLike = commentLikeRepository.existsByCommentIdAndStudentId(comment.id, student.studentId)
+
+        if (isExistCommentLike) {
+            val commentLike = commentLikeRepository.findByCommentIdAndStudentId(comment.id, student.studentId)
+                ?: throw StageException("CommentLike Not Found", HttpStatus.NOT_FOUND.value())
+
+            commentLikeRepository.delete(commentLike)
+
+            return LikeResDto(
+                isLiked = false
+            )
+        } else {
+            val boardLike = CommentLike(
+                comment = comment,
+                studentId = student.studentId,
+            )
+
+            commentLikeRepository.save(boardLike)
+
+            return LikeResDto(
+                isLiked = true
+            )
+        }
     }
 }
