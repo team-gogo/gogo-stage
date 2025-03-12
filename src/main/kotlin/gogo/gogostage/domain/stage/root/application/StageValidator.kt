@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.root.application
 
+import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class StageValidator(
-    private val stageParticipantRepository: StageParticipantRepository
+    private val stageParticipantRepository: StageParticipantRepository,
+    private val gameRepository: GameRepository
 ) {
 
     fun validFast(dto: CreateFastStageDto) {
@@ -61,6 +63,11 @@ class StageValidator(
         val stageStatus = stage.status
         if (stageStatus != StageStatus.RECRUITING) {
             throw StageException("해당 스테이지는 모집 중인 스테이지가 아닙니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        val gameCount = gameRepository.countByStageId(stage.id)
+        if (gameCount != dto.games.size) {
+            throw StageException("해당 스테이지의 게임 수와 확정된 게임 수가 일치하지 않습니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
