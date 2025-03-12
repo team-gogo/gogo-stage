@@ -5,10 +5,7 @@ import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
-import gogo.gogostage.domain.community.root.application.dto.AuthorDto
-import gogo.gogostage.domain.community.root.application.dto.LikeBoardResDto
-import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentReqDto
-import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentResDto
+import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.http.HttpStatus
@@ -21,7 +18,7 @@ class CommunityProcessor(
     private val commentRepository: CommentRepository,
 ) {
 
-    fun likeBoard(studentId: Long, board: Board): LikeBoardResDto {
+    fun likeBoard(studentId: Long, board: Board): LikeResDto {
         // 동시성 문제
         val isExistBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(studentId, board.id)
 
@@ -31,7 +28,7 @@ class CommunityProcessor(
 
             boardLikeRepository.delete(boardLike)
 
-            return LikeBoardResDto(
+            return LikeResDto(
                 isLiked = false
             )
         } else {
@@ -42,7 +39,7 @@ class CommunityProcessor(
 
             boardLikeRepository.save(boardLike)
 
-            return LikeBoardResDto(
+            return LikeResDto(
                 isLiked = true
             )
         }

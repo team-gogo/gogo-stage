@@ -36,7 +36,7 @@ class CommunityServiceImpl(
     }
 
     @Transactional
-    override fun likeStageBoard(boardId: Long): LikeBoardResDto {
+    override fun likeStageBoard(boardId: Long): LikeResDto {
         val student = userUtil.getCurrentStudent()
         val board = communityReader.readBoardByBoardId(boardId)
         return communityProcessor.likeBoard(student.studentId, board)
