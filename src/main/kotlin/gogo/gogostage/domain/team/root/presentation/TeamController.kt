@@ -1,3 +1,5 @@
+package gogo.gogostage.domain.team.root.presentation
+
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
 
 import gogo.gogostage.domain.team.root.application.TeamService
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/stage")
-class TeamController(private val teamService: TeamService) {
+class TeamController(
+    private val teamService: TeamService
+) {
 
     @PostMapping("/team/{game_id}")
     fun apply(
