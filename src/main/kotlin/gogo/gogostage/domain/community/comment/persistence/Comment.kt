@@ -26,5 +26,8 @@ class Comment(
     val isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+
+    @Column(name = "like_count", nullable = false)
+    val likeCount: Int,
 )
