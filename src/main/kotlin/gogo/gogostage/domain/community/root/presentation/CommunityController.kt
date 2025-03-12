@@ -1,9 +1,7 @@
 package gogo.gogostage.domain.community.root.presentation
 
 import gogo.gogostage.domain.community.root.application.CommunityService
-import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
-import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
-import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
+import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
 import jakarta.validation.Valid
@@ -51,5 +49,13 @@ class CommunityController(
     ): ResponseEntity<GetCommunityBoardInfoResDto> {
         val response = communityService.getStageBoardInfo(boardId)
         return ResponseEntity.ok(response)
+    }
+
+    @PostMapping("/board/like/{board_id}")
+    fun likeStageBoard(
+        @PathVariable("board_id") boardId: Long
+    ): ResponseEntity<LikeBoardResDto> {
+        val response = communityService.likeStageBoard(boardId)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 }
