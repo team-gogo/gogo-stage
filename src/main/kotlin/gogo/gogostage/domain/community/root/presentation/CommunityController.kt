@@ -58,4 +58,13 @@ class CommunityController(
         val response = communityService.likeStageBoard(boardId)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
+
+    @PostMapping("/comment/{board_id}")
+    fun writeBoardComment(
+        @PathVariable("board_id") boardId: Long,
+        @RequestBody @Valid writeBoardCommentDto: WriteBoardCommentReqDto
+    ): ResponseEntity<WriteBoardCommentResDto> {
+        val response = communityService.writeBoardComment(boardId, writeBoardCommentDto)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    }
 }

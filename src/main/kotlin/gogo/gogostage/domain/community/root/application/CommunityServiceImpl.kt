@@ -42,4 +42,11 @@ class CommunityServiceImpl(
         return communityProcessor.likeBoard(student.studentId, board)
     }
 
+    @Transactional
+    override fun writeBoardComment(boardId: Long, writeBoardCommentDto: WriteBoardCommentReqDto): WriteBoardCommentResDto {
+        val student = userUtil.getCurrentStudent()
+        val board = communityReader.readBoardByBoardId(boardId)
+        return communityProcessor.saveBoardComment(student, writeBoardCommentDto, board)
+    }
+
 }
