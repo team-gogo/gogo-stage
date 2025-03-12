@@ -84,7 +84,7 @@ class CommunityProcessor(
 
         if (isExistCommentLike) {
             val commentLike = commentLikeRepository.findByCommentIdAndStudentId(comment.id, student.studentId)
-                ?: throw StageException("CommentLike Not Found", HttpStatus.NOT_FOUND.value())
+                ?: throw StageException("CommentLike Not Found, commentId=${comment.id}, studentId=${student.studentId}", HttpStatus.NOT_FOUND.value())
 
             commentLikeRepository.delete(commentLike)
 
