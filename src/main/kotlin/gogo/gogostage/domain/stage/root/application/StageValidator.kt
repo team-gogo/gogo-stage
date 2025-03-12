@@ -3,8 +3,10 @@ package gogo.gogostage.domain.stage.root.application
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
+import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
 import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
+import gogo.gogostage.domain.stage.root.persistence.StageStatus
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.http.HttpStatus
@@ -47,6 +49,18 @@ class StageValidator(
         val isSchool = stage.schoolId == student.schoolId
         if (isSchool) {
             throw StageException("해당 스테이지는 현재 소속 중인 학교의 스테이지가 아닙니다.", HttpStatus.BAD_REQUEST.value())
+        }
+    }
+
+    fun validConfirm(student: StudentByIdStub, stage: Stage, dto: StageConfirmDto) {
+        val isMaintainer = stage.maintainer.any{ it.studentId == student.studentId }
+        if (isMaintainer.not()) {
+            throw StageException("해당 스테이지의 관리자가 아닙니다.", HttpStatus.FORBIDDEN.value())
+        }
+
+        val stageStatus = stage.status
+        if (stageStatus != StageStatus.RECRUITING) {
+            throw StageException("해당 스테이지는 모집 중인 스테이지가 아닙니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 

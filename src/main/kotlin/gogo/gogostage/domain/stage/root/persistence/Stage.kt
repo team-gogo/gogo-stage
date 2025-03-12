@@ -1,5 +1,7 @@
 package gogo.gogostage.domain.stage.root.persistence
 
+import gogo.gogostage.domain.game.persistence.Game
+import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainer
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
@@ -48,6 +50,12 @@ class Stage(
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @OneToMany(mappedBy = "stage", cascade = [(CascadeType.ALL)], orphanRemoval = true)
+    val maintainer: List<StageMaintainer> = listOf(),
+
+    @OneToMany(mappedBy = "stage", cascade = [(CascadeType.ALL)], orphanRemoval = true)
+    val game: List<Game> = listOf(),
 ) {
     companion object {
 
