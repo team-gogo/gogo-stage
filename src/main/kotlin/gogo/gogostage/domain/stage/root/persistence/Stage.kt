@@ -1,5 +1,8 @@
 package gogo.gogostage.domain.stage.root.persistence
 
+import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import jakarta.persistence.*
 import java.time.LocalDateTime
 
@@ -9,7 +12,7 @@ class Stage(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @Column(name = "school_id", nullable = false)
     val schoolId: Long,
@@ -21,8 +24,14 @@ class Stage(
     @Column(name = "name", nullable = false)
     val name: String,
 
+    @Column(name = "student_id", nullable = false)
+    val studentId: Long,
+
     @Column(name = "pass_code", nullable = true)
     val passCode: String?,
+
+    @Column(name = "initial_point", nullable = false)
+    val initialPoint: Long,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -39,7 +48,37 @@ class Stage(
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
-)
+) {
+    companion object {
+
+        fun fastOf(student: StudentByIdStub, dto: CreateFastStageDto, isActiveMiniGame: Boolean) = Stage(
+            schoolId = student.schoolId,
+            studentId = student.studentId,
+            type = StageType.FAST,
+            name = dto.stageName,
+            passCode = dto.passCode,
+            initialPoint = dto.initialPoint,
+            status = StageStatus.RECRUITING,
+            participantCount = 0,
+            isActiveMiniGame = isActiveMiniGame,
+            isActiveShop = false,
+        )
+
+        fun officialOf(student: StudentByIdStub, dto: CreateOfficialStageDto, isActiveMiniGame: Boolean, isActiveShop: Boolean) = Stage(
+            schoolId = student.schoolId,
+            studentId = student.studentId,
+            type = StageType.OFFICIAL,
+            name = dto.stageName,
+            passCode = dto.passCode,
+            initialPoint = dto.initialPoint,
+            status = StageStatus.RECRUITING,
+            participantCount = 0,
+            isActiveMiniGame = isActiveMiniGame,
+            isActiveShop = isActiveShop,
+        )
+
+    }
+}
 
 enum class StageType {
     FAST, OFFICIAL

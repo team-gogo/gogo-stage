@@ -2,17 +2,22 @@ package gogo.gogostage.domain.stage.participant.root.application
 
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
+import gogo.gogostage.domain.stage.participant.root.event.TicketPointMinusEvent
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.kafka.consumer.dto.TicketShopBuyEvent
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
 @Component
 class ParticipateProcessor(
     private val matchRepository: MatchRepository,
-    private val stageParticipantRepository: StageParticipantRepository
+    private val stageParticipantRepository: StageParticipantRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher
 ) {
 
     @Transactional
@@ -31,6 +36,30 @@ class ParticipateProcessor(
 
         stageParticipantRepository.save(stageParticipant)
         matchRepository.save(match)
+    }
+
+    @Transactional
+    fun buyTicket(event: TicketShopBuyEvent) {
+        val stageParticipant =
+            stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(event.stageId, event.studentId)
+                ?: throw StageException("Stage Participant Not Found, Stage id = ${event.stageId}, Student id = ${event.studentId}", HttpStatus.NOT_FOUND.value())
+
+        val totalPrice = event.ticketPrice * event.purchaseQuantity.toLong()
+
+        stageParticipant.minusPoint(totalPrice)
+        stageParticipantRepository.save(stageParticipant)
+
+        applicationEventPublisher.publishEvent(
+            TicketPointMinusEvent(
+                id = UUID.randomUUID().toString(),
+                stageId = event.stageId,
+                studentId = event.studentId,
+                shopMiniGameId = event.shopMiniGameId,
+                ticketType = event.ticketType,
+                ticketPrice = event.ticketPrice,
+                purchaseQuantity = event.purchaseQuantity,
+            )
+        )
     }
 
     private fun updateMatchBettingPointTeam(

@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.persistence.Board
+import gogo.gogostage.domain.community.board.persistence.BoardRepository
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
@@ -19,6 +20,7 @@ import java.time.LocalDateTime
 class CommunityProcessor(
     private val boardLikeRepository: BoardLikeRepository,
     private val commentRepository: CommentRepository,
+    private val boardRepository: BoardRepository
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeBoardResDto {
@@ -31,6 +33,9 @@ class CommunityProcessor(
 
             boardLikeRepository.delete(boardLike)
 
+            board.minusLikeCount()
+            boardRepository.save(board)
+
             return LikeBoardResDto(
                 isLiked = false
             )
@@ -41,6 +46,9 @@ class CommunityProcessor(
             )
 
             boardLikeRepository.save(boardLike)
+
+            board.plusLikeCount()
+            boardRepository.save(board)
 
             return LikeBoardResDto(
                 isLiked = true

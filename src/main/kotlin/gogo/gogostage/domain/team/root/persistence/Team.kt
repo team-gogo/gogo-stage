@@ -10,17 +10,14 @@ class Team(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     val game: Game,
 
-    @Column(name = "captain_student_id", nullable = false)
-    val captainStudentId: Long,
-
     @Column(name = "win_count", nullable = false)
-    val winCount: Int,
+    val winCount: Int = 0,
 
     @Column(name = "name", nullable = false)
     val name: String,
@@ -29,8 +26,18 @@ class Team(
     val participantCount: Int,
 
     @Column(name = "is_participating", nullable = false)
-    val isParticipating: Boolean,
+    val isParticipating: Boolean = false,
 
     @OneToMany(mappedBy = "team")
-    val participants: MutableList<TeamParticipant>
-)
+    val participants: MutableList<TeamParticipant> = mutableListOf(),
+) {
+    companion object {
+
+        fun of (game: Game, name: String, participantCount: Int) = Team(
+            game = game,
+            name = name,
+            participantCount = participantCount
+        )
+
+    }
+}

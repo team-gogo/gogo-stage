@@ -16,34 +16,61 @@ class Game(
     @JoinColumn(name = "stage_id", nullable = false)
     val stage: Stage,
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "category", nullable = false)
     val category: GameCategory,
 
-    @Column(name = "ect_name", nullable = true)
-    val etcName: String? = null,
+    @Column(name = "name", nullable = true)
+    val name: String,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false)
     val system: GameSystem,
 
+    @Column(name = "team_min_capacity", nullable = false)
+    val teamMinCapacity: Int,
+
+    @Column(name = "team_max_capacity", nullable = false)
+    val teamMaxCapacity: Int,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
-    val firstPlaceTeam: Team,
+    val firstPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_place_team_id", nullable = true)
-    val secondPlaceTeam: Team,
+    val secondPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "third_place_team_id", nullable = true)
-    val thirdPlaceTeam: Team,
+    val thirdPlaceTeam: Team? = null,
 
     @Column(name = "team_count", nullable = false)
-    val teamCount: Int,
+    val teamCount: Int = 0,
 
     @Column(name = "is_end", nullable = false)
-    val isEnd: Boolean
-)
+    val isEnd: Boolean = false
+){
+    companion object {
+
+        fun of(
+            stage: Stage,
+            category: GameCategory,
+            name: String,
+            system: GameSystem,
+            teamMinCapacity: Int,
+            teamMaxCapacity: Int,
+        ) = Game(
+            stage = stage,
+            category = category,
+            name = name,
+            system = system,
+            teamMinCapacity = teamMinCapacity,
+            teamMaxCapacity = teamMaxCapacity,
+        )
+
+    }
+}
 
 enum class GameCategory {
     SOCCER, BASKET_BALL, BASE_BALL, VOLLEY_BALL, BADMINTON, LOL, ETC
