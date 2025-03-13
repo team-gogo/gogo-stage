@@ -87,7 +87,7 @@ class StageProcessor(
     }
 
     fun join(student: StudentByIdStub, stage: Stage) {
-        val stageParticipant = StageParticipant.of(stage, student.studentId)
+        val stageParticipant = StageParticipant.of(stage, student.studentId, stage.initialPoint)
         stageParticipantRepository.save(stageParticipant)
     }
 
