@@ -20,7 +20,7 @@ class StageParticipant(
     val studentId: Long,
 
     @Column(name = "point", nullable = false)
-    var point: Long = 0L,
+    var point: Long,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
@@ -28,9 +28,10 @@ class StageParticipant(
 
     companion object {
 
-        fun of (stage: Stage, studentId: Long) = StageParticipant(
+        fun of (stage: Stage, studentId: Long, point: Long) = StageParticipant(
             stage = stage,
             studentId = studentId,
+            point = point
         )
 
     }
