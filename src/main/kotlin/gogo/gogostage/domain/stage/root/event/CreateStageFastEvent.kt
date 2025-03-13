@@ -8,4 +8,6 @@ data class CreateStageFastEvent(
 
 data class FastStageMiniGameDto(
     val isCoinTossActive: Boolean,
+    val coinTossMaxBettingPoint: Long?,
+    val coinTossMinBettingPoint: Long?,
 )

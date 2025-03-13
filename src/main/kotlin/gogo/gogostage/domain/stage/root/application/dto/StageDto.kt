@@ -51,4 +51,5 @@ data class MiniGameInfoDto(
     @NotNull
     val isActive: Boolean,
     val maxBettingPoint: Long?,
+    val minBettingPoint: Long?,
 )
