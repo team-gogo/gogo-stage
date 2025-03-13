@@ -27,6 +27,12 @@ class Game(
     @Column(name = "type", nullable = false)
     val system: GameSystem,
 
+    @Column(name = "team_min_capacity", nullable = false)
+    val teamMinCapacity: Int,
+
+    @Column(name = "team_max_capacity", nullable = false)
+    val teamMaxCapacity: Int,
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
     val firstPlaceTeam: Team? = null,
@@ -47,11 +53,20 @@ class Game(
 ){
     companion object {
 
-        fun of(stage: Stage, category: GameCategory, name: String, system: GameSystem) = Game(
+        fun of(
+            stage: Stage,
+            category: GameCategory,
+            name: String,
+            system: GameSystem,
+            teamMinCapacity: Int,
+            teamMaxCapacity: Int,
+        ) = Game(
             stage = stage,
             category = category,
             name = name,
-            system = system
+            system = system,
+            teamMinCapacity = teamMinCapacity,
+            teamMaxCapacity = teamMaxCapacity,
         )
 
     }

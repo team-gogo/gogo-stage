@@ -48,7 +48,7 @@ class StageProcessor(
         stageMaintainerRepository.saveAll(maintainers)
 
         val gameDto = dto.game
-        val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system)
+        val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system, gameDto.teamMinCapacity, gameDto.teamMaxCapacity)
         gameRepository.save(game)
 
         val community = Community.of(stage, game.category)
@@ -76,7 +76,7 @@ class StageProcessor(
             dto.maintainer.map { StageMaintainer.of(stage, it) } + StageMaintainer.of(stage, student.studentId)
         stageMaintainerRepository.saveAll(maintainers)
 
-        val games = dto.game.map { Game.of(stage, it.category, it.name, it.system) }
+        val games = dto.game.map { Game.of(stage, it.category, it.name, it.system, it.teamMinCapacity, it.teamMaxCapacity) }
         gameRepository.saveAll(games)
 
         val gameCategories = games.map { it.category }.toSet().toList()
