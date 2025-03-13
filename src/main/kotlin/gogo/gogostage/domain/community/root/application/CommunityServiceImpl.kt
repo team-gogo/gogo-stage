@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 class CommunityServiceImpl(
     private val communityReader: CommunityReader,
     private val boardProcessor: BoardProcessor,
-    private val userUtil: UserContextUtil
+    private val userUtil: UserContextUtil,
+    private val communityValidator: CommunityValidator
 ): CommunityService {
 
     @Transactional
@@ -27,6 +28,7 @@ class CommunityServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
+        communityValidator.validPageAndSize(page, size)
         return communityReader.readBoards(stageId, page, size, category, sort)
     }
 
