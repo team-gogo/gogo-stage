@@ -29,11 +29,21 @@ class Board(
     val commentCount: Int,
 
     @Column(name = "like_count", nullable = false)
-    val likeCount: Int,
+    var likeCount: Int,
 
     @Column(name = "is_filtered", nullable = false)
     val isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime
-)
+) {
+
+    fun minusLikeCount() {
+        likeCount -= 1
+    }
+
+    fun plusLikeCount() {
+        likeCount += 1
+    }
+
+}
