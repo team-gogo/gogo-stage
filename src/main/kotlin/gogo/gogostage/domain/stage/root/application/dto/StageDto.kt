@@ -23,6 +23,25 @@ data class CreateFastStageDto(
     val maintainer: List<Long>
 )
 
+data class CreateOfficialStageDto(
+    @NotBlank
+    val stageName: String,
+    @NotNull
+    val game: List<CreateStageGameDto>,
+    @NotNull
+    @Size(min = 1000, max = 100000)
+    val initialPoint: Long,
+    @NotNull
+    val rule: CreateStageRuleDto,
+    @NotNull
+    val miniGame: CreateOfficialStageMiniGameDto,
+    @NotNull
+    val shop: CreateStageShopDto,
+    val passCode: String?,
+    @NotNull
+    val maintainer: List<Long>
+)
+
 data class CreateStageGameDto(
     @NotNull
     val category: GameCategory,
@@ -42,9 +61,34 @@ data class CreateStageRuleDto(
     val minBettingPoint: Long,
 )
 
+data class CreateStageShopDto(
+    @NotNull
+    val coinToss: ShopInfoDto,
+    @NotNull
+    val yavarwee: ShopInfoDto,
+    @NotNull
+    val plinko: ShopInfoDto,
+)
+
 data class CreateFastStageMiniGameDto(
     @NotNull
     val coinToss: MiniGameInfoDto
+)
+
+data class CreateOfficialStageMiniGameDto(
+    @NotNull
+    val coinToss: MiniGameInfoDto,
+    @NotNull
+    val yavarwee: MiniGameInfoDto,
+    @NotNull
+    val plinko: MiniGameInfoDto
+)
+
+data class ShopInfoDto(
+    @NotNull
+    val isActive: Boolean,
+    val price: Long?,
+    val quantity: Int?,
 )
 
 data class MiniGameInfoDto(

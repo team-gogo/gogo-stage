@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.stage.root.persistence
 
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import jakarta.persistence.*
 import java.time.LocalDateTime
@@ -61,6 +62,19 @@ class Stage(
             participantCount = 0,
             isActiveMiniGame = isActiveMiniGame,
             isActiveShop = false,
+        )
+
+        fun officialOf(student: StudentByIdStub, dto: CreateOfficialStageDto, isActiveMiniGame: Boolean, isActiveShop: Boolean) = Stage(
+            schoolId = student.schoolId,
+            studentId = student.studentId,
+            type = StageType.OFFICIAL,
+            name = dto.stageName,
+            passCode = dto.passCode,
+            initialPoint = dto.initialPoint,
+            status = StageStatus.RECRUITING,
+            participantCount = 0,
+            isActiveMiniGame = isActiveMiniGame,
+            isActiveShop = isActiveShop,
         )
 
     }

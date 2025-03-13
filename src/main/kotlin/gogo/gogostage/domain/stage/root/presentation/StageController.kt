@@ -2,6 +2,7 @@ package gogo.gogostage.domain.stage.root.presentation
 
 import gogo.gogostage.domain.stage.root.application.StageService
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,6 +22,14 @@ class StageController(
         @RequestBody @Valid dto: CreateFastStageDto,
     ): ResponseEntity<Unit> {
         stageService.createFast(dto)
+        return ResponseEntity.status(HttpStatus.CREATED).build()
+    }
+
+    @PostMapping("/official")
+    fun createFast(
+        @RequestBody @Valid dto: CreateOfficialStageDto,
+    ): ResponseEntity<Unit> {
+        stageService.createOfficial(dto)
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
