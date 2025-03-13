@@ -35,21 +35,24 @@ class Game(
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
-    val firstPlaceTeam: Team? = null,
+    var firstPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "second_place_team_id", nullable = true)
-    val secondPlaceTeam: Team? = null,
+    var secondPlaceTeam: Team? = null,
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "third_place_team_id", nullable = true)
-    val thirdPlaceTeam: Team? = null,
+    var thirdPlaceTeam: Team? = null,
 
     @Column(name = "team_count", nullable = false)
-    val teamCount: Int = 0,
+    val teamCount: Int = 0, // 팀 신청시 ++
+
+    @Column(name = "league_count", nullable = true)
+    var leagueCount: Int? = null,
 
     @Column(name = "is_end", nullable = false)
-    val isEnd: Boolean = false
+    var isEnd: Boolean = false
 ){
     companion object {
 
@@ -70,6 +73,18 @@ class Game(
         )
 
     }
+
+    fun updateLeagueCount(leagueCount: Int) {
+        this.leagueCount = leagueCount
+    }
+
+    fun end(firstPlaceTeam: Team?, secondPlaceTeam: Team?, thirdPlaceTeam: Team? = null) {
+        this.isEnd = true
+        this.firstPlaceTeam = firstPlaceTeam
+        this.secondPlaceTeam = secondPlaceTeam
+        this.thirdPlaceTeam = thirdPlaceTeam
+    }
+
 }
 
 enum class GameCategory {

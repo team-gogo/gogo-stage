@@ -25,28 +25,10 @@ class TempPointProcessor(
     private val matchResultRepository: MatchResultRepository,
 ) {
 
-    @Transactional
     fun addTempPoint(event: MatchBatchEvent) {
         val match = (matchRepository.findNotEndMatchById(event.matchId)
             ?: throw StageException("Match Not Found, Match Id = ${event.matchId}", HttpStatus.NOT_FOUND.value()))
         val stage = match.game.stage
-
-        val victoryTeam = teamRepository.findByIdOrNull(event.victoryTeamId)
-            ?: throw StageException(
-                "Victory Team Not Found, Team Id = ${event.victoryTeamId}",
-                HttpStatus.NOT_FOUND.value()
-            )
-
-        match.end()
-        matchRepository.save(match)
-
-        val matchResult = MatchResult.of(
-            match = match,
-            victoryTeam = victoryTeam,
-            aTeamScore = event.aTeamScore,
-            bTeamScore = event.bTeamScore,
-        )
-        matchResultRepository.save(matchResult)
 
         // * 정산 취소시 동시성 문제 발생을 방지하기 위해 임시 포인트를 5분 5초 후 만료되도록 설정
         val expiredDate = LocalDateTime.now().plusMinutes(5).plusSeconds(5)
