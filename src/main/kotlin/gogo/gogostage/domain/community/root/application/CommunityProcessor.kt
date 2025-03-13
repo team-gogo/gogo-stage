@@ -19,7 +19,7 @@ class CommunityProcessor(
 
         if (isExistBoardLike) {
             val boardLike = boardLikeRepository.findByBoardIdAndStudentId(board.id, studentId)
-                ?: throw StageException("BoardLike Not Found", HttpStatus.NOT_FOUND.value())
+                ?: throw StageException("BoardLike Not Found, boardId=${board.id}, studentId=$studentId", HttpStatus.NOT_FOUND.value())
 
             boardLikeRepository.delete(boardLike)
 
