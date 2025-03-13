@@ -4,6 +4,7 @@ package gogo.gogostage.global.config
 import gogo.gogostage.global.filter.AuthenticationFilter
 import gogo.gogostage.global.handler.CustomAccessDeniedHandler
 import gogo.gogostage.global.handler.CustomAuthenticationEntryPointHandler
+import gogo.gogostage.global.internal.user.stub.Authority
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -44,6 +45,9 @@ class SecurityConfig(
         http.authorizeHttpRequests { httpRequests ->
             // health check
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/health").permitAll()
+
+            // community
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
