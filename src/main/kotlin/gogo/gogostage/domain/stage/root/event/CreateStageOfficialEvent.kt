@@ -8,9 +8,9 @@ data class CreateStageOfficialEvent(
 )
 
 data class OfficialStageMiniGameDto(
-    val isCoinTossActive: Boolean,
-    val isYavarweeActive: Boolean,
-    val isPlinkoActive: Boolean,
+    val coinToss: OfficialStageMiniGameInfoDto,
+    val yavarwee: OfficialStageMiniGameInfoDto,
+    val plinko: OfficialStageMiniGameInfoDto,
 )
 
 data class OfficialStageShopDto(
@@ -23,4 +23,9 @@ data class OfficialStageShopInfoDto(
     val isActive: Boolean,
     val price: Long?,
     val quantity: Int?,
+)
+data class OfficialStageMiniGameInfoDto(
+    val isActive: Boolean,
+    val maxBettingPoint: Long?,
+    val minBettingPoint: Long?,
 )

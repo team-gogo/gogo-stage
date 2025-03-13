@@ -1,10 +1,7 @@
 package gogo.gogostage.domain.stage.root.application
 
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
-import gogo.gogostage.domain.stage.root.event.CreateStageOfficialEvent
-import gogo.gogostage.domain.stage.root.event.OfficialStageMiniGameDto
-import gogo.gogostage.domain.stage.root.event.OfficialStageShopDto
-import gogo.gogostage.domain.stage.root.event.OfficialStageShopInfoDto
+import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import org.springframework.stereotype.Component
 import java.util.*
@@ -19,9 +16,21 @@ class StageMapper {
         id = UUID.randomUUID().toString(),
         stageId = stage.id,
         miniGame = OfficialStageMiniGameDto(
-            isCoinTossActive = dto.miniGame.coinToss.isActive,
-            isYavarweeActive = dto.miniGame.yavarwee.isActive,
-            isPlinkoActive = dto.miniGame.plinko.isActive
+            coinToss = OfficialStageMiniGameInfoDto(
+                isActive = dto.miniGame.coinToss.isActive,
+                maxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                minBettingPoint = dto.miniGame.coinToss.minBettingPoint,
+            ),
+            yavarwee = OfficialStageMiniGameInfoDto(
+                isActive = dto.miniGame.yavarwee.isActive,
+                maxBettingPoint = dto.miniGame.yavarwee.maxBettingPoint,
+                minBettingPoint = dto.miniGame.yavarwee.minBettingPoint,
+            ),
+            plinko = OfficialStageMiniGameInfoDto(
+                isActive = dto.miniGame.plinko.isActive,
+                maxBettingPoint = dto.miniGame.plinko.maxBettingPoint,
+                minBettingPoint = dto.miniGame.plinko.minBettingPoint,
+            )
         ),
         shop = OfficialStageShopDto(
             coinToss = OfficialStageShopInfoDto(

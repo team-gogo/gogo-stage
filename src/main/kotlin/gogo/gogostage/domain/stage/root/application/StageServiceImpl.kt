@@ -34,7 +34,9 @@ class StageServiceImpl(
                 id = UUID.randomUUID().toString(),
                 stageId = stage.id,
                 miniGame = FastStageMiniGameDto(
-                    isCoinTossActive = stage.isActiveMiniGame
+                    isCoinTossActive = stage.isActiveMiniGame,
+                    coinTossMaxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                    coinTossMinBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                 )
             )
         )
