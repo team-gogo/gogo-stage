@@ -6,7 +6,6 @@ import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
-import gogo.gogostage.domain.community.root.application.dto.AuthorDto
 import gogo.gogostage.domain.community.root.application.dto.LikeBoardResDto
 import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentReqDto
 import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentResDto
@@ -20,7 +19,8 @@ import java.time.LocalDateTime
 class CommunityProcessor(
     private val boardLikeRepository: BoardLikeRepository,
     private val commentRepository: CommentRepository,
-    private val boardRepository: BoardRepository
+    private val boardRepository: BoardRepository,
+    private val communityMapper: CommunityMapper
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeBoardResDto {
@@ -72,17 +72,6 @@ class CommunityProcessor(
 
         commentRepository.save(comment)
 
-        return WriteBoardCommentResDto(
-            commentId = comment.id,
-            content = writeBoardCommentDto.content,
-            createdAt = comment.createdAt,
-            likeCount = comment.likeCount,
-            author = AuthorDto(
-                studentId = student.studentId,
-                name = student.name,
-                classNumber = student.classNumber,
-                studentNumber = student.studentNumber
-            )
-        )
+        return communityMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 }
