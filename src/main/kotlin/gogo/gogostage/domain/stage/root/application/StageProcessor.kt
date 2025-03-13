@@ -108,6 +108,9 @@ class StageProcessor(
             StageType.FAST -> saveMatch(dto)
             StageType.OFFICIAL -> saveMatch(dto)
         }
+
+        stage.confirm()
+        stageRepository.save(stage)
     }
 
     private fun saveMatch(dto: StageConfirmDto) {
@@ -120,12 +123,20 @@ class StageProcessor(
                 GameSystem.SINGLE -> {
                     val single = g.single!!
 
+                    val teamA = teamRepository.findByIdOrNull(single.teamAId)
+                        ?: throw StageException("Team Not Found, Team Id = ${single.teamAId}", HttpStatus.NOT_FOUND.value())
+                    val teamB = (teamRepository.findByIdOrNull(single.teamBId)
+                        ?: throw StageException("Team Not Found, Team Id = ${single.teamBId}", HttpStatus.NOT_FOUND.value()))
+
+                    teamA.participation()
+                    teamB.participation()
+                    teamRepository.save(teamA)
+                    teamRepository.save(teamB)
+
                     val match = Match.singleOf(
                         game = game,
-                        aTeam = teamRepository.findByIdOrNull(single.teamAId)
-                            ?: throw StageException("Team Not Found, Team Id = ${single.teamAId}", HttpStatus.NOT_FOUND.value()),
-                        bTeam = teamRepository.findByIdOrNull(single.teamBId)
-                            ?: throw StageException("Team Not Found, Team Id = ${single.teamBId}", HttpStatus.NOT_FOUND.value()),
+                        aTeam = teamA,
+                        bTeam = teamB,
                         startDate = single.startDate,
                         endDate = single.endDate
                     )
@@ -133,42 +144,84 @@ class StageProcessor(
                 }
                 GameSystem.FULL_LEAGUE -> {
                     val fullLeague = g.fullLeague!!
+                    var teamCount = 0
 
                     val matches = fullLeague.map {
+                        val teamA = teamRepository.findByIdOrNull(it.teamAId)
+                            ?: throw StageException("Team Not Found, Team Id = ${it.teamAId}", HttpStatus.NOT_FOUND.value())
+                        val teamB = (teamRepository.findByIdOrNull(it.teamBId)
+                            ?: throw StageException("Team Not Found, Team Id = ${it.teamBId}", HttpStatus.NOT_FOUND.value()))
+
+                        teamCount += teamA.participation()
+                        teamCount += teamB.participation()
+                        teamRepository.save(teamA)
+                        teamRepository.save(teamB)
+
                         Match.leagueOf(
                             game = game,
-                            aTeam = teamRepository.findByIdOrNull(it.teamAId)
-                                ?: throw StageException("Team Not Found, Team Id = ${it.teamAId}", HttpStatus.NOT_FOUND.value()),
-                            bTeam = teamRepository.findByIdOrNull(it.teamBId)
-                                ?: throw StageException("Team Not Found, Team Id = ${it.teamBId}", HttpStatus.NOT_FOUND.value()),
+                            aTeam = teamA,
+                            bTeam = teamB,
                             startDate = it.startDate,
                             endDate = it.endDate,
                             leagueTurn = it.leagueTurn
                         )
                     }
+
+                    val matchCount = factorial(teamCount - 1)
+                    if (matchCount != fullLeague.size) {
+                        throw StageException("풀 리그 경기의 매치의 수가 맞지 않습니다. 에상 = ${matchCount}, 실제 = ${fullLeague.size}", HttpStatus.BAD_REQUEST.value())
+                    }
+
                     matchRepository.saveAll(matches)
                 }
                 GameSystem.TOURNAMENT -> {
                     val tournament = g.tournament!!
+                    var teamCount = 0
 
                     val matches = tournament.map {
+                        val teamA = if (it.teamAId == null) null else teamRepository.findByIdOrNull(it.teamAId)
+                            ?: throw StageException("Team Not Found, Team Id = ${it.teamAId}", HttpStatus.NOT_FOUND.value())
+                        val teamB = if (it.teamBId == null) null else teamRepository.findByIdOrNull(it.teamBId)
+                            ?: throw StageException("Team Not Found, Team Id = ${it.teamBId}", HttpStatus.NOT_FOUND.value())
+
+                        if (teamA != null) {
+                            teamCount += teamA.participation()
+                            teamRepository.save(teamA)
+                        }
+                        if (teamB != null) {
+                            teamCount += teamB.participation()
+                            teamRepository.save(teamB)
+                        }
+
                         Match.tournamentOf(
                             game = game,
-                            aTeam = if (it.teamAId == null) null else teamRepository.findByIdOrNull(it.teamAId)
-                                ?: throw StageException("Team Not Found, Team Id = ${it.teamAId}", HttpStatus.NOT_FOUND.value()),
-                            bTeam = if (it.teamBId == null) null else teamRepository.findByIdOrNull(it.teamBId)
-                                ?: throw StageException("Team Not Found, Team Id = ${it.teamBId}", HttpStatus.NOT_FOUND.value()),
+                            aTeam = teamA,
+                            bTeam = teamB,
                             startDate = it.startDate,
                             endDate = it.endDate,
                             round = it.round,
                             turn = it.turn,
                         )
                     }
+
+                    val matchCount = teamCount - 1
+                    if (matchCount != tournament.size) {
+                        throw StageException("토너먼트 경기의 매치의 수가 맞지 않습니다. 에상 = ${matchCount}, 실제 = ${tournament.size}", HttpStatus.BAD_REQUEST.value())
+                    }
+
                     matchRepository.saveAll(matches)
                 }
             }
 
         }
+    }
+
+    private fun factorial(n: Int): Int {
+        var result = 1
+        for (i in 2..n) {
+            result *= i
+        }
+        return result
     }
 
 }

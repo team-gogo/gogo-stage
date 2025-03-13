@@ -37,7 +37,7 @@ class Stage(
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    val status: StageStatus,
+    var status: StageStatus,
 
     @Column(name = "participant_count", nullable = false)
     val participantCount: Int,
@@ -86,6 +86,11 @@ class Stage(
         )
 
     }
+
+    fun confirm() {
+        this.status = StageStatus.CONFIRMED
+    }
+
 }
 
 enum class StageType {
