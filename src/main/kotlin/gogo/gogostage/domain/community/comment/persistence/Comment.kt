@@ -29,5 +29,15 @@ class Comment(
     val createdAt: LocalDateTime,
 
     @Column(name = "like_count", nullable = false)
-    val likeCount: Int,
-)
+    var likeCount: Int,
+) {
+
+    fun plusLikeCount() {
+        likeCount += 1
+    }
+
+    fun minusLikeCount() {
+        likeCount -= 1
+    }
+
+}

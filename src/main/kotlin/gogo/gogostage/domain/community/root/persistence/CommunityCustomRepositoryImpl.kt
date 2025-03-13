@@ -84,20 +84,15 @@ class CommunityCustomRepositoryImpl(
             )
         }.toList()
 
-        val totalElement = queryFactory
-            .select(board.count())
-            .from(board)
-            .where(board.community.id.eq(community.id))
-            .fetchOne()
-            ?: 0L
+        val totalElement = boardDtoList.size
 
-        val totalPage = if (totalElement.toInt() % size == 0) {
-            totalElement.toInt() / size
+        val totalPage = if (totalElement % size == 0) {
+            totalElement / size
         } else {
-            totalElement.toInt() / size + 1
+            totalElement / size + 1
         }
 
-        val infoDto = InfoDto(totalPage, totalElement.toInt())
+        val infoDto = InfoDto(totalPage, totalElement)
 
         return GetCommunityBoardResDto(infoDto, boardDtoList)
     }

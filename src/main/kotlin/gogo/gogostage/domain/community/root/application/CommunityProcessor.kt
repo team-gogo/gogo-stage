@@ -1,7 +1,7 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.persistence.Board
-import gogo.gogostage.domain.community.board.persistence.QBoard.board
+import gogo.gogostage.domain.community.board.persistence.BoardRepository
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
@@ -19,18 +19,25 @@ import java.time.LocalDateTime
 class CommunityProcessor(
     private val boardLikeRepository: BoardLikeRepository,
     private val commentRepository: CommentRepository,
-    private val commentLikeRepository: CommentLikeRepository
+    private val commentLikeRepository: CommentLikeRepository,
+    private val commentMapper: CommunityMapper,
+    private val boardRepository: BoardRepository
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
         // 동시성 문제
         val isExistBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(studentId, board.id)
+        val comment = commentRepository.findByBoardIdAndStudentId(board.id, studentId)
+            ?: throw StageException("Comment Not Found, boardId=${board.id}, studentId=${studentId}", HttpStatus.NOT_FOUND.value())
 
         if (isExistBoardLike) {
             val boardLike = boardLikeRepository.findByBoardIdAndStudentId(board.id, studentId)
                 ?: throw StageException("BoardLike Not Found", HttpStatus.NOT_FOUND.value())
 
             boardLikeRepository.delete(boardLike)
+
+            board.minusLikeCount()
+            boardRepository.save(board)
 
             return LikeResDto(
                 isLiked = false
@@ -42,6 +49,9 @@ class CommunityProcessor(
             )
 
             boardLikeRepository.save(boardLike)
+
+            board.plusLikeCount()
+            boardRepository.save(board)
 
             return LikeResDto(
                 isLiked = true
@@ -65,18 +75,7 @@ class CommunityProcessor(
 
         commentRepository.save(comment)
 
-        return WriteBoardCommentResDto(
-            commentId = comment.id,
-            content = writeBoardCommentDto.content,
-            createdAt = comment.createdAt,
-            likeCount = comment.likeCount,
-            author = AuthorDto(
-                studentId = student.studentId,
-                name = student.name,
-                classNumber = student.classNumber,
-                studentNumber = student.studentNumber
-            )
-        )
+        return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 
     fun likeBoardComment(student: StudentByIdStub, comment: Comment): LikeResDto {

@@ -9,7 +9,7 @@ class TeamParticipant(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "team_participant_id")
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "team_id")
@@ -23,4 +23,15 @@ class TeamParticipant(
 
     @Column(name = "position_y", nullable = true)
     val positionY: String?,
-)
+) {
+    companion object {
+
+        fun of (team: Team, studentId: Long, positionX: String?, positionY: String?) = TeamParticipant(
+            team = team,
+            studentId = studentId,
+            positionX = positionX,
+            positionY = positionY
+        )
+
+    }
+}
