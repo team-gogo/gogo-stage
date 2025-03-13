@@ -13,6 +13,6 @@ class BoardReader(
 
     fun read(boardId: Long) =
         boardRepository.findByIdOrNull(boardId)
-            ?: throw StageException("Board Not Found", HttpStatus.NOT_FOUND.value())
+            ?: throw StageException("Board Not Found, boardId=$boardId", HttpStatus.NOT_FOUND.value())
 
 }
