@@ -88,6 +88,9 @@ class CommunityProcessor(
 
             commentLikeRepository.delete(commentLike)
 
+            comment.minusLikeCount()
+            commentRepository.save(comment)
+
             return LikeResDto(
                 isLiked = false
             )
@@ -98,6 +101,9 @@ class CommunityProcessor(
             )
 
             commentLikeRepository.save(boardLike)
+
+            comment.plusLikeCount()
+            commentRepository.save(comment)
 
             return LikeResDto(
                 isLiked = true
