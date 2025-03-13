@@ -8,8 +8,11 @@ import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainer
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfo
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfoRepository
+import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipant
+import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
+import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.domain.stage.rule.persistence.StageRule
@@ -23,6 +26,7 @@ class StageProcessor(
     private val miniGameInfoRepository: MiniGameInfoRepository,
     private val stageRuleRepository: StageRuleRepository,
     private val stageMaintainerRepository: StageMaintainerRepository,
+    private val stageParticipantRepository: StageParticipantRepository,
     private val gameRepository: GameRepository,
     private val communityRepository: CommunityRepository,
 ) {
@@ -80,6 +84,11 @@ class StageProcessor(
         communityRepository.saveAll(communities)
 
         return stage
+    }
+
+    fun join(student: StudentByIdStub, stage: Stage) {
+        val stageParticipant = StageParticipant.of(stage, student.studentId, stage.initialPoint)
+        stageParticipantRepository.save(stageParticipant)
     }
 
 }

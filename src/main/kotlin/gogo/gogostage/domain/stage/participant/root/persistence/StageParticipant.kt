@@ -10,7 +10,7 @@ class StageParticipant(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false)
@@ -25,6 +25,16 @@ class StageParticipant(
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
 ) {
+
+    companion object {
+
+        fun of (stage: Stage, studentId: Long, point: Long) = StageParticipant(
+            stage = stage,
+            studentId = studentId,
+            point = point
+        )
+
+    }
 
     fun minusPoint(point: Long) {
         this.point -= point

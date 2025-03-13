@@ -49,6 +49,7 @@ class SecurityConfig(
             // stage
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/fast").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/official").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/join/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             
             // community
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
