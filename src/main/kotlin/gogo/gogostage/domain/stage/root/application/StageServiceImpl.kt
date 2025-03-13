@@ -72,7 +72,12 @@ class StageServiceImpl(
 
         stageProcessor.confirm(stage, dto)
 
-        TODO("스테이지 확정 이벤트 발행")
+        applicationEventPublisher.publishEvent(
+            StageConfirmEvent(
+                id = UUID.randomUUID().toString(),
+                stageId = stage.id,
+            )
+        )
     }
 
 }
