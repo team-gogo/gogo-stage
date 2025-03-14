@@ -30,7 +30,7 @@ class TeamServiceImpl(
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
         teamValidator.validStageParticipant(student.studentId, game.stage.id)
-        val teams = teamReader.findAllByGameId(game.id)
+        val teams = teamReader.readParticipatingTeamByGameId(game.id, true)
         return teamMapper.mapGameTeam(teams)
     }
 

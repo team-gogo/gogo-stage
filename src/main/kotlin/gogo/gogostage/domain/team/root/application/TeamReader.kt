@@ -8,7 +8,7 @@ class TeamReader(
     private val teamRepository: TeamRepository
 ) {
 
-    fun findAllByGameId(gameId: Long) =
-        teamRepository.findAllByGameId(gameId)
+    fun readParticipatingTeamByGameId(gameId: Long, isParticipating: Boolean) =
+        teamRepository.findAllByGameIdAndIsParticipating(gameId, isParticipating)
 
 }
