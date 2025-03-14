@@ -18,8 +18,11 @@ class TeamValidator(
 ) {
 
     fun validApply(student: StudentByIdStub, game: Game, dto: TeamApplyDto) {
-        val isParticipant =
-            stageParticipantRepository.existsByStageIdAndStudentId(student.studentId, game.stage.id)
+        val isParticipant = stageParticipantRepository.existsByStageIdAndStudentId(
+                stageId = game.stage.id,
+                studentId = student.studentId
+            )
+
         if (isParticipant.not()) {
             throw StageException("스테이지 참여자가 아닙니다.", HttpStatus.FORBIDDEN.value())
         }

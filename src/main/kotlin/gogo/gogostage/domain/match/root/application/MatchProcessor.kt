@@ -100,6 +100,29 @@ class MatchProcessor(
         matchRepository.save(match)
 
         val game = match.game
+        if (game.system == GameSystem.TOURNAMENT && match.round!! != Round.FINALS) {
+
+            when (match.round!!) {
+                Round.ROUND_OF_32 -> {
+                    updateNextMatch(match, null, Round.ROUND_OF_16)
+                }
+
+                Round.ROUND_OF_16 -> {
+                    updateNextMatch(match, null, Round.QUARTER_FINALS)
+                }
+
+                Round.QUARTER_FINALS -> {
+                    updateNextMatch(match, null, Round.SEMI_FINALS)
+                }
+
+                Round.SEMI_FINALS -> {
+                    updateNextMatch(match, null, Round.FINALS)
+                }
+                else -> {}
+            }
+
+        }
+
         if (game.isEnd) {
             game.endRollBack()
             gameRepository.save(game)
@@ -112,7 +135,7 @@ class MatchProcessor(
 
     private fun gameEnd(
         match: Match,
-        victoryTeam: Team
+        victoryTeam: Team?
     ) {
         val game = match.game
         game.end(victoryTeam)
@@ -121,7 +144,7 @@ class MatchProcessor(
 
     private fun updateNextMatch(
         match: Match,
-        victoryTeam: Team,
+        updateTeam: Team?,
         nextRound: Round
     ) {
         val nextTurn = if (match.turn!! % 2 == 0) match.turn!! / 2 else match.turn!! / 2 + 1
@@ -132,11 +155,11 @@ class MatchProcessor(
 
         when (nextTeamPosition) {
             'A' -> {
-                nextMatch.updateATeam(victoryTeam)
+                nextMatch.updateATeam(updateTeam)
             }
 
             'B' -> {
-                nextMatch.updateBTeam(victoryTeam)
+                nextMatch.updateBTeam(updateTeam)
             }
         }
     }
