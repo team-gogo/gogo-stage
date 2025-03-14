@@ -18,3 +18,14 @@ data class TeamParticipantDto(
     @NotBlank
     val positionY: String,
 )
+
+data class GameTeamResDto(
+    val count: Int,
+    val team: List<GameTeamDto>
+)
+
+data class GameTeamDto(
+    val teamId: Long,
+    val teamName: String,
+    val participantCount: Int,
+)
