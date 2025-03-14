@@ -73,3 +73,7 @@ data class CommentDto(
     val isLiked: Boolean,
     val author: AuthorDto
 )
+
+data class LikeBoardResDto(
+    val isLiked: Boolean,
+)

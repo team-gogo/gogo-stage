@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.community.root.application
 
+import gogo.gogostage.domain.community.board.application.BoardReader
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CommunityReader(
-    private val communityRepository: CommunityRepository
+    private val communityRepository: CommunityRepository,
+    private val boardReader: BoardReader
 ) {
 
     fun readByStageId(stageId: Long) =
@@ -27,4 +29,8 @@ class CommunityReader(
 
     fun readBoardInfo(boardId: Long): GetCommunityBoardInfoResDto =
         communityRepository.getCommunityBoardInfo(boardId)
+
+    fun readBoardByBoardId(boardId: Long) =
+        boardReader.read(boardId)
+
 }
