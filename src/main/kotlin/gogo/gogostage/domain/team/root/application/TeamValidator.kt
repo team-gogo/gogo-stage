@@ -44,4 +44,12 @@ class TeamValidator(
         }
     }
 
+    fun validStageParticipant(studentId: Long, stageId: Long) {
+        val isParticipant =
+            stageParticipantRepository.existsByStageIdAndStudentId(stageId, studentId)
+        if (isParticipant.not()) {
+            throw StageException("스테이지 참여자가 아닙니다.", HttpStatus.FORBIDDEN.value())
+        }
+    }
+
 }
