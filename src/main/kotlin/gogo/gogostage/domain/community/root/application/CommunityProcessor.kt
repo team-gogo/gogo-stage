@@ -6,9 +6,9 @@ import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
-import gogo.gogostage.domain.community.root.application.dto.LikeBoardResDto
-import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentReqDto
-import gogo.gogostage.domain.community.root.application.dto.WriteBoardCommentResDto
+import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
+import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
+import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.http.HttpStatus
@@ -19,13 +19,16 @@ import java.time.LocalDateTime
 class CommunityProcessor(
     private val boardLikeRepository: BoardLikeRepository,
     private val commentRepository: CommentRepository,
-    private val boardRepository: BoardRepository,
-    private val communityMapper: CommunityMapper
+    private val commentLikeRepository: CommentLikeRepository,
+    private val commentMapper: CommunityMapper,
+    private val boardRepository: BoardRepository
 ) {
 
-    fun likeBoard(studentId: Long, board: Board): LikeBoardResDto {
+    fun likeBoard(studentId: Long, board: Board): LikeResDto {
         // 동시성 문제
         val isExistBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(studentId, board.id)
+        val comment = commentRepository.findByBoardIdAndStudentId(board.id, studentId)
+            ?: throw StageException("Comment Not Found, boardId=${board.id}, studentId=${studentId}", HttpStatus.NOT_FOUND.value())
 
         if (isExistBoardLike) {
             val boardLike = boardLikeRepository.findByBoardIdAndStudentId(board.id, studentId)
@@ -36,7 +39,7 @@ class CommunityProcessor(
             board.minusLikeCount()
             boardRepository.save(board)
 
-            return LikeBoardResDto(
+            return LikeResDto(
                 isLiked = false
             )
         } else {
@@ -50,7 +53,7 @@ class CommunityProcessor(
             board.plusLikeCount()
             boardRepository.save(board)
 
-            return LikeBoardResDto(
+            return LikeResDto(
                 isLiked = true
             )
         }
@@ -72,6 +75,38 @@ class CommunityProcessor(
 
         commentRepository.save(comment)
 
-        return communityMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
+        return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
+    }
+
+    fun likeBoardComment(student: StudentByIdStub, comment: Comment): LikeResDto {
+        val isExistCommentLike = commentLikeRepository.existsByCommentIdAndStudentId(comment.id, student.studentId)
+
+        if (isExistCommentLike) {
+            val commentLike = commentLikeRepository.findByCommentIdAndStudentId(comment.id, student.studentId)
+                ?: throw StageException("CommentLike Not Found, commentId=${comment.id}, studentId=${student.studentId}", HttpStatus.NOT_FOUND.value())
+
+            commentLikeRepository.delete(commentLike)
+
+            comment.minusLikeCount()
+            commentRepository.save(comment)
+
+            return LikeResDto(
+                isLiked = false
+            )
+        } else {
+            val boardLike = CommentLike(
+                comment = comment,
+                studentId = student.studentId,
+            )
+
+            commentLikeRepository.save(boardLike)
+
+            comment.plusLikeCount()
+            commentRepository.save(comment)
+
+            return LikeResDto(
+                isLiked = true
+            )
+        }
     }
 }

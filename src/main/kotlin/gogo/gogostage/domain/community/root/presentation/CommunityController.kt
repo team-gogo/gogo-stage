@@ -54,7 +54,7 @@ class CommunityController(
     @PostMapping("/board/like/{board_id}")
     fun likeStageBoard(
         @PathVariable("board_id") boardId: Long
-    ): ResponseEntity<LikeBoardResDto> {
+    ): ResponseEntity<LikeResDto> {
         val response = communityService.likeStageBoard(boardId)
         return ResponseEntity.ok(response)
     }
@@ -65,6 +65,14 @@ class CommunityController(
         @RequestBody @Valid writeBoardCommentDto: WriteBoardCommentReqDto
     ): ResponseEntity<WriteBoardCommentResDto> {
         val response = communityService.writeBoardComment(boardId, writeBoardCommentDto)
+        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+    }
+
+    @PostMapping("/comment/like/{comment_id}")
+    fun likeBoardComment(
+        @PathVariable("comment_id") commentId: Long
+    ): ResponseEntity<LikeResDto> {
+        val response = communityService.likeBoardComment(commentId)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 }
