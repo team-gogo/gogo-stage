@@ -3,6 +3,7 @@ package gogo.gogostage.global.kafka.publisher
 import gogo.gogostage.domain.stage.participant.root.event.TicketPointMinusEvent
 import gogo.gogostage.domain.stage.root.event.CreateStageFastEvent
 import gogo.gogostage.domain.stage.root.event.CreateStageOfficialEvent
+import gogo.gogostage.domain.stage.root.event.StageConfirmEvent
 import gogo.gogostage.global.kafka.consumer.dto.BatchAdditionTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelDeleteTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBettingFailedEvent
@@ -12,6 +13,7 @@ import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_CANCEL_DELETE_TE
 import gogo.gogostage.global.kafka.properties.KafkaTopics.STAGE_CREATE_OFFICIAL
 import gogo.gogostage.global.kafka.properties.KafkaTopics.STAGE_CREATE_FAST
 import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BETTING_FAILED
+import gogo.gogostage.global.kafka.properties.KafkaTopics.STAGE_CONFIRM
 import gogo.gogostage.global.kafka.properties.KafkaTopics.TICKET_POINT_MINUS
 import gogo.gogostage.global.kafka.properties.KafkaTopics.TICKET_POINT_MINUS_FAILED
 import gogo.gogostage.global.publisher.TransactionEventPublisher
@@ -73,6 +75,17 @@ class StagePublisher(
         val key = UUID.randomUUID().toString()
         transactionEventPublisher.publishEvent(
             topic = STAGE_CREATE_OFFICIAL,
+            key = key,
+            event = event
+        )
+    }
+
+    fun publishStageConfirmEvent(
+        event: StageConfirmEvent
+    ) {
+        val key = UUID.randomUUID().toString()
+        transactionEventPublisher.publishEvent(
+            topic = STAGE_CONFIRM,
             key = key,
             event = event
         )

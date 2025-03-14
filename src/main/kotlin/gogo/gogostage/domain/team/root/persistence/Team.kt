@@ -26,7 +26,7 @@ class Team(
     val participantCount: Int,
 
     @Column(name = "is_participating", nullable = false)
-    val isParticipating: Boolean = false,
+    var isParticipating: Boolean = false,
 
     @OneToMany(mappedBy = "team")
     val participants: MutableList<TeamParticipant> = mutableListOf(),
@@ -40,4 +40,14 @@ class Team(
         )
 
     }
+
+    fun participation(): Int {
+        if (isParticipating) {
+            return 0
+        } else {
+            this.isParticipating = true
+            return 1
+        }
+    }
+
 }

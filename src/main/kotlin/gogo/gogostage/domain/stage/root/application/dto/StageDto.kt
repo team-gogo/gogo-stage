@@ -2,9 +2,11 @@ package gogo.gogostage.domain.stage.root.application.dto
 
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
+import gogo.gogostage.domain.match.root.persistence.Round
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
+import java.time.LocalDateTime
 
 data class CreateFastStageDto(
     @NotBlank
@@ -100,4 +102,39 @@ data class MiniGameInfoDto(
 
 data class StageJoinDto(
     val passCode: String?,
+)
+
+data class StageConfirmDto(
+    val games: List<StageConfirmGameDto>
+)
+
+data class StageConfirmGameDto(
+    val gameId: Long,
+    val single: StageConfirmGameSingleDto?,
+    val tournament: List<StageConfirmGameTournamentDto>?,
+    val fullLeague: List<StageConfirmGameFullLeagueDto>?,
+)
+
+data class StageConfirmGameSingleDto(
+    val teamAId: Long,
+    val teamBId: Long,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime
+)
+
+data class StageConfirmGameTournamentDto(
+    val teamAId: Long?,
+    val teamBId: Long?,
+    val round: Round,
+    val turn: Int,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime
+)
+
+data class StageConfirmGameFullLeagueDto(
+    val teamAId: Long,
+    val teamBId: Long,
+    val leagueTurn: Int,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime
 )

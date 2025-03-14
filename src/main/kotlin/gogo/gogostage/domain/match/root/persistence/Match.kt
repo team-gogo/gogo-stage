@@ -11,29 +11,29 @@ class Match(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    val id: Long,
+    val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "game_id", nullable = false)
     val game: Game,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "a_team_id", nullable = false)
-    val aTeam: Team,
+    @JoinColumn(name = "a_team_id", nullable = true)
+    val aTeam: Team? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "b_team_id", nullable = false)
-    val bTeam: Team,
+    @JoinColumn(name = "b_team_id", nullable = true)
+    val bTeam: Team? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "round", nullable = true)
-    val round: Round?,
+    val round: Round? = null,
 
     @Column(name = "turn", nullable = true)
-    val turn: Int?,
+    val turn: Int? = null,
 
     @Column(name = "leagueTurn", nullable = true)
-    val leagueTurn: Int?,
+    val leagueTurn: Int? = null,
 
     @Column(name = "start_date", nullable = false)
     val startDate: LocalDateTime,
@@ -42,14 +42,66 @@ class Match(
     val endDate: LocalDateTime,
 
     @Column(name = "is_end", nullable = false)
-    var isEnd: Boolean,
+    var isEnd: Boolean = false,
 
     @Column(name = "a_team_betting_point", nullable = false)
-    var aTeamBettingPoint: Long,
+    var aTeamBettingPoint: Long = 0,
 
     @Column(name = "b_team_betting_point", nullable = false)
-    var bTeamBettingPoint: Long,
+    var bTeamBettingPoint: Long = 0,
 ) {
+
+    companion object {
+
+        fun singleOf(
+            game: Game,
+            aTeam: Team,
+            bTeam: Team,
+            startDate: LocalDateTime,
+            endDate: LocalDateTime
+        ) = Match(
+            game = game,
+            aTeam = aTeam,
+            bTeam = bTeam,
+            startDate = startDate,
+            endDate = endDate,
+        )
+
+        fun tournamentOf(
+            game: Game,
+            aTeam: Team?,
+            bTeam: Team?,
+            startDate: LocalDateTime,
+            endDate: LocalDateTime,
+            round: Round,
+            turn: Int,
+        ) = Match(
+            game = game,
+            aTeam = aTeam,
+            bTeam = bTeam,
+            startDate = startDate,
+            endDate = endDate,
+            round = round,
+            turn = turn,
+        )
+
+        fun leagueOf(
+            game: Game,
+            aTeam: Team,
+            bTeam: Team,
+            startDate: LocalDateTime,
+            endDate: LocalDateTime,
+            leagueTurn: Int,
+        ) = Match(
+            game = game,
+            aTeam = aTeam,
+            bTeam = bTeam,
+            startDate = startDate,
+            endDate = endDate,
+            leagueTurn = leagueTurn
+        )
+
+    }
 
     fun end() {
         isEnd = true
