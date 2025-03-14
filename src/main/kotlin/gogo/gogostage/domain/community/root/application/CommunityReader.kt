@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.community.root.application
 
+import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 
 import gogo.gogostage.domain.community.root.persistence.CommunityRepository
@@ -23,4 +24,7 @@ class CommunityReader(
         val pageRequest = PageRequest.of(page, size)
         return communityRepository.searchCommunityBoardPage(stageId, size, category, sort, pageRequest)
     }
+
+    fun readBoardInfo(boardId: Long): GetCommunityBoardInfoResDto =
+        communityRepository.getCommunityBoardInfo(boardId)
 }

@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardProcessor
+import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
 import gogo.gogostage.domain.community.root.persistence.SortType
@@ -30,6 +31,11 @@ class CommunityServiceImpl(
     override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
         communityValidator.validPageAndSize(page, size)
         return communityReader.readBoards(stageId, page, size, category, sort)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
+        return communityReader.readBoardInfo(boardId)
     }
 
 

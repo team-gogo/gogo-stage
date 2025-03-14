@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.presentation
 
 import gogo.gogostage.domain.community.root.application.CommunityService
+import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
 import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
 import gogo.gogostage.domain.community.root.persistence.SortType
@@ -41,6 +42,14 @@ class CommunityController(
     ): ResponseEntity<GetCommunityBoardResDto> {
         val response = communityService.getStageBoard(
             stageId, page, size, category, sort)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/board/{board_id}")
+    fun getStageBoardInfo(
+        @PathVariable("board_id") boardId: Long
+    ): ResponseEntity<GetCommunityBoardInfoResDto> {
+        val response = communityService.getStageBoardInfo(boardId)
         return ResponseEntity.ok(response)
     }
 }

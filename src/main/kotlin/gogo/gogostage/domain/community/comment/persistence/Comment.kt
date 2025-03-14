@@ -19,12 +19,15 @@ class Comment(
     @Column(name = "student_id", nullable = false)
     val studentId: Long,
 
-    @Column(name = "comment", nullable = false)
-    val comment: String,
+    @Column(name = "content", nullable = false)
+    val content: String,
 
     @Column(name = "is_filtered", nullable = false)
     val isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+
+    @Column(name = "like_count", nullable = false)
+    val likeCount: Int,
 )
