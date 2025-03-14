@@ -26,12 +26,22 @@ class TeamServiceImpl(
         teamProcessor.apply(game, dto)
     }
 
+    @Transactional(readOnly = true)
     override fun getGameTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
         teamValidator.validStageParticipant(student.studentId, game.stage.id)
         val teams = teamReader.readParticipatingTeamByGameId(game.id, true)
         return teamMapper.mapGameTeam(teams)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getGameTempTeam(gameId: Long): GameTeamResDto {
+        val student = userUtil.getCurrentStudent()
+        val game = gameReader.read(gameId)
+        teamValidator.validStageParticipant(student.studentId, game.stage.id)
+        val tempTeams = teamReader.readParticipatingTeamByGameId(game.id, false)
+        return teamMapper.mapGameTeam(tempTeams)
     }
 
 }
