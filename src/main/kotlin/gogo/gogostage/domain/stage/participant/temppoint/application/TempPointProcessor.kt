@@ -1,19 +1,16 @@
 package gogo.gogostage.domain.stage.participant.temppoint.application
 
-import gogo.gogostage.domain.match.result.persistence.MatchResult
 import gogo.gogostage.domain.match.result.persistence.MatchResultRepository
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.participant.temppoint.persistence.TempPoint
 import gogo.gogostage.domain.stage.participant.temppoint.persistence.TempPointRepository
-import gogo.gogostage.domain.team.root.persistence.TeamRepository
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBatchEvent
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Component
@@ -21,7 +18,6 @@ class TempPointProcessor(
     private val matchRepository: MatchRepository,
     private val stageParticipantRepository: StageParticipantRepository,
     private val tempPointRepository: TempPointRepository,
-    private val teamRepository: TeamRepository,
     private val matchResultRepository: MatchResultRepository,
 ) {
 
@@ -51,7 +47,6 @@ class TempPointProcessor(
         tempPointRepository.saveAll(predictionTempPoints)
     }
 
-    @Transactional
     fun deleteTempPoint(event: BatchCancelEvent) {
         val now = LocalDateTime.now()
         val tempPoints = tempPointRepository.findNotAppliedByBatchId(now, event.batchId)
@@ -60,12 +55,6 @@ class TempPointProcessor(
             throw StageException("임시 포인트가 이미 반영되었습니다.", HttpStatus.NOT_FOUND.value())
         }
 
-        val match = (matchRepository.findByIdOrNull(event.matchId)
-            ?: throw StageException("매치를 찾을 수 없습니다. Match Id = ${event.matchId}.", HttpStatus.NOT_FOUND.value()))
-        match.batchRollback()
-        matchRepository.save(match)
-
-        matchResultRepository.deleteByMatchId(match.id)
         tempPointRepository.deleteAll(tempPoints)
     }
 

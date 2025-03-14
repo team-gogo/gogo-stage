@@ -75,7 +75,7 @@ class Game(
         this.firstPlaceTeam = firstPlaceTeam
     }
 
-    fun gameEndRollBack() {
+    fun endRollBack() {
         this.isEnd = false
         this.firstPlaceTeam = null
     }

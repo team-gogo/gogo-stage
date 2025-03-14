@@ -11,6 +11,7 @@ import gogo.gogostage.domain.stage.participant.temppoint.application.TempPointPr
 import gogo.gogostage.domain.team.root.persistence.Team
 import gogo.gogostage.domain.team.root.persistence.TeamRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBatchEvent
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -89,6 +90,24 @@ class MatchProcessor(
         matchResultRepository.save(matchResult)
 
         tempPointProcessor.addTempPoint(event)
+    }
+
+    @Transactional
+    fun cancelBatch(event: BatchCancelEvent) {
+        val match = (matchRepository.findByIdOrNull(event.matchId)
+            ?: throw StageException("매치를 찾을 수 없습니다. Match Id = ${event.matchId}.", HttpStatus.NOT_FOUND.value()))
+        match.batchRollback()
+        matchRepository.save(match)
+
+        val game = match.game
+        if (game.isEnd) {
+            game.endRollBack()
+            gameRepository.save(game)
+        }
+
+        matchResultRepository.deleteByMatchId(match.id)
+
+        tempPointProcessor.deleteTempPoint(event)
     }
 
     private fun gameEnd(
