@@ -16,3 +16,17 @@ data class StudentByIdStub(
     val isActiveProfanityFilter: Boolean,
     val createdAt: LocalDateTime
 )
+
+data class StudentByIdsStub(
+    val students: List<StudentByIdsStubDto>
+)
+
+data class StudentByIdsStubDto(
+    val studentId: Long,
+    val schoolId: Long,
+    val sex: Sex,
+    val name: String,
+    val deviceToken: String?,
+    val classNumber: Int,
+    val studentNumber: Int,
+)

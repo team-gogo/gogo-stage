@@ -29,3 +29,7 @@ class Community(
 
     }
 }
+
+enum class SortType {
+    LATEST, LAST
+}

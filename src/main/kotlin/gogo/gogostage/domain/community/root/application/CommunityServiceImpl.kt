@@ -1,7 +1,9 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardProcessor
-import gogo.gogostage.domain.community.root.application.dto.WriteCommunityBoardDto
+import gogo.gogostage.domain.community.root.application.dto.*
+import gogo.gogostage.domain.community.root.persistence.SortType
+import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -10,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional
 class CommunityServiceImpl(
     private val communityReader: CommunityReader,
     private val boardProcessor: BoardProcessor,
-    private val userUtil: UserContextUtil
+    private val userUtil: UserContextUtil,
+    private val communityProcessor: CommunityProcessor,
+    private val communityValidator: CommunityValidator
 ): CommunityService {
 
     @Transactional
@@ -21,4 +25,38 @@ class CommunityServiceImpl(
 
         // 추후 욕설 필터링 요청 처리 필요
     }
+
+    @Transactional(readOnly = true)
+    override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
+        communityValidator.validPageAndSize(page, size)
+        return communityReader.readBoards(stageId, page, size, category, sort)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
+        return communityReader.readBoardInfo(boardId)
+    }
+
+    @Transactional
+    override fun likeStageBoard(boardId: Long): LikeResDto {
+        val student = userUtil.getCurrentStudent()
+        val board = communityReader.readBoardByBoardId(boardId)
+        return communityProcessor.likeBoard(student.studentId, board)
+    }
+
+    @Transactional
+    override fun writeBoardComment(boardId: Long, writeBoardCommentDto: WriteBoardCommentReqDto): WriteBoardCommentResDto {
+        val student = userUtil.getCurrentStudent()
+        val board = communityReader.readBoardByBoardId(boardId)
+        // 욕설 필터링 필요
+        return communityProcessor.saveBoardComment(student, writeBoardCommentDto, board)
+    }
+
+    @Transactional
+    override fun likeBoardComment(commentId: Long): LikeResDto {
+        val student = userUtil.getCurrentStudent()
+        val comment = communityReader.readCommentByCommentId(commentId)
+        return communityProcessor.likeBoardComment(student, comment)
+    }
+
 }

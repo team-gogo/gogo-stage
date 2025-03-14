@@ -55,6 +55,11 @@ class SecurityConfig(
             
             // community
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/community/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/community/board/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/board/like/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/comment/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/comment/like/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
