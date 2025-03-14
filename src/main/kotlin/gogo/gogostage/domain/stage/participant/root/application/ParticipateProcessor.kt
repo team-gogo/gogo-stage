@@ -67,7 +67,7 @@ class ParticipateProcessor(
         predictedWinTeamId: Long,
         point: Long
     ) {
-        if (match.aTeam.id == predictedWinTeamId) {
+        if (match.aTeam!!.id == predictedWinTeamId) {
             match.addATeamBettingPoint(point)
         } else {
             match.addBTeamBettingPoint(point)
@@ -92,8 +92,8 @@ class ParticipateProcessor(
         val aTeam = match.aTeam
         val bTeam = match.bTeam
 
-        val isATeamParticipant = aTeam.participants.any { participant -> participant.studentId == studentId }
-        val isBTeamParticipant = bTeam.participants.any { participant -> participant.studentId == studentId }
+        val isATeamParticipant = aTeam!!.participants.any { participant -> participant.studentId == studentId }
+        val isBTeamParticipant = bTeam!!.participants.any { participant -> participant.studentId == studentId }
 
         if (isATeamParticipant || isBTeamParticipant) {
             throw StageException("Can't Betting Match Player", HttpStatus.BAD_REQUEST.value())
