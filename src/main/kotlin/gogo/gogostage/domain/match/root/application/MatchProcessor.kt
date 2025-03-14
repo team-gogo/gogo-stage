@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.match.root.application
 
+import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.result.persistence.MatchResult
 import gogo.gogostage.domain.match.result.persistence.MatchResultRepository
@@ -21,34 +22,58 @@ class MatchProcessor(
     private val matchRepository: MatchRepository,
     private val teamRepository: TeamRepository,
     private val matchResultRepository: MatchResultRepository,
-    private val tempPointProcessor: TempPointProcessor
+    private val tempPointProcessor: TempPointProcessor,
+    private val gameRepository: GameRepository
 ) {
 
     @Transactional
     fun batch(event: MatchBatchEvent) {
         val match = matchRepository.findNotEndMatchById(event.matchId)
             ?: throw StageException("Match Not Found, Match Id = ${event.matchId}", HttpStatus.NOT_FOUND.value())
-        val victoryTeam = teamRepository.findByIdOrNull(event.victoryTeamId)
-            ?: throw StageException("Victory Team Not Found, Team Id = ${event.victoryTeamId}", HttpStatus.NOT_FOUND.value())
+
+        val victoryTeamId = event.victoryTeamId
+        val victoryTeam = teamRepository.findByIdOrNull(victoryTeamId)
+            ?: throw StageException("Victory Team Not Found, Team Id = ${victoryTeamId}", HttpStatus.NOT_FOUND.value())
 
         victoryTeam.addWinCount()
         teamRepository.save(victoryTeam)
 
-        if (match.game.system == GameSystem.TOURNAMENT) {
-            when (match.round!!) {
-                Round.ROUND_OF_32 -> {
-                    updateNextMatch(match, victoryTeam, Round.ROUND_OF_16)
+        when (match.game.system) {
+            GameSystem.SINGLE -> {
+                gameEnd(match, victoryTeam)
+            }
+
+            GameSystem.FULL_LEAGUE -> {
+                if (match.leagueTurn == match.game.leagueCount) {
+                    val finalWinTeam = teamRepository.findTop1Teams(match.game.id)
+                    gameEnd(match, finalWinTeam)
                 }
-                Round.ROUND_OF_16 -> {
-                    updateNextMatch(match, victoryTeam, Round.QUARTER_FINALS)
+            }
+
+            GameSystem.TOURNAMENT -> {
+
+                when (match.round!!) {
+                    Round.ROUND_OF_32 -> {
+                        updateNextMatch(match, victoryTeam, Round.ROUND_OF_16)
+                    }
+
+                    Round.ROUND_OF_16 -> {
+                        updateNextMatch(match, victoryTeam, Round.QUARTER_FINALS)
+                    }
+
+                    Round.QUARTER_FINALS -> {
+                        updateNextMatch(match, victoryTeam, Round.SEMI_FINALS)
+                    }
+
+                    Round.SEMI_FINALS -> {
+                        updateNextMatch(match, victoryTeam, Round.FINALS)
+                    }
+
+                    Round.FINALS -> {
+                        gameEnd(match, victoryTeam)
+                    }
                 }
-                Round.QUARTER_FINALS -> {
-                    updateNextMatch(match, victoryTeam, Round.SEMI_FINALS)
-                }
-                Round.SEMI_FINALS -> {
-                    updateNextMatch(match, victoryTeam, Round.FINALS)
-                }
-                Round.FINALS -> return
+
             }
         }
 
@@ -64,6 +89,15 @@ class MatchProcessor(
         matchResultRepository.save(matchResult)
 
         tempPointProcessor.addTempPoint(event)
+    }
+
+    private fun gameEnd(
+        match: Match,
+        victoryTeam: Team
+    ) {
+        val game = match.game
+        game.end(victoryTeam)
+        gameRepository.save(game)
     }
 
     private fun updateNextMatch(

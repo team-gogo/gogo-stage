@@ -28,6 +28,9 @@ class Team(
     @Column(name = "is_participating", nullable = false)
     var isParticipating: Boolean = false,
 
+    @Column(name = "is_survival", nullable = false)
+    val isSurvival: Boolean = true,
+
     @OneToMany(mappedBy = "team")
     val participants: MutableList<TeamParticipant> = mutableListOf(),
 ) {

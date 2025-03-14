@@ -37,14 +37,6 @@ class Game(
     @JoinColumn(name = "first_place_team_id", nullable = true)
     var firstPlaceTeam: Team? = null,
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "second_place_team_id", nullable = true)
-    var secondPlaceTeam: Team? = null,
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "third_place_team_id", nullable = true)
-    var thirdPlaceTeam: Team? = null,
-
     @Column(name = "team_count", nullable = false)
     val teamCount: Int = 0, // 팀 신청시 ++
 
@@ -78,11 +70,14 @@ class Game(
         this.leagueCount = leagueCount
     }
 
-    fun end(firstPlaceTeam: Team?, secondPlaceTeam: Team?, thirdPlaceTeam: Team? = null) {
+    fun end(firstPlaceTeam: Team?) {
         this.isEnd = true
         this.firstPlaceTeam = firstPlaceTeam
-        this.secondPlaceTeam = secondPlaceTeam
-        this.thirdPlaceTeam = thirdPlaceTeam
+    }
+
+    fun gameEndRollBack() {
+        this.isEnd = false
+        this.firstPlaceTeam = null
     }
 
 }
