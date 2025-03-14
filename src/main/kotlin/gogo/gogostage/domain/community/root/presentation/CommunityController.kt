@@ -56,6 +56,6 @@ class CommunityController(
         @PathVariable("board_id") boardId: Long
     ): ResponseEntity<LikeBoardResDto> {
         val response = communityService.likeStageBoard(boardId)
-        return ResponseEntity.status(HttpStatus.CREATED).body(response)
+        return ResponseEntity.ok(response)
     }
 }
