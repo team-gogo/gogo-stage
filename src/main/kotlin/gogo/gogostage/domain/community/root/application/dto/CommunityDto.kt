@@ -77,3 +77,17 @@ data class CommentDto(
 data class LikeBoardResDto(
     val isLiked: Boolean,
 )
+
+data class WriteBoardCommentReqDto(
+    @NotNull
+    val content: String,
+)
+
+data class WriteBoardCommentResDto(
+    val commentId: Long,
+    val content: String,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    val createdAt: LocalDateTime,
+    val likeCount: Int,
+    val author: AuthorDto,
+)

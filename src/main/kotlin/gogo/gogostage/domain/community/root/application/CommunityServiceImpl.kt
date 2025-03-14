@@ -42,4 +42,12 @@ class CommunityServiceImpl(
         return communityProcessor.likeBoard(student.studentId, board)
     }
 
+    @Transactional
+    override fun writeBoardComment(boardId: Long, writeBoardCommentDto: WriteBoardCommentReqDto): WriteBoardCommentResDto {
+        val student = userUtil.getCurrentStudent()
+        val board = communityReader.readBoardByBoardId(boardId)
+        // 욕설 필터링 필요
+        return communityProcessor.saveBoardComment(student, writeBoardCommentDto, board)
+    }
+
 }
