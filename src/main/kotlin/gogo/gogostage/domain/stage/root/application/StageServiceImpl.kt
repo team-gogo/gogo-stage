@@ -1,9 +1,6 @@
 package gogo.gogostage.domain.stage.root.application
 
-import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
-import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
-import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
-import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
+import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.global.error.StageException
@@ -22,6 +19,7 @@ class StageServiceImpl(
     private val stageMapper: StageMapper,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val stageRepository: StageRepository,
+    private val stageReader: StageReader
 ) : StageService {
 
     @Transactional
@@ -80,6 +78,12 @@ class StageServiceImpl(
                 stageId = stage.id,
             )
         )
+    }
+
+    @Transactional(readOnly = true)
+    override fun getPointRank(stageId: Long, page: Int, size: Int): StageParticipantPointRankDto {
+        val stage = stageReader.read(stageId)
+        return stageReader.readPointRank(stage, page, size)
     }
 
 }

@@ -1,10 +1,7 @@
 package gogo.gogostage.domain.stage.root.presentation
 
 import gogo.gogostage.domain.stage.root.application.StageService
-import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
-import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
-import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
-import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
+import gogo.gogostage.domain.stage.root.application.dto.*
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -48,6 +45,16 @@ class StageController(
     ): ResponseEntity<Unit> {
         stageService.confirm(stageId, dto)
         return ResponseEntity.ok().build()
+    }
+
+    @GetMapping("/rank/{stage_id}")
+    fun getPointRank(
+        @PathVariable("stage_id") stageId: Long,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "20") size: Int,
+    ): ResponseEntity<StageParticipantPointRankDto> {
+        val response = stageService.getPointRank(stageId, page, size)
+        return ResponseEntity.ok(response)
     }
 
 }

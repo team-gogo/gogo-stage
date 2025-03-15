@@ -138,3 +138,22 @@ data class StageConfirmGameFullLeagueDto(
     val startDate: LocalDateTime,
     val endDate: LocalDateTime
 )
+
+data class StageParticipantPointRankDto(
+    val info: PageDto,
+    val rank: List<PointRankDto>
+)
+
+data class PageDto(
+    val totalPage: Int,
+    val totalElement: Int
+)
+
+data class PointRankDto(
+    val rank: Int,
+    val studentId: Long,
+    val point: Long,
+    val name: String,
+    val classNumber: Int,
+    val studentNumber: Int
+)
