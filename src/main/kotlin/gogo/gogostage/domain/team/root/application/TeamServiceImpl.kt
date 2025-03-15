@@ -3,6 +3,7 @@ package gogo.gogostage.domain.team.root.application
 import gogo.gogostage.domain.game.application.GameReader
 import gogo.gogostage.domain.team.root.application.dto.GameTeamResDto
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
+import gogo.gogostage.domain.team.root.application.dto.TeamInfoDto
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -14,7 +15,7 @@ class TeamServiceImpl(
     private val teamValidator: TeamValidator,
     private val teamProcessor: TeamProcessor,
     private val teamReader: TeamReader,
-    private val teamMapper: TeamMapper
+    private val teamMapper: TeamMapper,
 ) : TeamService {
 
     @Transactional
@@ -42,6 +43,14 @@ class TeamServiceImpl(
         teamValidator.validStageParticipant(student.studentId, game.stage.id)
         val tempTeams = teamReader.readParticipatingTeamByGameId(game.id, false)
         return teamMapper.mapGameTeam(tempTeams)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getTeamInfo(teamId: Long): TeamInfoDto {
+        val student = userUtil.getCurrentStudent()
+        val team = teamReader.read(teamId)
+        teamValidator.validStageParticipant(student.studentId, team.game.stage.id)
+        return teamReader.readTeamInfo(team)
     }
 
 }
