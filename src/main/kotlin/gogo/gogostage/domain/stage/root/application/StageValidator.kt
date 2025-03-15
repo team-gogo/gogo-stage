@@ -83,6 +83,18 @@ class StageValidator(
         if (dto.shop.plinko.isActive && (dto.shop.plinko.price == null || dto.shop.plinko.quantity == null)) {
             throw StageException("Plinko 미니게임의 티켓 가격, 수량을 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
+
+        if (dto.miniGame.coinToss.isActive.not() && dto.shop.coinToss.isActive) {
+            throw StageException("CoinToss 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        if (dto.miniGame.yavarwee.isActive.not() && dto.shop.yavarwee.isActive) {
+            throw StageException("Yavarwee 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        if (dto.miniGame.plinko.isActive.not() && dto.shop.plinko.isActive) {
+            throw StageException("Plinko 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
     }
 
     private fun validMiniGame(dto: CreateOfficialStageDto) {
