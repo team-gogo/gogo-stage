@@ -22,7 +22,7 @@ class TempPointProcessor(
 ) {
 
     fun addTempPoint(event: MatchBatchEvent) {
-        val match = (matchRepository.findNotEndMatchById(event.matchId)
+        val match = (matchRepository.findByIdOrNull(event.matchId)
             ?: throw StageException("Match Not Found, Match Id = ${event.matchId}", HttpStatus.NOT_FOUND.value()))
         val stage = match.game.stage
 

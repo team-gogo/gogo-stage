@@ -106,7 +106,7 @@ class Match(
     }
 
     fun updateATeam(aTeam: Team?) {
-        if (this.aTeam != null) {
+        if (aTeam != null && this.aTeam != null) {
             throw StageException("A team already exists, Match Id = ${this.id}", HttpStatus.INTERNAL_SERVER_ERROR.value())
         }
 
@@ -114,7 +114,7 @@ class Match(
     }
 
     fun updateBTeam(bTeam: Team?) {
-        if (this.bTeam != null) {
+        if (bTeam != null && this.bTeam != null) {
             throw StageException("B team already exists, Match Id = ${this.id}", HttpStatus.INTERNAL_SERVER_ERROR.value())
         }
 
