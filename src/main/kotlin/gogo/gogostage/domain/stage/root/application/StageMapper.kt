@@ -20,16 +20,19 @@ class StageMapper {
                 isActive = dto.miniGame.coinToss.isActive,
                 maxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                 minBettingPoint = dto.miniGame.coinToss.minBettingPoint,
+                initialTicketCount = dto.miniGame.coinToss.initialTicketCount,
             ),
             yavarwee = OfficialStageMiniGameInfoDto(
                 isActive = dto.miniGame.yavarwee.isActive,
                 maxBettingPoint = dto.miniGame.yavarwee.maxBettingPoint,
                 minBettingPoint = dto.miniGame.yavarwee.minBettingPoint,
+                initialTicketCount = dto.miniGame.yavarwee.initialTicketCount,
             ),
             plinko = OfficialStageMiniGameInfoDto(
                 isActive = dto.miniGame.plinko.isActive,
                 maxBettingPoint = dto.miniGame.plinko.maxBettingPoint,
                 minBettingPoint = dto.miniGame.plinko.minBettingPoint,
+                initialTicketCount = dto.miniGame.plinko.initialTicketCount,
             )
         ),
         shop = OfficialStageShopDto(

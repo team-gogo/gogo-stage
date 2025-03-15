@@ -24,8 +24,8 @@ class StageValidator(
             throw StageException("스테이지 관리자는 최대 5명까지 가능합니다.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.coinToss.isActive && dto.miniGame.coinToss.maxBettingPoint == null) {
-            throw StageException("CoinToss 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null || dto.miniGame.coinToss.initialTicketCount == null)) {
+            throw StageException("CoinToss 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -86,16 +86,16 @@ class StageValidator(
     }
 
     private fun validMiniGame(dto: CreateOfficialStageDto) {
-        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null)) {
-            throw StageException("CoinToss 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null || dto.miniGame.coinToss.initialTicketCount == null)) {
+            throw StageException("CoinToss 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.yavarwee.isActive && (dto.miniGame.yavarwee.maxBettingPoint == null)) {
-            throw StageException("Yavarwee 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.yavarwee.isActive && (dto.miniGame.yavarwee.maxBettingPoint == null || dto.miniGame.yavarwee.initialTicketCount == null)) {
+            throw StageException("Yavarwee 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.plinko.isActive && (dto.miniGame.plinko.maxBettingPoint == null)) {
-            throw StageException("Plinko 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.plinko.isActive && (dto.miniGame.plinko.maxBettingPoint == null || dto.miniGame.plinko.initialTicketCount == null)) {
+            throw StageException("Plinko 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
