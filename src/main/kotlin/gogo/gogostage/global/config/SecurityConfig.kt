@@ -55,6 +55,7 @@ class SecurityConfig(
 
             // match
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/search/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/info/{match_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // community
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
