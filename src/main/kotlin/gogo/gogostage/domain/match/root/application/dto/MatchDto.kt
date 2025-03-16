@@ -1,6 +1,6 @@
 package gogo.gogostage.domain.match.root.application.dto
 
-import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonInclude
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
@@ -56,7 +56,7 @@ data class MatchTeamInfoDto(
     val teamName: String,
     val bettingPoint: Long?,
     val winCount: Int?,
-    @JsonIgnore
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     val participants: List<MatchTeamParticipantInfoDto>? = null
 )
 
