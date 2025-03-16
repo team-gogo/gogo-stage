@@ -11,3 +11,7 @@ data class MatchApiInfoDto(
 data class StageApiInfoDto(
     val maintainers: List<Long>
 )
+
+data class MatchToggleDto(
+    val isNotice: Boolean
+)
