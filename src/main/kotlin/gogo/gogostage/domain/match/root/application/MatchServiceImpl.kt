@@ -25,7 +25,8 @@ class MatchServiceImpl(
     override fun search(stageId: Long, y: Int, m: Int, d: Int): MatchSearchDto {
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)
-        return matchReader.search(stageId, student.studentId, y, m, d)
+        val matches = matchReader.search(stageId, student.studentId, y, m, d)
+        return matchMapper.mapSearch(matches, student.studentId)
     }
 
 }

@@ -1,7 +1,5 @@
 package gogo.gogostage.domain.match.root.application
 
-import gogo.gogostage.domain.match.root.application.dto.MatchInfoDto
-import gogo.gogostage.domain.match.root.application.dto.MatchSearchDto
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.global.error.StageException
@@ -18,7 +16,7 @@ class MatchReader(
         matchRepository.findByIdOrNull(matchId)
             ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
 
-    fun search(stageId: Long, studentId: Long, y: Int, m: Int, d: Int): MatchSearchDto =
+    fun search(stageId: Long, studentId: Long, y: Int, m: Int, d: Int): List<Match> =
         matchRepository.search(stageId, studentId, y, m, d)
 
 }

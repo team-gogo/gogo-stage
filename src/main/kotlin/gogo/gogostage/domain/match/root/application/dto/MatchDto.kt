@@ -37,14 +37,14 @@ data class MatchInfoDto(
 )
 
 data class MatchTeamInfoDto(
-    val teamId: Long,
+    val teamId: Long?,
     val teamName: String,
-    val bettingPoint: Long,
-    val winCount: Int,
+    val bettingPoint: Long?,
+    val winCount: Int?,
 )
 
 data class MatchBettingInfoDto(
-    val isBetting: Boolean,
+    val isBetting: Boolean?,
     val bettingPoint: Long?,
     val predictedWinTeamId: Long?,
 )
