@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.match.root.application
 
 import gogo.gogostage.domain.match.root.application.dto.MatchApiInfoDto
+import gogo.gogostage.domain.match.root.application.dto.MatchInfoDto
 import gogo.gogostage.domain.match.root.application.dto.MatchSearchDto
 import gogo.gogostage.domain.stage.root.application.StageValidator
 import gogo.gogostage.global.util.UserContextUtil
@@ -18,7 +19,7 @@ class MatchServiceImpl(
     @Transactional(readOnly = true)
     override fun matchApiInfo(matchId: Long): MatchApiInfoDto {
         val match = matchReader.read(matchId)
-        return matchMapper.mapInfo(match)
+        return matchMapper.mapApiInfo(match)
     }
 
     @Transactional(readOnly = true)
@@ -27,6 +28,14 @@ class MatchServiceImpl(
         stageValidator.validStage(student, stageId)
         val matches = matchReader.search(stageId, student.studentId, y, m, d)
         return matchMapper.mapSearch(matches, student.studentId)
+    }
+
+    @Transactional(readOnly = true)
+    override fun info(matchId: Long): MatchInfoDto {
+        val student = userUtil.getCurrentStudent()
+        val match = matchReader.info(matchId)
+        stageValidator.validStage(student, match.game.stage.id)
+        return matchMapper.mapInfo(match)
     }
 
 }
