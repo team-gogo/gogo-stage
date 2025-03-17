@@ -157,3 +157,7 @@ data class PointRankDto(
     val classNumber: Int,
     val studentNumber: Int
 )
+
+data class CheckStageMaintainerDto(
+    val isMaintainer: Boolean
+)
