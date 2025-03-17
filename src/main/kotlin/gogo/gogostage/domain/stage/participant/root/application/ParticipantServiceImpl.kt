@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.participant.root.application
 
+import gogo.gogostage.domain.stage.participant.root.application.dto.MyPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.MyTempPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.PointDto
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
@@ -29,6 +30,14 @@ class ParticipantServiceImpl(
         val stageParticipant = participantReader.readStageParticipantByStageIdAndStudentId(stage.id, student.studentId)
         val tempPointList = participantReader.readTempPointList(stageParticipant.id)
         return participantMapper.mapMyTempPointDto(tempPointList)
+    }
+
+    @Transactional(readOnly = true)
+    override fun getMyPoint(stageId: Long): MyPointDto {
+        val student = userUtil.getCurrentStudent()
+        val stage = stageReader.read(stageId)
+        val stageParticipant = participantReader.readStageParticipantByStageIdAndStudentId(stage.id, student.studentId)
+        return participantMapper.mapMyPointDto(stageParticipant.point)
     }
 
 }
