@@ -14,4 +14,6 @@ interface StageParticipantRepository: JpaRepository<StageParticipant, Long> {
     fun queryStageParticipantByStageIdAndStudentId(stageId: Long, studentId: Long): StageParticipant?
 
     fun existsByStageIdAndStudentId(stageId: Long, studentId: Long): Boolean
+
+    fun findByStageIdAndStudentId(stageId: Long, studentId: Long): StageParticipant?
 }
