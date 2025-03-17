@@ -8,4 +8,7 @@ interface StageRepository: JpaRepository<Stage, Long> {
     fun queryNotEndStageById(stageId: Long, status: StageStatus = StageStatus.END): Stage?
 
     fun findAllBySchoolId(schoolId: Long): List<Stage>
+
+    @Query("SELECT s FROM Stage s WHERE s.id IN (SELECT sp.stage.id FROM StageParticipant sp WHERE sp.studentId = :studentId)")
+    fun findMy(studentId: Long): List<Stage>
 }
