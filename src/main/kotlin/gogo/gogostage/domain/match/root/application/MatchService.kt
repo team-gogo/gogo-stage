@@ -8,4 +8,5 @@ interface MatchService {
     fun matchApiInfo(matchId: Long): MatchApiInfoDto
     fun search(stageId: Long, y: Int, m: Int, d: Int): MatchSearchDto
     fun info(matchId: Long): MatchInfoDto
+    fun me(stageId: Long): MatchSearchDto
 }
