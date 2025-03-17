@@ -53,4 +53,10 @@ class StageController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/me")
+    fun me(): ResponseEntity<QueryMyStageDto> {
+        val response = stageService.me()
+        return ResponseEntity.ok(response)
+    }
+
 }
