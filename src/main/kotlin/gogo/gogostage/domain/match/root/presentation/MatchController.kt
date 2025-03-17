@@ -31,7 +31,7 @@ class MatchController(
         @PathVariable("match_id") matchId: Long
     ): ResponseEntity<MatchToggleDto> {
         val response = matchService.toggleMatchNotice(matchId)
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response)
+        return ResponseEntity.status(HttpStatus.OK).body(response)
     }
 
 }
