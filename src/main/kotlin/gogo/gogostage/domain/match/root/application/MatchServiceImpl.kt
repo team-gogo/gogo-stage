@@ -46,8 +46,8 @@ class MatchServiceImpl(
         stageValidator.validStage(student, stageId)
         val allMatches = matchReader.readByStageId(stageId)
         val bettingBundle = bettingApi.bundle(allMatches.map{ it.id }, student.studentId)
-        val matches = matchReader.readMy(bettingBundle.bettings.map { it.matchId })
-        return matchMapper.mapMy(bettingBundle, matches)
+        val betMatches = matchReader.readMy(bettingBundle.bettings.map { it.matchId })
+        return matchMapper.mapMy(bettingBundle, betMatches)
     }
 
 }
