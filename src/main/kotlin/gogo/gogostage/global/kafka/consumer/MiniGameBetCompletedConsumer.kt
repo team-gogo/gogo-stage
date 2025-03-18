@@ -26,7 +26,7 @@ class MiniGameBetCompletedConsumer(
     @KafkaListener(
         topics = [MINIGAME_BET_COMPLETED],
         groupId = "gogo",
-        containerFactory = "batchCancelEventListenerContainerFactory"
+        containerFactory = "miniGameBetCompletedEventListenerContainerFactory"
     )
     override fun onMessage(data: ConsumerRecord<String, String>, acknowledgment: Acknowledgment?) {
         val (key, event) = data.key() to objectMapper.readValue(data.value(), MiniGameBetCompletedEvent::class.java)
