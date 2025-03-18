@@ -4,6 +4,7 @@ import gogo.gogostage.domain.match.root.application.dto.*
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
 import gogo.gogostage.global.internal.betting.api.BettingApi
+import gogo.gogostage.global.internal.betting.stub.BettingBundleDto
 import gogo.gogostage.global.internal.student.api.StudentApi
 import org.springframework.stereotype.Component
 
@@ -90,6 +91,62 @@ class MatchMapper(
         }
 
         return MatchSearchDto(count = matchInfoList.size, matches = matchInfoList)
+    }
+
+    fun mapMy(bettingBundle: BettingBundleDto, matches: List<Match>): MatchSearchDto {
+        val bettingMap = bettingBundle.bettings.associateBy { it.matchId }
+
+        val matchSearchInfoList = matches.map { match ->
+            val bettingInfo = bettingMap[match.id]
+            val bettingDto = bettingInfo?.let {
+                MatchBettingInfoDto(
+                    isBetting = true,
+                    bettingPoint = it.betting.bettingPoint,
+                    predictedWinTeamId = it.betting.predictedWinTeamId
+                )
+            }
+
+            val resultDto = bettingInfo?.result?.let {
+                MatchResultInfoDto(
+                    victoryTeamId = match.matchResult!!.victoryTeam.id,
+                    aTeamScore = match.matchResult!!.aTeamScore,
+                    bTeamScore = match.matchResult!!.bTeamScore,
+                    isPredictionSuccess = it.isPredicted,
+                    earnedPoint = it.earnedPoint
+                )
+            }
+
+            MatchSearchInfoDto(
+                matchId = match.id,
+                aTeam = MatchTeamInfoDto(
+                    teamId = match.aTeam?.id,
+                    teamName = match.aTeam?.name ?: "TBD",
+                    bettingPoint = match.aTeamBettingPoint,
+                    winCount = match.aTeam?.winCount
+                ),
+                bTeam = MatchTeamInfoDto(
+                    teamId = match.bTeam?.id,
+                    teamName = match.bTeam?.name ?: "TBD",
+                    bettingPoint = match.bTeamBettingPoint,
+                    winCount = match.bTeam?.winCount
+                ),
+                startDate = match.startDate,
+                endDate = match.endDate,
+                isEnd = match.isEnd,
+                round = match.round,
+                category = match.game.category,
+                gameName = match.game.name,
+                system = match.game.system,
+                turn = match.turn,
+                betting = bettingDto,
+                result = resultDto
+            )
+        }
+
+        return MatchSearchDto(
+            count = matchSearchInfoList.size,
+            matches = matchSearchInfoList
+        )
     }
 
     fun mapInfo(match: Match): MatchInfoDto {

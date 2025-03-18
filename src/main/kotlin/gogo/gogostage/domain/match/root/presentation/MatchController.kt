@@ -34,6 +34,14 @@ class MatchController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/match/me/{stage_id}")
+    fun me(
+        @PathVariable("stage_id") stageId: Long,
+    ): ResponseEntity<MatchSearchDto> {
+        val response = matchService.me(stageId)
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping("/match/info/{match_id}")
     fun info(
         @PathVariable("match_id") matchId: Long,
