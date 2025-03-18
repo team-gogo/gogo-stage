@@ -4,15 +4,17 @@ import gogo.gogostage.domain.match.root.application.dto.*
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
 import gogo.gogostage.global.internal.betting.api.BettingApi
+import gogo.gogostage.global.internal.student.api.StudentApi
 import org.springframework.stereotype.Component
 
 @Component
 class MatchMapper(
     private val maintainerRepository: StageMaintainerRepository,
-    private val bettingApi: BettingApi
+    private val bettingApi: BettingApi,
+    private val studentApi: StudentApi,
 ) {
 
-    fun mapInfo(match: Match): MatchApiInfoDto {
+    fun mapApiInfo(match: Match): MatchApiInfoDto {
 
         val stage = match.game.stage
         val maintainers = maintainerRepository.findByStage(stage)
@@ -50,7 +52,7 @@ class MatchMapper(
                 )
             }
 
-            MatchInfoDto(
+            MatchSearchInfoDto(
                 matchId = matchEntity.id,
                 aTeam = MatchTeamInfoDto(
                     teamId = matchEntity.aTeam?.id,
@@ -88,6 +90,62 @@ class MatchMapper(
         }
 
         return MatchSearchDto(count = matchInfoList.size, matches = matchInfoList)
+    }
+
+    fun mapInfo(match: Match): MatchInfoDto {
+        val aTeamStudents = studentApi.queryByStudentsIds(match.aTeam?.participants!!.map { it.studentId })
+        val bTeamStudents = studentApi.queryByStudentsIds(match.bTeam?.participants!!.map { it.studentId })
+
+        val aTeamDto = match.aTeam?.participants!!.map { match ->
+            val studentDto = aTeamStudents.students.find { it.studentId == match.studentId }
+            MatchTeamParticipantInfoDto(
+                studentId = match.studentId,
+                name = studentDto!!.name,
+                classNumber = studentDto.classNumber,
+                studentNumber = studentDto.classNumber,
+                positionX = match.positionX,
+                positionY = match.positionY
+            )
+        }
+
+        val bTeamDto = match.bTeam?.participants!!.map { match ->
+            val studentDto = bTeamStudents.students.find { it.studentId == match.studentId }
+            MatchTeamParticipantInfoDto(
+                studentId = match.studentId,
+                name = studentDto!!.name,
+                classNumber = studentDto.classNumber,
+                studentNumber = studentDto.classNumber,
+                positionX = match.positionX,
+                positionY = match.positionY
+            )
+        }
+
+        return MatchInfoDto(
+            matchId = match.id,
+            aTeam = MatchTeamInfoDto(
+                teamId = match.aTeam?.id,
+                teamName = if (match.aTeam != null) match.aTeam!!.name else "TBD",
+                winCount = match.aTeam?.winCount,
+                bettingPoint = match.aTeamBettingPoint,
+                participants = aTeamDto
+            ),
+            bTeam = MatchTeamInfoDto(
+                teamId = match.bTeam?.id,
+                teamName = if (match.bTeam != null) match.bTeam!!.name else "TBD",
+                winCount = match.bTeam?.winCount,
+                bettingPoint = match.bTeamBettingPoint,
+                participants = bTeamDto
+            ),
+            startDate = match.startDate,
+            endDate = match.endDate,
+            isEnd = match.isEnd,
+            round = match.round,
+            category = match.game.category,
+            system = match.game.system,
+            gameName = match.game.name,
+            turn = match.turn,
+        )
+
     }
 
 }

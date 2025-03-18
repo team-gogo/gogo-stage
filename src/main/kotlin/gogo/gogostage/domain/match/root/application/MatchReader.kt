@@ -19,4 +19,8 @@ class MatchReader(
     fun search(stageId: Long, studentId: Long, y: Int, m: Int, d: Int): List<Match> =
         matchRepository.search(stageId, studentId, y, m, d)
 
+    fun info(matchId: Long): Match =
+        matchRepository.info(matchId)
+            ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
+
 }

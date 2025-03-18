@@ -1,8 +1,11 @@
 package gogo.gogostage.domain.match.root.persistence
 
+import com.querydsl.core.types.Projections
 import com.querydsl.jpa.JPQLQueryFactory
 import gogo.gogostage.domain.game.persistence.QGame.*
 import gogo.gogostage.domain.match.result.persistence.QMatchResult.*
+import gogo.gogostage.domain.match.root.application.dto.MatchInfoDto
+import gogo.gogostage.domain.match.root.application.dto.MatchTeamInfoDto
 import gogo.gogostage.domain.match.root.persistence.QMatch.*
 import gogo.gogostage.domain.stage.root.persistence.QStage.*
 import org.springframework.stereotype.Repository
@@ -29,5 +32,16 @@ class MatchCustomRepositoryImpl(
                     ))
             )
             .fetch()
+
+    override fun info(matchId: Long): Match? =
+        queryFactory
+            .selectFrom(match)
+            .leftJoin(match.matchResult, matchResult).fetchJoin()
+            .join(match.game, game).fetchJoin()
+            .join(game.stage, stage).fetchJoin()
+            .leftJoin(match.aTeam).fetchJoin()
+            .leftJoin(match.bTeam).fetchJoin()
+            .where(match.id.eq(matchId))
+            .fetchOne()
 
 }

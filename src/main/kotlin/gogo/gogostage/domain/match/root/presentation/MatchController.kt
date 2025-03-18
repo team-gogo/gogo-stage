@@ -2,6 +2,7 @@ package gogo.gogostage.domain.match.root.presentation
 
 import gogo.gogostage.domain.match.root.application.MatchService
 import gogo.gogostage.domain.match.root.application.dto.MatchApiInfoDto
+import gogo.gogostage.domain.match.root.application.dto.MatchInfoDto
 import gogo.gogostage.domain.match.root.application.dto.MatchSearchDto
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotNull
@@ -30,6 +31,14 @@ class MatchController(
         @RequestParam @Valid @NotNull d: Int,
     ): ResponseEntity<MatchSearchDto> {
         val response = matchService.search(stageId, y, m, d)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/match/info/{match_id}")
+    fun info(
+        @PathVariable("match_id") matchId: Long,
+    ): ResponseEntity<MatchInfoDto> {
+        val response = matchService.info(matchId)
         return ResponseEntity.ok(response)
     }
 
