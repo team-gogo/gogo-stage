@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.team.root.application
 
 import gogo.gogostage.domain.game.application.GameReader
+import gogo.gogostage.domain.stage.root.application.StageValidator
 import gogo.gogostage.domain.team.root.application.dto.GameTeamResDto
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
 import gogo.gogostage.domain.team.root.application.dto.TeamInfoDto
@@ -16,6 +17,7 @@ class TeamServiceImpl(
     private val teamProcessor: TeamProcessor,
     private val teamReader: TeamReader,
     private val teamMapper: TeamMapper,
+    private val stageValidator: StageValidator
 ) : TeamService {
 
     @Transactional
@@ -31,7 +33,7 @@ class TeamServiceImpl(
     override fun getGameTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
-        teamValidator.validStageParticipant(student.studentId, game.stage.id)
+        stageValidator.validStage(student, game.stage.id)
         val teams = teamReader.readParticipatingTeamByGameId(game.id, true)
         return teamMapper.mapGameTeam(teams)
     }
@@ -40,7 +42,7 @@ class TeamServiceImpl(
     override fun getGameTempTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
-        teamValidator.validStageParticipant(student.studentId, game.stage.id)
+        stageValidator.validStage(student, game.stage.id)
         val tempTeams = teamReader.readParticipatingTeamByGameId(game.id, false)
         return teamMapper.mapGameTeam(tempTeams)
     }
@@ -49,7 +51,7 @@ class TeamServiceImpl(
     override fun getTeamInfo(teamId: Long): TeamInfoDto {
         val student = userUtil.getCurrentStudent()
         val team = teamReader.read(teamId)
-        teamValidator.validStageParticipant(student.studentId, team.game.stage.id)
+        stageValidator.validStage(student, team.game.stage.id)
         return teamReader.readTeamInfo(team)
     }
 

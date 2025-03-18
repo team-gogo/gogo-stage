@@ -17,7 +17,7 @@ class Team(
     val game: Game,
 
     @Column(name = "win_count", nullable = false)
-    val winCount: Int = 0,
+    var winCount: Int = 0,
 
     @Column(name = "name", nullable = false)
     val name: String,
@@ -48,6 +48,10 @@ class Team(
             this.isParticipating = true
             return 1
         }
+    }
+
+    fun addWinCount() {
+        this.winCount++
     }
 
 }
