@@ -36,6 +36,7 @@ class StageServiceImpl(
                     isCoinTossActive = stage.isActiveMiniGame,
                     coinTossMaxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                     coinTossMinBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                    coinTossInitialTicketCount = dto.miniGame.coinToss.initialTicketCount,
                 )
             )
         )
@@ -84,6 +85,20 @@ class StageServiceImpl(
     override fun getPointRank(stageId: Long, page: Int, size: Int): StageParticipantPointRankDto {
         val stage = stageReader.read(stageId)
         return stageReader.readPointRank(stage, page, size)
+    }
+
+    @Transactional(readOnly = true)
+    override fun queryAll(): QueryStageDto {
+        val student = userUtil.getCurrentStudent()
+        val stages = stageReader.readAllBySchoolId(student.schoolId)
+        return stageMapper.mapAll(stages, student.studentId)
+    }
+
+    @Transactional(readOnly = true)
+    override fun me(): QueryMyStageDto {
+        val student = userUtil.getCurrentStudent()
+        val stages = stageReader.readMy(student.studentId)
+        return stageMapper.mapMy(stages, student.studentId)
     }
 
 }

@@ -7,5 +7,7 @@ interface StageService {
     fun createOfficial(dto: CreateOfficialStageDto)
     fun join(stageId: Long, dto: StageJoinDto)
     fun confirm(stageId: Long, dto: StageConfirmDto)
+    fun queryAll(): QueryStageDto
+    fun me(): QueryMyStageDto
     fun getPointRank(stageId: Long, page: Int, size: Int): StageParticipantPointRankDto
 }
