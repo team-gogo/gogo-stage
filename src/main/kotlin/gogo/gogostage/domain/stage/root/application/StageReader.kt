@@ -11,4 +11,6 @@ class StageReader(
 
     fun read(schoolId: Long): List<Stage> = stageRepository.findAllBySchoolId(schoolId)
 
+    fun readMy(studentId: Long): List<Stage> = stageRepository.findMy(studentId)
+
 }

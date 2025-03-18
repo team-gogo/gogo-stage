@@ -8,4 +8,5 @@ interface StageService {
     fun join(stageId: Long, dto: StageJoinDto)
     fun confirm(stageId: Long, dto: StageConfirmDto)
     fun queryAll(): QueryStageDto
+    fun me(): QueryMyStageDto
 }

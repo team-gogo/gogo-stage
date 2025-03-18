@@ -88,4 +88,11 @@ class StageServiceImpl(
         return stageMapper.mapAll(stages, student.studentId)
     }
 
+    @Transactional(readOnly = true)
+    override fun me(): QueryMyStageDto {
+        val student = userUtil.getCurrentStudent()
+        val stages = stageReader.readMy(student.studentId)
+        return stageMapper.mapMy(stages, student.studentId)
+    }
+
 }

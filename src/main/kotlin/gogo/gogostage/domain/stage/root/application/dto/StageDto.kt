@@ -157,3 +157,15 @@ data class QueryStageInfoDto(
     val isMaintainer: Boolean,
     val isPassCode: Boolean,
 )
+
+data class QueryMyStageDto(
+    val stages: List<QueryMyStageInfoDto>
+)
+
+data class QueryMyStageInfoDto(
+    val stageId: Long,
+    val stageName: String,
+    val type: StageType,
+    val status: StageStatus,
+    val isMaintaining: Boolean
+)
