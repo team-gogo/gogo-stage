@@ -1,9 +1,6 @@
 package gogo.gogostage.domain.stage.root.application
 
-import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
-import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
-import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
-import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
+import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.global.error.StageException
@@ -22,6 +19,7 @@ class StageServiceImpl(
     private val stageMapper: StageMapper,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val stageRepository: StageRepository,
+    private val stageReader: StageReader,
 ) : StageService {
 
     @Transactional
@@ -38,6 +36,7 @@ class StageServiceImpl(
                     isCoinTossActive = stage.isActiveMiniGame,
                     coinTossMaxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                     coinTossMinBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                    coinTossInitialTicketCount = dto.miniGame.coinToss.initialTicketCount,
                 )
             )
         )
@@ -80,6 +79,20 @@ class StageServiceImpl(
                 stageId = stage.id,
             )
         )
+    }
+
+    @Transactional(readOnly = true)
+    override fun queryAll(): QueryStageDto {
+        val student = userUtil.getCurrentStudent()
+        val stages = stageReader.read(student.schoolId)
+        return stageMapper.mapAll(stages, student.studentId)
+    }
+
+    @Transactional(readOnly = true)
+    override fun me(): QueryMyStageDto {
+        val student = userUtil.getCurrentStudent()
+        val stages = stageReader.readMy(student.studentId)
+        return stageMapper.mapMy(stages, student.studentId)
     }
 
 }

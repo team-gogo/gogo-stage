@@ -5,6 +5,7 @@ import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.participant.root.event.TicketPointMinusEvent
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.kafka.consumer.dto.MiniGameBetCompletedEvent
 import gogo.gogostage.global.kafka.consumer.dto.TicketShopBuyEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpStatus
@@ -60,6 +61,20 @@ class ParticipateProcessor(
                 purchaseQuantity = event.purchaseQuantity,
             )
         )
+    }
+
+    @Transactional
+    fun minigameBetting(event: MiniGameBetCompletedEvent) {
+        val stageParticipant =
+            stageParticipantRepository.queryStageParticipantByStageIdAndStudentId(event.stageId, event.studentId)
+                ?: throw StageException("Stage Participant Not Found, Stage id = ${event.stageId}, Student id = ${event.studentId}", HttpStatus.NOT_FOUND.value())
+
+        if (event.isWin) {
+            stageParticipant.plusPoint(event.earnedPoint)
+        } else {
+            stageParticipant.minusPoint(event.lostedPoint)
+        }
+        stageParticipantRepository.save(stageParticipant)
     }
 
     private fun updateMatchBettingPointTeam(
