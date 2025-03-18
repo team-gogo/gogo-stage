@@ -54,7 +54,10 @@ class StageProcessor(
         stageRuleRepository.save(stageRule)
 
         val maintainers =
-            dto.maintainer.map { StageMaintainer.of(stage, it) } + StageMaintainer.of(stage, student.studentId)
+            dto.maintainer.toSet().toList()
+                .filter { student.studentId != it }
+                .map { StageMaintainer.of(stage, it) } +
+                    StageMaintainer.of(stage, student.studentId)
         stageMaintainerRepository.saveAll(maintainers)
 
         val gameDto = dto.game
@@ -83,7 +86,10 @@ class StageProcessor(
         stageRuleRepository.save(stageRule)
 
         val maintainers =
-            dto.maintainer.map { StageMaintainer.of(stage, it) } + StageMaintainer.of(stage, student.studentId)
+            dto.maintainer.toSet().toList()
+                .filter { student.studentId != it }
+                .map { StageMaintainer.of(stage, it) } +
+                    StageMaintainer.of(stage, student.studentId)
         stageMaintainerRepository.saveAll(maintainers)
 
         val games = dto.game.map { Game.of(stage, it.category, it.name, it.system, it.teamMinCapacity, it.teamMaxCapacity) }

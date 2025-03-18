@@ -98,6 +98,7 @@ data class MiniGameInfoDto(
     val isActive: Boolean,
     val maxBettingPoint: Long?,
     val minBettingPoint: Long?,
+    val initialTicketCount: Int?
 )
 
 data class StageJoinDto(

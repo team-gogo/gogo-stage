@@ -38,6 +38,7 @@ class StageServiceImpl(
                     isCoinTossActive = stage.isActiveMiniGame,
                     coinTossMaxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                     coinTossMinBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                    coinTossInitialTicketCount = dto.miniGame.coinToss.initialTicketCount,
                 )
             )
         )
