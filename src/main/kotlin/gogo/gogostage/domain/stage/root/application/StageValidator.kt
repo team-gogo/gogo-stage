@@ -7,17 +7,31 @@ import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
 import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
+import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.domain.stage.root.persistence.StageStatus
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
 @Component
 class StageValidator(
     private val stageParticipantRepository: StageParticipantRepository,
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
+    private val stageRepository: StageRepository
 ) {
+
+    fun validStage(student: StudentByIdStub, stageId: Long) {
+        val stage = (stageRepository.findByIdOrNull(stageId)
+            ?: throw StageException("Stage Not Found, Stage Id = $stageId", HttpStatus.NOT_FOUND.value()))
+
+        val isParticipate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
+
+        if (student.schoolId != stage.schoolId || isParticipate.not()) {
+            throw StageException("해당 스테이지에 참여하지 않았습니다.", HttpStatus.FORBIDDEN.value())
+        }
+    }
 
     fun validFast(dto: CreateFastStageDto) {
         if (dto.maintainer.size > 5) {
@@ -43,7 +57,7 @@ class StageValidator(
             throw StageException("입장 코드가 올바르지 않습니다.", HttpStatus.BAD_REQUEST.value())
         }
 
-        val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, stage.studentId)
+        val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
         if (isDuplicate) {
             throw StageException("이미 해당 스테이지에 참여 했습니다.", HttpStatus.BAD_REQUEST.value())
         }

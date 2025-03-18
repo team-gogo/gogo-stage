@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.match.root.persistence
 
 import gogo.gogostage.domain.game.persistence.Game
+import gogo.gogostage.domain.match.result.persistence.MatchResult
 import gogo.gogostage.domain.team.root.persistence.Team
 import gogo.gogostage.global.error.StageException
 import jakarta.persistence.*
@@ -51,6 +52,9 @@ class Match(
 
     @Column(name = "b_team_betting_point", nullable = false)
     var bTeamBettingPoint: Long = 0,
+
+    @OneToOne(mappedBy = "match", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val matchResult: MatchResult? = null
 ) {
 
     companion object {
