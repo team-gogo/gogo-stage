@@ -3,6 +3,8 @@ package gogo.gogostage.domain.stage.root.application.dto
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
+import gogo.gogostage.domain.stage.root.persistence.StageStatus
+import gogo.gogostage.domain.stage.root.persistence.StageType
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -138,4 +140,20 @@ data class StageConfirmGameFullLeagueDto(
     val leagueTurn: Int,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime
+)
+
+data class QueryStageDto(
+    val count: Int,
+    val stages: List<QueryStageInfoDto>
+)
+
+data class QueryStageInfoDto(
+    val stageId: Long,
+    val stageName: String,
+    val type: StageType,
+    val status: StageStatus,
+    val participantCount: Int,
+    val isParticipating: Boolean,
+    val isMaintainer: Boolean,
+    val isPassCode: Boolean,
 )

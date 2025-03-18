@@ -1,6 +1,8 @@
 package gogo.gogostage.domain.stage.root.application
 
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
+import gogo.gogostage.domain.stage.root.application.dto.QueryStageDto
+import gogo.gogostage.domain.stage.root.application.dto.QueryStageInfoDto
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import org.springframework.stereotype.Component
@@ -8,6 +10,23 @@ import java.util.*
 
 @Component
 class StageMapper {
+
+    fun mapAll(stages: List<Stage>, studentId: Long): QueryStageDto =
+        QueryStageDto(
+            count = stages.size,
+            stages.map {
+                QueryStageInfoDto(
+                    stageId = it.id,
+                    stageName = it.name,
+                    type = it.type,
+                    status = it.status,
+                    participantCount = it.participantCount,
+                    isParticipating = it.participant.any { p -> p.studentId == studentId },
+                    isMaintainer = it.maintainer.any { p -> p.studentId == studentId },
+                    isPassCode = it.passCode.isNullOrBlank().not(),
+                )
+            }
+        )
 
     fun mapCreateOfficialEvent(
         stage: Stage,
