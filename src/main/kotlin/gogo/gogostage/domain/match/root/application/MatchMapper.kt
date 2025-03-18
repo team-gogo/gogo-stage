@@ -108,9 +108,9 @@ class MatchMapper(
 
             val resultDto = bettingInfo?.result?.let {
                 MatchResultInfoDto(
-                    victoryTeamId = match.matchResult?.victoryTeam?.id ?: 0L,
-                    aTeamScore = match.matchResult?.aTeamScore ?: 0,
-                    bTeamScore = match.matchResult?.bTeamScore ?: 0,
+                    victoryTeamId = match.matchResult!!.victoryTeam.id,
+                    aTeamScore = match.matchResult!!.aTeamScore,
+                    bTeamScore = match.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
                     earnedPoint = it.earnedPoint
                 )
