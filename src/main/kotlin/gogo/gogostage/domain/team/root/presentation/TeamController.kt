@@ -4,7 +4,7 @@ import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
 
 import gogo.gogostage.domain.team.root.application.TeamService
 import gogo.gogostage.domain.team.root.application.dto.GameTeamResDto
-import gogo.gogostage.domain.team.root.application.dto.TeamInfoDto
+import gogo.gogostage.domain.team.root.persistence.Team
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -43,14 +43,6 @@ class TeamController(
         @PathVariable("game_id") gameId: Long
     ): ResponseEntity<GameTeamResDto> {
         val response = teamService.getGameTempTeam(gameId)
-        return ResponseEntity.ok(response)
-    }
-
-    @GetMapping("/team/info/{team_id}")
-    fun getTeamInfo(
-        @PathVariable("team_id") teamId: Long
-    ): ResponseEntity<TeamInfoDto> {
-        val response = teamService.getTeamInfo(teamId)
         return ResponseEntity.ok(response)
     }
 

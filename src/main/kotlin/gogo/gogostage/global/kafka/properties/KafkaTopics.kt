@@ -14,4 +14,6 @@ object KafkaTopics {
     const val STAGE_CREATE_OFFICIAL = "stage_create_official"
     const val STAGE_CREATE_FAST = "stage_create_fast"
     const val STAGE_CONFIRM = "stage_confirm"
+    const val MINIGAME_BET_COMPLETED = "minigame_bet_completed"
+    const val MINIGAME_BET_COMPLETED_FAILED = "minigame_bet_completed_failed"
 }

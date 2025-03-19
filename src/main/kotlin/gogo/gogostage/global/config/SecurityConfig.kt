@@ -54,9 +54,18 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/confirm/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/team/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/team/temp/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/game/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/me").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/team/info/{team_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/rank/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.PATCH, "/stage/match/notice/{match_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+
+            // match
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/search/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/me/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/info/{match_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/team/temp/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // community
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
@@ -69,6 +78,7 @@ class SecurityConfig(
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").permitAll()
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/participant/{stage_id}").permitAll()
 
             httpRequests.anyRequest().denyAll()
         }

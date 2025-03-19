@@ -17,10 +17,12 @@ class StageReader(
     fun read(stageId: Long) =
         stageRepository.findByIdOrNull(stageId)
             ?: throw StageException("Stage Not Found, stageId = $stageId", HttpStatus.NOT_FOUND.value())
+    fun readAllBySchoolId(schoolId: Long): List<Stage> = stageRepository.findAllBySchoolId(schoolId)
 
     fun readPointRank(stage: Stage, page: Int, size: Int): StageParticipantPointRankDto {
         val pageRequest = PageRequest.of(page, size)
         return stageRepository.queryPointRank(stage, pageRequest, size)
     }
+    fun readMy(studentId: Long): List<Stage> = stageRepository.findMy(studentId)
 
 }
