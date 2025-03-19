@@ -57,6 +57,18 @@ class StageController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping
+    fun all(): ResponseEntity<QueryStageDto> {
+        val response = stageService.queryAll()
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/me")
+    fun me(): ResponseEntity<QueryMyStageDto> {
+        val response = stageService.me()
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping("/maintainer/me/{stage_id}")
     fun checkMeStageMaintainer(
         @PathVariable("stage_id") stageId: Long,
