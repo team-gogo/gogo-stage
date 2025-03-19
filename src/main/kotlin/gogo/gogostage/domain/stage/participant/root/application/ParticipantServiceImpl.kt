@@ -1,10 +1,9 @@
 package gogo.gogostage.domain.stage.participant.root.application
 
 import gogo.gogostage.domain.stage.participant.root.application.dto.MyTempPointDto
+import gogo.gogostage.domain.stage.participant.root.application.dto.IsParticipantDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.PointDto
-import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.StageReader
-import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +16,7 @@ class ParticipantServiceImpl(
     private val userUtil: UserContextUtil,
 ) : ParticipantService {
 
+    @Transactional(readOnly = true)
     override fun queryPoint(stageId: Long, studentId: Long): PointDto {
         val participant = participantReader.read(stageId, studentId)
         return participantMapper.mapPoint(participant)
@@ -29,6 +29,12 @@ class ParticipantServiceImpl(
         val stageParticipant = participantReader.readStageParticipantByStageIdAndStudentId(stage.id, student.studentId)
         val tempPointList = participantReader.readTempPointList(stageParticipant.id)
         return participantMapper.mapMyTempPointDto(tempPointList)
+    }
+
+    @Transactional(readOnly = true)
+    override fun isParticipant(stageId: Long, studentId: Long): IsParticipantDto {
+        val isParticipant = participantReader.isParticipant(stageId, studentId)
+        return IsParticipantDto(isParticipant)
     }
 
 }

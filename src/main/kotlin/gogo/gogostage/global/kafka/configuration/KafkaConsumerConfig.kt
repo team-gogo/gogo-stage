@@ -17,6 +17,10 @@ class KafkaConsumerConfig(
 ) {
 
     @Bean
+    fun miniGameBetCompletedEventListenerContainerFactory(listener: MiniGameBetCompletedConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
+        makeFactory(listener)
+
+    @Bean
     fun ticketAdditionFailedEventListenerContainerFactory(listener: TicketAdditionFailedConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
         makeFactory(listener)
 

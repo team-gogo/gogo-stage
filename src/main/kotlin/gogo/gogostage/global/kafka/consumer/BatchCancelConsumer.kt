@@ -1,13 +1,11 @@
 package gogo.gogostage.global.kafka.consumer
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import gogo.gogostage.domain.match.root.application.MatchProcessor
 import gogo.gogostage.domain.stage.participant.temppoint.application.TempPointProcessor
-import gogo.gogostage.global.kafka.consumer.dto.BatchAdditionTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelDeleteTempPointFailedEvent
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
-import gogo.gogostage.global.kafka.consumer.dto.MatchBatchEvent
 import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_CANCEL
-import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BATCH
 import gogo.gogostage.global.kafka.publisher.StagePublisher
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
@@ -20,8 +18,8 @@ import java.util.*
 @Service
 class BatchCancelConsumer(
     private val objectMapper: ObjectMapper,
-    private val tempPointProcessor: TempPointProcessor,
-    private val stagePublisher: StagePublisher
+    private val stagePublisher: StagePublisher,
+    private val matchProcessor: MatchProcessor
 ) : AcknowledgingMessageListener<String, String> {
 
     private val log = LoggerFactory.getLogger(this::class.java.simpleName)
@@ -37,7 +35,7 @@ class BatchCancelConsumer(
 
         try {
 
-            tempPointProcessor.deleteTempPoint(event)
+            matchProcessor.cancelBatch(event)
 
         } catch (e: Exception) {
             log.error("Failed to Batch Addition Temp Point, Batch Id = ${event.batchId}", e)

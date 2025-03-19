@@ -1,8 +1,8 @@
 package gogo.gogostage.domain.stage.root.application
 
-import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainer
 import gogo.gogostage.domain.stage.root.application.dto.CheckStageMaintainerDto
 import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
+import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.Stage
 import org.springframework.stereotype.Component
@@ -10,6 +10,36 @@ import java.util.*
 
 @Component
 class StageMapper {
+
+    fun mapAll(stages: List<Stage>, studentId: Long): QueryStageDto =
+        QueryStageDto(
+            count = stages.size,
+            stages.map {
+                QueryStageInfoDto(
+                    stageId = it.id,
+                    stageName = it.name,
+                    type = it.type,
+                    status = it.status,
+                    participantCount = it.participantCount,
+                    isParticipating = it.participant.any { p -> p.studentId == studentId },
+                    isMaintainer = it.maintainer.any { p -> p.studentId == studentId },
+                    isPassCode = it.passCode.isNullOrBlank().not(),
+                )
+            }
+        )
+
+    fun mapMy(stages: List<Stage>, studentId: Long): QueryMyStageDto =
+        QueryMyStageDto(
+            stages.map {
+                QueryMyStageInfoDto(
+                        stageId = it.id,
+                        stageName = it.name,
+                        type = it.type,
+                        status = it.status,
+                        isMaintaining = it.maintainer.any { m -> m.studentId == studentId },
+                )
+            }
+        )
 
     fun mapCreateOfficialEvent(
         stage: Stage,
@@ -22,16 +52,19 @@ class StageMapper {
                 isActive = dto.miniGame.coinToss.isActive,
                 maxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
                 minBettingPoint = dto.miniGame.coinToss.minBettingPoint,
+                initialTicketCount = dto.miniGame.coinToss.initialTicketCount,
             ),
             yavarwee = OfficialStageMiniGameInfoDto(
                 isActive = dto.miniGame.yavarwee.isActive,
                 maxBettingPoint = dto.miniGame.yavarwee.maxBettingPoint,
                 minBettingPoint = dto.miniGame.yavarwee.minBettingPoint,
+                initialTicketCount = dto.miniGame.yavarwee.initialTicketCount,
             ),
             plinko = OfficialStageMiniGameInfoDto(
                 isActive = dto.miniGame.plinko.isActive,
                 maxBettingPoint = dto.miniGame.plinko.maxBettingPoint,
                 minBettingPoint = dto.miniGame.plinko.minBettingPoint,
+                initialTicketCount = dto.miniGame.plinko.initialTicketCount,
             )
         ),
         shop = OfficialStageShopDto(

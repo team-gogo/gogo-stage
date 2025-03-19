@@ -35,21 +35,16 @@ class Game(
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "first_place_team_id", nullable = true)
-    val firstPlaceTeam: Team? = null,
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "second_place_team_id", nullable = true)
-    val secondPlaceTeam: Team? = null,
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "third_place_team_id", nullable = true)
-    val thirdPlaceTeam: Team? = null,
+    var firstPlaceTeam: Team? = null,
 
     @Column(name = "team_count", nullable = false)
-    val teamCount: Int = 0,
+    val teamCount: Int = 0, // 팀 신청시 ++
+
+    @Column(name = "league_count", nullable = true)
+    var leagueCount: Int? = null,
 
     @Column(name = "is_end", nullable = false)
-    val isEnd: Boolean = false
+    var isEnd: Boolean = false
 ){
     companion object {
 
@@ -70,6 +65,21 @@ class Game(
         )
 
     }
+
+    fun updateLeagueCount(leagueCount: Int) {
+        this.leagueCount = leagueCount
+    }
+
+    fun end(firstPlaceTeam: Team?) {
+        this.isEnd = true
+        this.firstPlaceTeam = firstPlaceTeam
+    }
+
+    fun endRollBack() {
+        this.isEnd = false
+        this.firstPlaceTeam = null
+    }
+
 }
 
 enum class GameCategory {
