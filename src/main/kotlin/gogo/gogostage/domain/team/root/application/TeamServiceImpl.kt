@@ -41,7 +41,7 @@ class TeamServiceImpl(
     override fun getGameTempTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
-        teamValidator.validStageParticipant(student.studentId, game.stage.id)
+        stageValidator.validStage(student, game.stage.id)
         val tempTeams = teamReader.readParticipatingTeamByGameId(game.id, false)
         return teamMapper.mapGameTeam(tempTeams)
     }
