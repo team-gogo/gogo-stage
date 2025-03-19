@@ -38,4 +38,12 @@ class TeamController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/team/temp/{game_id}")
+    fun getGameTempTeam(
+        @PathVariable("game_id") gameId: Long
+    ): ResponseEntity<GameTeamResDto> {
+        val response = teamService.getGameTempTeam(gameId)
+        return ResponseEntity.ok(response)
+    }
+
 }
