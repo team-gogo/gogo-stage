@@ -125,4 +125,15 @@ class StageValidator(
         }
     }
 
+    fun validStage(student: StudentByIdStub, stageId: Long) {
+        val stage = (stageRepository.findByIdOrNull(stageId)
+            ?: throw StageException("Stage Not Found, Stage Id = $stageId", HttpStatus.NOT_FOUND.value()))
+
+        val isParticipate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
+
+        if (student.schoolId != stage.schoolId || isParticipate.not()) {
+            throw StageException("해당 스테이지에 참여하지 않았습니다.", HttpStatus.FORBIDDEN.value())
+        }
+    }
+
 }

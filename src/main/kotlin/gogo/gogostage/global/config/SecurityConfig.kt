@@ -52,6 +52,7 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/join/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/team/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/confirm/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/team/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/game/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/me").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
