@@ -52,3 +52,10 @@ spring:
     listener:
       ack-mode: manual
       poll-timeout: 5000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ['prometheus', 'info']
+
