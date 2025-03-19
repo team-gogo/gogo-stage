@@ -38,6 +38,8 @@ class LoggingFilter : OncePerRequestFilter() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+
+            return
         }
 
         val requestWrapper = ContentCachingRequestWrapper(request)
