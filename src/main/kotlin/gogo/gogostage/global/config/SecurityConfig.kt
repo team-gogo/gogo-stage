@@ -76,6 +76,7 @@ class SecurityConfig(
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").permitAll()
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/participant/{stage_id}").permitAll()
 
             httpRequests.anyRequest().denyAll()
         }
