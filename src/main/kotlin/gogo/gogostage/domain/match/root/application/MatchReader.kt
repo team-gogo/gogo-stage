@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.match.root.application
 
+import gogo.gogostage.domain.match.notification.application.MatchNotificationReader
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.global.error.StageException
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class MatchReader(
+    private val matchNotificationReader: MatchNotificationReader,
     private val matchRepository: MatchRepository,
     private val bettingApi: BettingApi
 ) {
@@ -28,5 +30,9 @@ class MatchReader(
     fun info(matchId: Long): Match =
         matchRepository.info(matchId)
             ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
+
+    fun readMatchNotificationByMatchIdAndStudentId(matchId: Long, studentId: Long) =
+        matchNotificationReader.readByMatchIdAndStudentId(matchId, studentId)
+
 
 }

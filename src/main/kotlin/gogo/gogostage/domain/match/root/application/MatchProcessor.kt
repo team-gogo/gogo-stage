@@ -1,5 +1,8 @@
 package gogo.gogostage.domain.match.root.application
 
+import gogo.gogostage.domain.match.notification.persistence.MatchNotification
+import gogo.gogostage.domain.match.notification.persistence.MatchNotificationRepository
+import gogo.gogostage.domain.match.root.application.dto.MatchToggleDto
 import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.result.persistence.MatchResult
@@ -11,6 +14,7 @@ import gogo.gogostage.domain.stage.participant.temppoint.application.TempPointPr
 import gogo.gogostage.domain.team.root.persistence.Team
 import gogo.gogostage.domain.team.root.persistence.TeamRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
 import gogo.gogostage.global.kafka.consumer.dto.MatchBatchEvent
 import org.springframework.data.repository.findByIdOrNull
@@ -20,12 +24,37 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class MatchProcessor(
+    private val matchNotificationRepository: MatchNotificationRepository,
     private val matchRepository: MatchRepository,
     private val teamRepository: TeamRepository,
     private val matchResultRepository: MatchResultRepository,
     private val tempPointProcessor: TempPointProcessor,
     private val gameRepository: GameRepository
 ) {
+
+    fun toggleMatchNotification(match: Match, student: StudentByIdStub): MatchToggleDto {
+        if (matchNotificationRepository.existsByMatchIdAndStudentId(match.id, student.studentId)) {
+            val matchNotification = matchNotificationRepository.findByMatchIdAndStudentId(match.id, student.studentId)
+                ?: throw StageException("MatchNotification Not Found, matchId=${match.id}, studentId=${student.studentId}", HttpStatus.NOT_FOUND.value())
+
+            matchNotificationRepository.delete(matchNotification)
+
+            return MatchToggleDto(
+                isNotice = false
+            )
+        } else {
+            val matchNotification = MatchNotification(
+                match = match,
+                studentId = student.studentId
+            )
+
+            matchNotificationRepository.save(matchNotification)
+
+            return MatchToggleDto(
+                isNotice = true
+            )
+        }
+    }
 
     @Transactional
     fun batch(event: MatchBatchEvent) {
@@ -132,6 +161,7 @@ class MatchProcessor(
 
         tempPointProcessor.deleteTempPoint(event)
     }
+
 
     private fun gameEnd(
         match: Match,
