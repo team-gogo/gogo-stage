@@ -69,4 +69,12 @@ class StageController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/maintainer/me/{stage_id}")
+    fun checkMeStageMaintainer(
+        @PathVariable("stage_id") stageId: Long,
+    ): ResponseEntity<CheckStageMaintainerDto> {
+        val response = stageService.checkMeStageMaintainer(stageId)
+        return ResponseEntity.ok(response)
+    }
+
 }

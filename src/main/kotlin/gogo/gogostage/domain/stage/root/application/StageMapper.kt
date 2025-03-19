@@ -1,5 +1,7 @@
 package gogo.gogostage.domain.stage.root.application
 
+import gogo.gogostage.domain.stage.root.application.dto.CheckStageMaintainerDto
+import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.Stage
@@ -83,5 +85,10 @@ class StageMapper {
             ),
         )
     )
+
+    fun mapCheckMaintainerDto(isMaintainer: Boolean) =
+        CheckStageMaintainerDto(
+            isMaintainer = isMaintainer,
+        )
 
 }

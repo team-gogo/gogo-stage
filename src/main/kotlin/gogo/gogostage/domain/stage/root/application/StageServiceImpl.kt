@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.root.application
 
+import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
 import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
@@ -19,7 +20,8 @@ class StageServiceImpl(
     private val stageMapper: StageMapper,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val stageRepository: StageRepository,
-    private val stageReader: StageReader
+    private val stageReader: StageReader,
+    private val stageMaintainerRepository: StageMaintainerRepository
 ) : StageService {
 
     @Transactional
@@ -101,6 +103,14 @@ class StageServiceImpl(
         val student = userUtil.getCurrentStudent()
         val stages = stageReader.readMy(student.studentId)
         return stageMapper.mapMy(stages, student.studentId)
+    }
+
+    @Transactional(readOnly = true)
+    override fun checkMeStageMaintainer(stageId: Long): CheckStageMaintainerDto {
+        val student = userUtil.getCurrentStudent()
+        val stage = stageReader.read(stageId)
+        val isMaintainer = stageMaintainerRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
+        return stageMapper.mapCheckMaintainerDto(isMaintainer)
     }
 
 }

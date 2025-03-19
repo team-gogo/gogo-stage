@@ -10,4 +10,5 @@ interface StageService {
     fun queryAll(): QueryStageDto
     fun me(): QueryMyStageDto
     fun getPointRank(stageId: Long, page: Int, size: Int): StageParticipantPointRankDto
+    fun checkMeStageMaintainer(stageId: Long): CheckStageMaintainerDto
 }
