@@ -1,8 +1,11 @@
 package gogo.gogostage.domain.match.root.persistence
 
 import gogo.gogostage.domain.game.persistence.Game
+import gogo.gogostage.domain.match.result.persistence.MatchResult
 import gogo.gogostage.domain.team.root.persistence.Team
+import gogo.gogostage.global.error.StageException
 import jakarta.persistence.*
+import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
 @Entity
@@ -19,11 +22,11 @@ class Match(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "a_team_id", nullable = true)
-    val aTeam: Team? = null,
+    var aTeam: Team? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "b_team_id", nullable = true)
-    val bTeam: Team? = null,
+    var bTeam: Team? = null,
 
     @Enumerated(EnumType.STRING)
     @Column(name = "round", nullable = true)
@@ -49,6 +52,9 @@ class Match(
 
     @Column(name = "b_team_betting_point", nullable = false)
     var bTeamBettingPoint: Long = 0,
+
+    @OneToOne(mappedBy = "match", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val matchResult: MatchResult? = null
 ) {
 
     companion object {
@@ -101,6 +107,22 @@ class Match(
             leagueTurn = leagueTurn
         )
 
+    }
+
+    fun updateATeam(aTeam: Team?) {
+        if (aTeam != null && this.aTeam != null) {
+            throw StageException("A team already exists, Match Id = ${this.id}", HttpStatus.INTERNAL_SERVER_ERROR.value())
+        }
+
+        this.aTeam = aTeam
+    }
+
+    fun updateBTeam(bTeam: Team?) {
+        if (bTeam != null && this.bTeam != null) {
+            throw StageException("B team already exists, Match Id = ${this.id}", HttpStatus.INTERNAL_SERVER_ERROR.value())
+        }
+
+        this.bTeam = bTeam
     }
 
     fun end() {

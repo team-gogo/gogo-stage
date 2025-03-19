@@ -7,25 +7,39 @@ import gogo.gogostage.domain.stage.root.application.dto.CreateOfficialStageDto
 import gogo.gogostage.domain.stage.root.application.dto.StageConfirmDto
 import gogo.gogostage.domain.stage.root.application.dto.StageJoinDto
 import gogo.gogostage.domain.stage.root.persistence.Stage
+import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.domain.stage.root.persistence.StageStatus
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
 @Component
 class StageValidator(
     private val stageParticipantRepository: StageParticipantRepository,
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
+    private val stageRepository: StageRepository
 ) {
+
+    fun validStage(student: StudentByIdStub, stageId: Long) {
+        val stage = (stageRepository.findByIdOrNull(stageId)
+            ?: throw StageException("Stage Not Found, Stage Id = $stageId", HttpStatus.NOT_FOUND.value()))
+
+        val isParticipate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
+
+        if (student.schoolId != stage.schoolId || isParticipate.not()) {
+            throw StageException("해당 스테이지에 참여하지 않았습니다.", HttpStatus.FORBIDDEN.value())
+        }
+    }
 
     fun validFast(dto: CreateFastStageDto) {
         if (dto.maintainer.size > 5) {
             throw StageException("스테이지 관리자는 최대 5명까지 가능합니다.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.coinToss.isActive && dto.miniGame.coinToss.maxBettingPoint == null) {
-            throw StageException("CoinToss 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null || dto.miniGame.coinToss.initialTicketCount == null)) {
+            throw StageException("CoinToss 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
@@ -43,7 +57,7 @@ class StageValidator(
             throw StageException("입장 코드가 올바르지 않습니다.", HttpStatus.BAD_REQUEST.value())
         }
 
-        val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, stage.studentId)
+        val isDuplicate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
         if (isDuplicate) {
             throw StageException("이미 해당 스테이지에 참여 했습니다.", HttpStatus.BAD_REQUEST.value())
         }
@@ -83,19 +97,42 @@ class StageValidator(
         if (dto.shop.plinko.isActive && (dto.shop.plinko.price == null || dto.shop.plinko.quantity == null)) {
             throw StageException("Plinko 미니게임의 티켓 가격, 수량을 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
+
+        if (dto.miniGame.coinToss.isActive.not() && dto.shop.coinToss.isActive) {
+            throw StageException("CoinToss 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        if (dto.miniGame.yavarwee.isActive.not() && dto.shop.yavarwee.isActive) {
+            throw StageException("Yavarwee 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
+        if (dto.miniGame.plinko.isActive.not() && dto.shop.plinko.isActive) {
+            throw StageException("Plinko 미니게임을 활성화 하지않은 상태에서 상점을 활성화 할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
     }
 
     private fun validMiniGame(dto: CreateOfficialStageDto) {
-        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null)) {
-            throw StageException("CoinToss 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.coinToss.isActive && (dto.miniGame.coinToss.maxBettingPoint == null || dto.miniGame.coinToss.initialTicketCount == null)) {
+            throw StageException("CoinToss 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.yavarwee.isActive && (dto.miniGame.yavarwee.maxBettingPoint == null)) {
-            throw StageException("Yavarwee 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.yavarwee.isActive && (dto.miniGame.yavarwee.maxBettingPoint == null || dto.miniGame.yavarwee.initialTicketCount == null)) {
+            throw StageException("Yavarwee 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
         }
 
-        if (dto.miniGame.plinko.isActive && (dto.miniGame.plinko.maxBettingPoint == null)) {
-            throw StageException("Plinko 미니게임의 최대 배팅 포인트를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        if (dto.miniGame.plinko.isActive && (dto.miniGame.plinko.maxBettingPoint == null || dto.miniGame.plinko.initialTicketCount == null)) {
+            throw StageException("Plinko 미니게임의 최대 배팅 포인트, 초기 보유 티켓 개수를 입력하세요.", HttpStatus.BAD_REQUEST.value())
+        }
+    }
+
+    fun validStage(student: StudentByIdStub, stageId: Long) {
+        val stage = (stageRepository.findByIdOrNull(stageId)
+            ?: throw StageException("Stage Not Found, Stage Id = $stageId", HttpStatus.NOT_FOUND.value()))
+
+        val isParticipate = stageParticipantRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
+
+        if (student.schoolId != stage.schoolId || isParticipate.not()) {
+            throw StageException("해당 스테이지에 참여하지 않았습니다.", HttpStatus.FORBIDDEN.value())
         }
     }
 
