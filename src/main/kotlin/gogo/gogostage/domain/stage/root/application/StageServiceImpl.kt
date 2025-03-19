@@ -19,7 +19,7 @@ class StageServiceImpl(
     private val stageMapper: StageMapper,
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val stageRepository: StageRepository,
-    private val stageReader: StageReader,
+    private val stageReader: StageReader
 ) : StageService {
 
     @Transactional
@@ -82,9 +82,17 @@ class StageServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    override fun getPointRank(stageId: Long, page: Int, size: Int): StageParticipantPointRankDto {
+        val student = userUtil.getCurrentStudent()
+        val stage = stageReader.read(stageId)
+        stageValidator.validStage(student, stage.id)
+        return stageReader.readPointRank(stage, page, size)
+    }
+
+    @Transactional(readOnly = true)
     override fun queryAll(): QueryStageDto {
         val student = userUtil.getCurrentStudent()
-        val stages = stageReader.read(student.schoolId)
+        val stages = stageReader.readAllBySchoolId(student.schoolId)
         return stageMapper.mapAll(stages, student.studentId)
     }
 

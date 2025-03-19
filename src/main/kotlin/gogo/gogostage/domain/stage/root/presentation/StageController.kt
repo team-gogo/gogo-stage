@@ -47,6 +47,16 @@ class StageController(
         return ResponseEntity.ok().build()
     }
 
+    @GetMapping("/rank/{stage_id}")
+    fun getPointRank(
+        @PathVariable("stage_id") stageId: Long,
+        @RequestParam(required = false, defaultValue = "0") page: Int,
+        @RequestParam(required = false, defaultValue = "20") size: Int,
+    ): ResponseEntity<StageParticipantPointRankDto> {
+        val response = stageService.getPointRank(stageId, page, size)
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping
     fun all(): ResponseEntity<QueryStageDto> {
         val response = stageService.queryAll()
