@@ -25,4 +25,7 @@ class ParticipantReader(
     fun readStageParticipantByStageIdAndStudentId(stageId: Long, studentId: Long) =
         participantRepository.findByStageIdAndStudentId(stageId, studentId)
             ?: throw StageException("StageParticipant Not Found, stageId = $stageId, studentid = $studentId", HttpStatus.NOT_FOUND.value())
+    fun isParticipant(stageId: Long, studentId: Long): Boolean =
+        participantRepository.existsByStageIdAndStudentId(stageId, studentId)
+
 }

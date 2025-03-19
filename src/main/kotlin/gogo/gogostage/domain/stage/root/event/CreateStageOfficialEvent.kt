@@ -28,4 +28,5 @@ data class OfficialStageMiniGameInfoDto(
     val isActive: Boolean,
     val maxBettingPoint: Long?,
     val minBettingPoint: Long?,
+    val initialTicketCount: Int?,
 )

@@ -23,17 +23,12 @@ class StageCustomRepositoryImpl(
 
         val studentParticipants = queryFactory.selectFrom(stageParticipant)
             .where(predicate)
-            .orderBy(
-                stageParticipant.point.desc()
-            )
+            .orderBy(stageParticipant.point.desc())
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
 
-        val studentIds = queryFactory.select(stageParticipant.studentId)
-            .from(stageParticipant)
-            .where(stageParticipant.stage.id.eq(stage.id))
-            .fetch()
+        val studentIds = studentParticipants.map { it.studentId }
 
         val students = studentApi.queryByStudentsIds(studentIds).students
 

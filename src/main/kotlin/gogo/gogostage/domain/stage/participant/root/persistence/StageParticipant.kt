@@ -1,7 +1,9 @@
 package gogo.gogostage.domain.stage.participant.root.persistence
 
 import gogo.gogostage.domain.stage.root.persistence.Stage
+import gogo.gogostage.global.error.StageException
 import jakarta.persistence.*
+import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
 @Entity
@@ -37,6 +39,10 @@ class StageParticipant(
     }
 
     fun minusPoint(point: Long) {
+        if (this.point - point < 0) {
+            throw StageException("보유 포인트 보다 더 적게 배팅할 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
         this.point -= point
     }
 
