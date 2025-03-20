@@ -1,5 +1,20 @@
+
+---
+
 spring:
   application:
     name: stage-service
   config:
+    activate:
+      on-profile: local
     import: "optional:configserver:http://localhost:8888/"
+
+---
+
+spring:
+  application:
+    name: stage-service
+  config:
+    activate:
+      on-profile: stage
+    import: "optional:configserver:http://host.docker.internal:8888/"
