@@ -1,6 +1,6 @@
 FROM openjdk:17-jdk
 
-EXPOSE 8081
+EXPOSE 8082
 
 WORKDIR /home/ubuntu/gogo-stage
 
