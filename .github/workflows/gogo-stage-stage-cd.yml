@@ -59,7 +59,7 @@ jobs:
             docker stop gogo-stage-stage || true
             docker rm gogo-stage-stage || true
 
-            docker run -d -p 8081:8081 --name gogo-stage-stage gogo-stage-stage
+            docker run -d -p 8082:8082 --name gogo-stage-stage gogo-stage-stage
           EOF
 
       - name: SSH Success Notification
