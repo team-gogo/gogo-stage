@@ -9,7 +9,7 @@ data class StudentByIdStub(
     val schoolId: Long,
     val email: String,
     val name: String,
-    val deviceToken: String,
+    val deviceToken: String?,
     val sex: Sex,
     val classNumber: Int,
     val studentNumber: Int,
