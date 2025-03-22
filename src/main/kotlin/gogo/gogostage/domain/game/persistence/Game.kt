@@ -24,7 +24,7 @@ class Game(
     val name: String,
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "system", nullable = false)
+    @Column(name = "game_system", nullable = false)
     val system: GameSystem,
 
     @Column(name = "team_min_capacity", nullable = false)
