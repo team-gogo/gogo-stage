@@ -17,4 +17,4 @@ spring:
   config:
     activate:
       on-profile: stage
-    import: "optional:configserver:http://172.17.0.2:8888/"
+    import: "optional:configserver:http://host.docker.internal:8888/"
