@@ -20,7 +20,7 @@ class CommunityServiceImpl(
     @Transactional
     override fun writeCommunityBoard(stageId: Long, writeCommunityBoardDto: WriteCommunityBoardDto) {
         val student = userUtil.getCurrentStudent()
-        val community = communityReader.readByStageId(stageId)
+        val community = communityReader.readByStageIdAndGameCategory(stageId, writeCommunityBoardDto.gameCategory)
         boardProcessor.saveCommunityBoard(community, student.studentId, writeCommunityBoardDto)
 
         // 추후 욕설 필터링 요청 처리 필요
