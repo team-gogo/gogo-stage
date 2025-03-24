@@ -35,13 +35,15 @@ class MatchMapper(
 
         val matchInfoList = matches.map { matchEntity ->
             val bettingInfo = bundleDto.bettings.find { it.matchId == matchEntity.id }
+            val tempPointExpiredDate = matchEntity.endDate.plusMinutes(5)
             val resultInfo = bettingInfo?.result?.let {
                 MatchResultInfoDto(
                     victoryTeamId = matchEntity.matchResult!!.victoryTeam.id,
                     aTeamScore = matchEntity.matchResult!!.aTeamScore,
                     bTeamScore = matchEntity.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
-                    earnedPoint = it.earnedPoint
+                    earnedPoint = it.earnedPoint,
+                    tempPointExpiredDate = tempPointExpiredDate,
                 )
             } ?: matchEntity.matchResult?.let {
                 MatchResultInfoDto(
@@ -49,7 +51,8 @@ class MatchMapper(
                     aTeamScore = it.aTeamScore,
                     bTeamScore = it.bTeamScore,
                     isPredictionSuccess = null,
-                    earnedPoint = null
+                    earnedPoint = null,
+                    tempPointExpiredDate = tempPointExpiredDate,
                 )
             }
 
@@ -106,13 +109,25 @@ class MatchMapper(
                 )
             }
 
+            val tempPointExpiredDate = match.endDate.plusMinutes(5)
+
             val resultDto = bettingInfo?.result?.let {
                 MatchResultInfoDto(
                     victoryTeamId = match.matchResult!!.victoryTeam.id,
                     aTeamScore = match.matchResult!!.aTeamScore,
                     bTeamScore = match.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
-                    earnedPoint = it.earnedPoint
+                    earnedPoint = it.earnedPoint,
+                    tempPointExpiredDate = tempPointExpiredDate
+                )
+            } ?: match.matchResult?.let {
+                MatchResultInfoDto(
+                    victoryTeamId = it.victoryTeam.id,
+                    aTeamScore = it.aTeamScore,
+                    bTeamScore = it.bTeamScore,
+                    isPredictionSuccess = null,
+                    earnedPoint = null,
+                    tempPointExpiredDate = tempPointExpiredDate,
                 )
             }
 

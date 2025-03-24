@@ -84,5 +84,6 @@ data class MatchResultInfoDto(
     val aTeamScore: Int,
     val bTeamScore: Int,
     val isPredictionSuccess: Boolean?,
-    val earnedPoint: Long?
+    val earnedPoint: Long?,
+    val tempPointExpiredDate: LocalDateTime,
 )
