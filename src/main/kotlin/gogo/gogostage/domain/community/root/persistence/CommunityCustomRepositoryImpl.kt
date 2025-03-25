@@ -82,6 +82,7 @@ class CommunityCustomRepositoryImpl(
                 likeCount = board.likeCount,
                 createdAt = board.createdAt,
                 stageType = board.community.stage.type,
+                commentCount = board.commentCount,
                 author = author!!
             )
         }.toList()
