@@ -37,7 +37,7 @@ class StageServiceImpl(
                 miniGame = FastStageMiniGameDto(
                     isCoinTossActive = stage.isActiveMiniGame,
                     coinTossMaxBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
-                    coinTossMinBettingPoint = dto.miniGame.coinToss.maxBettingPoint,
+                    coinTossMinBettingPoint = dto.miniGame.coinToss.minBettingPoint,
                     coinTossInitialTicketCount = dto.miniGame.coinToss.initialTicketCount,
                 )
             )
