@@ -53,12 +53,14 @@ class StageProcessor(
         val stageRule = StageRule.of(stage, dto.rule)
         stageRuleRepository.save(stageRule)
 
-        val maintainers =
-            dto.maintainer.toSet().toList()
-                .filter { student.studentId != it }
-                .map { StageMaintainer.of(stage, it) } +
-                    StageMaintainer.of(stage, student.studentId)
-        stageMaintainerRepository.saveAll(maintainers)
+        if (dto.maintainer.isNotEmpty()) {
+            val maintainers =
+                dto.maintainer.toSet().toList()
+                    .filter { student.studentId != it }
+                    .map { StageMaintainer.of(stage, it) } +
+                        StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.saveAll(maintainers)
+        }
 
         val gameDto = dto.game
         val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system, gameDto.teamMinCapacity, gameDto.teamMaxCapacity)
@@ -85,12 +87,15 @@ class StageProcessor(
         val stageRule = StageRule.of(stage, dto.rule)
         stageRuleRepository.save(stageRule)
 
-        val maintainers =
-            dto.maintainer.toSet().toList()
-                .filter { student.studentId != it }
-                .map { StageMaintainer.of(stage, it) } +
-                    StageMaintainer.of(stage, student.studentId)
-        stageMaintainerRepository.saveAll(maintainers)
+        if (dto.maintainer.isNotEmpty()) {
+            val maintainers =
+                dto.maintainer.toSet().toList()
+                    .filter { student.studentId != it }
+                    .map { StageMaintainer.of(stage, it) } +
+                        StageMaintainer.of(stage, student.studentId)
+
+            stageMaintainerRepository.saveAll(maintainers)
+        }
 
         val games = dto.game.map { Game.of(stage, it.category, it.name, it.system, it.teamMinCapacity, it.teamMaxCapacity) }
         gameRepository.saveAll(games)

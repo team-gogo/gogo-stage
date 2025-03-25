@@ -23,7 +23,7 @@ class StageMapper {
                     participantCount = it.participantCount,
                     isParticipating = it.participant.any { p -> p.studentId == studentId },
                     isMaintainer = it.maintainer.any { p -> p.studentId == studentId },
-                    isPassCode = it.passCode.isNullOrBlank().not(),
+                    isPassCode = it.passCode != null,
                 )
             }
         )
