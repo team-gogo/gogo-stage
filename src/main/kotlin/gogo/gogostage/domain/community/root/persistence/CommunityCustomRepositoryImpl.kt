@@ -111,7 +111,7 @@ class CommunityCustomRepositoryImpl(
 
         val predicate = BooleanBuilder()
 
-        predicate.and(QBoard.board.id.eq(comment.board.id))
+        predicate.and(comment.board.id.eq(boardId))
 
         val comments = queryFactory.selectFrom(comment)
             .where(predicate)
