@@ -20,9 +20,9 @@ class CommunityReader(
     private val commentReader: CommentReader
 ) {
 
-    fun readByStageId(stageId: Long) =
-        communityRepository.findByStageId(stageId)
-            ?: throw StageException("Stage Not Found, stageId=$stageId", HttpStatus.NOT_FOUND.value())
+    fun readByStageIdAndGameCategory(stageId: Long, gameCategory: GameCategory) =
+        communityRepository.findByStageIdAndCategory(stageId, gameCategory)
+            ?: throw StageException("Community Not Found, stageId=$stageId gameCategory=$gameCategory", HttpStatus.NOT_FOUND.value())
 
     fun readBoards(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
         val pageRequest = PageRequest.of(page, size)
