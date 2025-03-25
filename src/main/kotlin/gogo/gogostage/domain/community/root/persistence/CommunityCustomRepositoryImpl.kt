@@ -86,11 +86,7 @@ class CommunityCustomRepositoryImpl(
 
         val totalElement = boardDtoList.size
 
-        val totalPage = if (totalElement % size == 0) {
-            totalElement / size
-        } else {
-            totalElement / size + 1
-        }
+        val totalPage = boardRepository.findAll(pageable).totalPages
 
         val infoDto = InfoDto(totalPage, totalElement)
 
