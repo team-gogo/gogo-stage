@@ -123,7 +123,7 @@ class CommunityCustomRepositoryImpl(
             .where(predicate)
             .fetch()
 
-        val studentIds = comments.map { it.studentId }
+        val studentIds = comments.map { it.studentId }.toSet().toList()
 
         val commentLikeIds = queryFactory.select(commentLike.id)
             .from(commentLike)
