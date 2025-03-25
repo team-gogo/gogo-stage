@@ -86,11 +86,7 @@ class CommunityCustomRepositoryImpl(
 
         val totalElement = boardDtoList.size
 
-        val totalPage = if (totalElement % size == 0) {
-            totalElement / size
-        } else {
-            totalElement / size + 1
-        }
+        val totalPage = boardRepository.findAll(pageable).totalPages
 
         val infoDto = InfoDto(totalPage, totalElement)
 
@@ -123,10 +119,7 @@ class CommunityCustomRepositoryImpl(
             .where(predicate)
             .fetch()
 
-        val studentIds = queryFactory.select(comment.studentId)
-            .from(comment)
-            .where(comment.board.id.eq(boardId))
-            .fetch()
+        val studentIds = comments.map { it.studentId }.toSet().toList()
 
         val commentLikeIds = queryFactory.select(commentLike.id)
             .from(commentLike)
@@ -135,7 +128,7 @@ class CommunityCustomRepositoryImpl(
             ))
             .fetch()
 
-        val commentStudents = studentApi.queryByStudentsIds(studentIds.toSet().toList())
+        val commentStudents = studentApi.queryByStudentsIds(studentIds)
 
         val commentDto = comments.map { comment ->
             val author = commentStudents.students.find { it.studentId == comment.studentId }?.let {

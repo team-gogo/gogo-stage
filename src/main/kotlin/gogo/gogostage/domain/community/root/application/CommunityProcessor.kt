@@ -27,8 +27,6 @@ class CommunityProcessor(
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
         // 동시성 문제
         val isExistBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(studentId, board.id)
-        val comment = commentRepository.findByBoardIdAndStudentId(board.id, studentId)
-            ?: throw StageException("Comment Not Found, boardId=${board.id}, studentId=${studentId}", HttpStatus.NOT_FOUND.value())
 
         if (isExistBoardLike) {
             val boardLike = boardLikeRepository.findByBoardIdAndStudentId(board.id, studentId)
