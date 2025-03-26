@@ -54,10 +54,10 @@ class CommunityCustomRepositoryImpl(
 
 
 
-        val condition = listOfNotNull(
-            stageId?.let { community.stage.id.eq(it) },
-            category?.let { community.category.eq(it) }
-        ).reduceOrNull(BooleanExpression::and) ?: Expressions.TRUE
+        val condition = BooleanBuilder().apply {
+            stageId?.let { and(community.stage.id.eq(it)) }
+            category?.let { and(community.category.eq(it)) }
+        }
 
         val studentIds = queryFactory
             .select(board.studentId)
@@ -87,11 +87,19 @@ class CommunityCustomRepositoryImpl(
             )
         }.toList()
 
-        val totalElement = boardDtoList.size
+        val totalElement = queryFactory
+            .select(board.count())
+            .from(board)
+            .where(predicate)
+            .fetchOne() ?: 0L
 
-        val totalPage = boardRepository.findAll(pageable).totalPages
+        val totalPage = if (totalElement % pageable.pageSize == 0L) {
+            (totalElement / pageable.pageSize).toInt()
+        } else {
+            (totalElement / pageable.pageSize + 1).toInt()
+        }
 
-        val infoDto = InfoDto(totalPage, totalElement)
+        val infoDto = InfoDto(totalPage, boardDtoList.size)
 
         return GetCommunityBoardResDto(infoDto, boardDtoList)
     }
