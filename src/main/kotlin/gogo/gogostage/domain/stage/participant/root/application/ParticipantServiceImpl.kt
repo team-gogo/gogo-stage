@@ -2,6 +2,7 @@ package gogo.gogostage.domain.stage.participant.root.application
 
 import gogo.gogostage.domain.stage.participant.root.application.dto.MyTempPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.IsParticipantDto
+import gogo.gogostage.domain.stage.participant.root.application.dto.MyPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.PointDto
 import gogo.gogostage.domain.stage.root.application.StageReader
 import gogo.gogostage.global.util.UserContextUtil
@@ -37,4 +38,11 @@ class ParticipantServiceImpl(
         return IsParticipantDto(isParticipant)
     }
 
+    @Transactional(readOnly = true)
+    override fun getMyPoint(stageId: Long): MyPointDto {
+        val student = userUtil.getCurrentStudent()
+        val stage = stageReader.read(stageId)
+        val stageParticipant = participantReader.readStageParticipantByStageIdAndStudentId(stage.id, student.studentId)
+        return participantMapper.mapMyPointDto(stageParticipant.point)
+    }
 }

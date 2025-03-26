@@ -19,3 +19,7 @@ data class TempPointDto(
 data class IsParticipantDto(
     val isParticipant: Boolean
 )
+
+data class MyPointDto(
+    val point: Long
+)
