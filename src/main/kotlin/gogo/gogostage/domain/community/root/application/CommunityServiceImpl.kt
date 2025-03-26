@@ -34,7 +34,8 @@ class CommunityServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
-        return communityReader.readBoardInfo(boardId)
+        val student = userUtil.getCurrentStudent()
+        return communityReader.readBoardInfo(boardId, student)
     }
 
     @Transactional

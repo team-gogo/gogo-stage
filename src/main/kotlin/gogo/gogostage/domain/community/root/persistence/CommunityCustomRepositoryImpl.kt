@@ -5,6 +5,7 @@ import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.BoardRepository
+import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.QComment.comment
@@ -14,6 +15,7 @@ import gogo.gogostage.domain.community.root.persistence.QCommunity.community
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.api.StudentApi
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -52,10 +54,10 @@ class CommunityCustomRepositoryImpl(
 
 
 
-        val condition = listOfNotNull(
-            stageId?.let { community.stage.id.eq(it) },
-            category?.let { community.category.eq(it) }
-        ).reduceOrNull(BooleanExpression::and) ?: Expressions.TRUE // 조건이 없으면 항상 참
+        val condition = BooleanBuilder().apply {
+            stageId?.let { and(community.stage.id.eq(it)) }
+            category?.let { and(community.category.eq(it)) }
+        }
 
         val studentIds = queryFactory
             .select(board.studentId)
@@ -80,62 +82,67 @@ class CommunityCustomRepositoryImpl(
                 likeCount = board.likeCount,
                 createdAt = board.createdAt,
                 stageType = board.community.stage.type,
+                commentCount = board.commentCount,
                 author = author!!
             )
         }.toList()
 
-        val totalElement = boardDtoList.size
+        val totalElement = queryFactory
+            .select(board.count())
+            .from(board)
+            .where(predicate)
+            .fetchOne() ?: 0L
 
-        val totalPage = boardRepository.findAll(pageable).totalPages
+        val totalPage = if (totalElement % pageable.pageSize == 0L) {
+            (totalElement / pageable.pageSize).toInt()
+        } else {
+            (totalElement / pageable.pageSize + 1).toInt()
+        }
 
-        val infoDto = InfoDto(totalPage, totalElement)
+        val infoDto = InfoDto(totalPage, boardDtoList.size)
 
         return GetCommunityBoardResDto(infoDto, boardDtoList)
     }
 
-    override fun getCommunityBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
-        val queryBoard = boardRepository.findByIdOrNull(boardId)
+    override fun getCommunityBoardInfo(boardId: Long, student: StudentByIdStub): GetCommunityBoardInfoResDto {
+        val board = boardRepository.findByIdOrNull(boardId)
             ?: throw StageException("Board Not Found, boardId = $boardId", HttpStatus.NOT_FOUND.value())
 
-        val stageDto = StageDto(queryBoard.community.stage.name, queryBoard.community.category)
+        val stageDto = StageDto(board.community.stage.name, board.community.category)
 
-        val boardAuthorStudentIdList = listOf(queryBoard.studentId)
+        val boardAuthorList = listOf(board.studentId)
 
-        val boardAuthor = studentApi.queryByStudentsIds(boardAuthorStudentIdList).students
+        val boardAuthor = studentApi.queryByStudentsIds(boardAuthorList).students[0]
 
-        val boardAuthorDto = boardAuthor.map { student ->
-            AuthorDto(student.studentId, student.name, student.classNumber, student.studentNumber)
-        }
+        val boardAuthorDto = AuthorDto(boardAuthor.studentId, boardAuthor.name, boardAuthor.classNumber, boardAuthor.studentNumber)
 
-        val boardAuthorStudentId = boardAuthorDto.get(0).studentId
-
-        val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(boardAuthorStudentId, queryBoard.id)
+        val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(boardAuthorDto.studentId, board.id)
 
         val predicate = BooleanBuilder()
 
-        predicate.and(board.id.eq(comment.board.id))
+        predicate.and(comment.board.id.eq(boardId))
 
         val comments = queryFactory.selectFrom(comment)
             .where(predicate)
             .fetch()
 
-        val studentIds = comments.map { it.studentId }.toSet().toList()
+        val commentStudentIds = comments.map { it.studentId }.toSet().toList()
 
-        val commentLikeIds = queryFactory.select(commentLike.id)
+        val commentLikeCommentIds = queryFactory.select(commentLike.comment.id)
             .from(commentLike)
             .where(commentLike.comment.board.id.eq(boardId).and(
-                commentLike.studentId.eq(boardAuthorStudentId)
+                commentLike.studentId.eq(student.studentId)
             ))
             .fetch()
 
-        val commentStudents = studentApi.queryByStudentsIds(studentIds)
+        val commentStudents = studentApi.queryByStudentsIds(commentStudentIds)
 
         val commentDto = comments.map { comment ->
             val author = commentStudents.students.find { it.studentId == comment.studentId }?.let {
                 AuthorDto(it.studentId, it.name, it.classNumber, it.studentNumber)
             }
 
-            val isLiked = commentLikeIds.contains(comment.id)
+            val isLiked = commentLikeCommentIds.contains(comment.id)
 
             CommentDto(
                 commentId = comment.id,
@@ -149,15 +156,15 @@ class CommunityCustomRepositoryImpl(
         }
 
         val response = GetCommunityBoardInfoResDto(
-            boardId = queryBoard.id,
-            title = queryBoard.title,
-            content = queryBoard.content,
-            likeCount = queryBoard.likeCount,
+            boardId = board.id,
+            title = board.title,
+            content = board.content,
+            likeCount = board.likeCount,
             isLiked = isAuthorBoardLike,
-            createdAt = queryBoard.createdAt,
+            createdAt = board.createdAt,
             stage = stageDto,
-            author = boardAuthorDto.get(0),
-            commentCount = queryBoard.commentCount,
+            author = boardAuthorDto,
+            commentCount = board.commentCount,
             comment = commentDto
         )
 

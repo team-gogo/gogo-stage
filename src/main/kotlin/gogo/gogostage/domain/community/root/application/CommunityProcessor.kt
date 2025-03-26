@@ -73,6 +73,9 @@ class CommunityProcessor(
 
         commentRepository.save(comment)
 
+        board.plusCommentCount()
+        boardRepository.save(board)
+
         return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 

@@ -34,6 +34,7 @@ data class BoardDto(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val stageType: StageType,
+    val commentCount: Int,
     val author: AuthorDto
 )
 

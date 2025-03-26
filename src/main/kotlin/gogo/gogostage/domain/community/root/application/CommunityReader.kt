@@ -9,6 +9,7 @@ import gogo.gogostage.domain.community.root.persistence.CommunityRepository
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -29,8 +30,8 @@ class CommunityReader(
         return communityRepository.searchCommunityBoardPage(stageId, size, category, sort, pageRequest)
     }
 
-    fun readBoardInfo(boardId: Long): GetCommunityBoardInfoResDto =
-        communityRepository.getCommunityBoardInfo(boardId)
+    fun readBoardInfo(boardId: Long, student: StudentByIdStub): GetCommunityBoardInfoResDto =
+        communityRepository.getCommunityBoardInfo(boardId, student)
 
     fun readBoardByBoardId(boardId: Long) =
         boardReader.read(boardId)
