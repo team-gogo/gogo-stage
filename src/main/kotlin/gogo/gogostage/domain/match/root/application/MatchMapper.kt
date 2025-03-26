@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.match.root.application
 
+import gogo.gogostage.domain.match.notification.persistence.MatchNotificationRepository
 import gogo.gogostage.domain.match.root.application.dto.*
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
@@ -13,6 +14,7 @@ class MatchMapper(
     private val maintainerRepository: StageMaintainerRepository,
     private val bettingApi: BettingApi,
     private val studentApi: StudentApi,
+    private val matchNotificationRepository: MatchNotificationRepository,
 ) {
 
     fun mapApiInfo(match: Match): MatchApiInfoDto {
@@ -56,6 +58,10 @@ class MatchMapper(
                 )
             }
 
+            val isPlayer = matchEntity.aTeam?.participants?.any { it.studentId == studentId } == true ||
+                    matchEntity.bTeam?.participants?.any { it.studentId == studentId } == true
+            val isNotice = matchNotificationRepository.existsByMatchIdAndStudentId(matchEntity.id, studentId)
+
             MatchSearchInfoDto(
                 matchId = matchEntity.id,
                 aTeam = MatchTeamInfoDto(
@@ -78,6 +84,8 @@ class MatchMapper(
                 gameName = matchEntity.game.name,
                 system = matchEntity.game.system,
                 turn = matchEntity.turn,
+                isPlayer = isPlayer,
+                isNotice = isNotice,
                 betting = bettingInfo?.let {
                     MatchBettingInfoDto(
                         isBetting = true,
@@ -96,7 +104,7 @@ class MatchMapper(
         return MatchSearchDto(count = matchInfoList.size, matches = matchInfoList)
     }
 
-    fun mapMy(bettingBundle: BettingBundleDto, matches: List<Match>): MatchSearchDto {
+    fun mapMy(bettingBundle: BettingBundleDto, matches: List<Match>, studentId: Long): MatchSearchDto {
         val bettingMap = bettingBundle.bettings.associateBy { it.matchId }
 
         val matchSearchInfoList = matches.map { match ->
@@ -110,6 +118,10 @@ class MatchMapper(
             }
 
             val tempPointExpiredDate = match.endDate.plusMinutes(5)
+
+            val isPlayer = match.aTeam?.participants?.any { it.studentId == studentId } == true ||
+                    match.bTeam?.participants?.any { it.studentId == studentId } == true
+            val isNotice = matchNotificationRepository.existsByMatchIdAndStudentId(match.id, studentId)
 
             val resultDto = bettingInfo?.result?.let {
                 MatchResultInfoDto(
@@ -153,6 +165,8 @@ class MatchMapper(
                 gameName = match.game.name,
                 system = match.game.system,
                 turn = match.turn,
+                isPlayer = isPlayer,
+                isNotice = isNotice,
                 betting = bettingDto,
                 result = resultDto
             )

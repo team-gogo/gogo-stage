@@ -56,7 +56,7 @@ class MatchServiceImpl(
         val allMatches = matchReader.readByStageId(stageId)
         val bettingBundle = bettingApi.bundle(allMatches.map{ it.id }, student.studentId)
         val betMatches = matchReader.readMy(bettingBundle.bettings.map { it.matchId })
-        return matchMapper.mapMy(bettingBundle, betMatches)
+        return matchMapper.mapMy(bettingBundle, betMatches, student.studentId)
     }
 
 }
