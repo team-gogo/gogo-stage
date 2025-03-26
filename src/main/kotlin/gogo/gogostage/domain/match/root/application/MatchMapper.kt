@@ -37,7 +37,6 @@ class MatchMapper(
 
         val matchInfoList = matches.map { matchEntity ->
             val bettingInfo = bundleDto.bettings.find { it.matchId == matchEntity.id }
-            val tempPointExpiredDate = matchEntity.endDate.plusMinutes(5)
             val resultInfo = bettingInfo?.result?.let {
                 MatchResultInfoDto(
                     victoryTeamId = matchEntity.matchResult!!.victoryTeam.id,
@@ -45,7 +44,7 @@ class MatchMapper(
                     bTeamScore = matchEntity.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
                     earnedPoint = it.earnedPoint,
-                    tempPointExpiredDate = tempPointExpiredDate,
+                    tempPointExpiredDate = matchEntity.matchResult!!.tempPointExpiredDate,
                 )
             } ?: matchEntity.matchResult?.let {
                 MatchResultInfoDto(
@@ -54,7 +53,7 @@ class MatchMapper(
                     bTeamScore = it.bTeamScore,
                     isPredictionSuccess = null,
                     earnedPoint = null,
-                    tempPointExpiredDate = tempPointExpiredDate,
+                    tempPointExpiredDate = matchEntity.matchResult!!.tempPointExpiredDate,
                 )
             }
 
@@ -117,8 +116,6 @@ class MatchMapper(
                 )
             }
 
-            val tempPointExpiredDate = match.endDate.plusMinutes(5)
-
             val isPlayer = match.aTeam?.participants?.any { it.studentId == studentId } == true ||
                     match.bTeam?.participants?.any { it.studentId == studentId } == true
             val isNotice = matchNotificationRepository.existsByMatchIdAndStudentId(match.id, studentId)
@@ -130,7 +127,7 @@ class MatchMapper(
                     bTeamScore = match.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
                     earnedPoint = it.earnedPoint,
-                    tempPointExpiredDate = tempPointExpiredDate
+                    tempPointExpiredDate = match.matchResult!!.tempPointExpiredDate,
                 )
             } ?: match.matchResult?.let {
                 MatchResultInfoDto(
@@ -139,7 +136,7 @@ class MatchMapper(
                     bTeamScore = it.bTeamScore,
                     isPredictionSuccess = null,
                     earnedPoint = null,
-                    tempPointExpiredDate = tempPointExpiredDate,
+                    tempPointExpiredDate = match.matchResult!!.tempPointExpiredDate,
                 )
             }
 

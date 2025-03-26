@@ -9,7 +9,7 @@ data class MatchBatchEvent(
     val victoryTeamId: Long,
     @JsonProperty("ateamScore") val aTeamScore: Int,
     @JsonProperty("bteamScore") val bTeamScore: Int,
-    val students: List<StudentBettingDto>
+    val students: List<StudentBettingDto>,
 )
 
 data class StudentBettingDto(

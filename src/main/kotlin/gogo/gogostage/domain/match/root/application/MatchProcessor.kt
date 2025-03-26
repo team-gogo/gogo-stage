@@ -21,6 +21,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Component
 class MatchProcessor(
@@ -115,6 +116,7 @@ class MatchProcessor(
             victoryTeam = victoryTeam,
             aTeamScore = event.aTeamScore,
             bTeamScore = event.bTeamScore,
+            tempPointExpiredDate = LocalDateTime.now().plusMinutes(5)
         )
         matchResultRepository.save(matchResult)
 
