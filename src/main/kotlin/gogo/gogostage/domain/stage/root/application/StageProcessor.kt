@@ -65,7 +65,6 @@ class StageProcessor(
             stageMaintainerRepository.save(maintainer)
         }
 
-
         val gameDto = dto.game
         val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system, gameDto.teamMinCapacity, gameDto.teamMaxCapacity)
         gameRepository.save(game)
@@ -246,4 +245,3 @@ class StageProcessor(
     }
 
 }
-
