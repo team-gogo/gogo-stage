@@ -51,6 +51,8 @@ data class MatchSearchInfoDto(
     val gameName: String,
     val system: GameSystem,
     val turn: Int?,
+    val isNotice: Boolean,
+    val isPlayer: Boolean,
     val betting: MatchBettingInfoDto?,
     val result: MatchResultInfoDto?
 )
