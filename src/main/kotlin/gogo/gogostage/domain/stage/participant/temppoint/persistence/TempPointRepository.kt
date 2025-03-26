@@ -1,6 +1,5 @@
 package gogo.gogostage.domain.stage.participant.temppoint.persistence
 
-import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipant
 import jakarta.persistence.LockModeType
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
