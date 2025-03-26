@@ -51,11 +51,9 @@ class TempPointProcessor(
         val now = LocalDateTime.now()
         val tempPoints = tempPointRepository.findNotAppliedByBatchId(now, event.batchId)
 
-        if (tempPoints.isEmpty()) {
-            throw StageException("임시 포인트가 이미 반영되었습니다.", HttpStatus.NOT_FOUND.value())
+        if (tempPoints.isNotEmpty()) {
+            tempPointRepository.deleteAll(tempPoints)
         }
-
-        tempPointRepository.deleteAll(tempPoints)
     }
 
 }
