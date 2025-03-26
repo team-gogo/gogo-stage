@@ -6,13 +6,17 @@ import gogo.gogostage.global.filter.LoggingFilter
 import gogo.gogostage.global.handler.CustomAccessDeniedHandler
 import gogo.gogostage.global.handler.CustomAuthenticationEntryPointHandler
 import gogo.gogostage.global.internal.user.stub.Authority
+import gogo.gogostage.global.security.SecurityProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
+import org.springframework.security.authorization.AuthorizationDecision
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.IpAddressMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -22,7 +26,8 @@ class SecurityConfig(
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
     private val customAuthenticationEntryPointHandler: CustomAuthenticationEntryPointHandler,
     private val authenticationFilter: AuthenticationFilter,
-    private val loggingFilter: LoggingFilter
+    private val loggingFilter: LoggingFilter,
+    private val securityProperties: SecurityProperties,
 ) {
 
     @Bean
@@ -82,14 +87,19 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/comment/like/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // server to server
-            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").permitAll()
-            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").permitAll()
-            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/participant/{stage_id}").permitAll()
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").access { _, context -> hasIpAddress(context) }
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").access { _, context -> hasIpAddress(context) }
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/participant/{stage_id}").access { _, context -> hasIpAddress(context) }
 
             httpRequests.anyRequest().denyAll()
         }
 
         return http.build()
+    }
+
+    private fun hasIpAddress(context: RequestAuthorizationContext): AuthorizationDecision {
+        val ALLOWED_IP_ADDRESS_MATCHER = IpAddressMatcher("${securityProperties.serverToServerIp}${securityProperties.serverToServerSubnet}")
+        return AuthorizationDecision(ALLOWED_IP_ADDRESS_MATCHER.matches(context.request))
     }
 
     @Bean

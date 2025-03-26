@@ -10,6 +10,4 @@ import org.springframework.context.annotation.Configuration
         SecurityProperties::class
     ]
 )
-class PropertiesScanConfig {
-
-}
+class PropertiesScanConfig
