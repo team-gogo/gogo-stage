@@ -60,6 +60,9 @@ class StageProcessor(
                     .map { StageMaintainer.of(stage, it) } +
                         StageMaintainer.of(stage, student.studentId)
             stageMaintainerRepository.saveAll(maintainers)
+        } else {
+            val maintainer = StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.save(maintainer)
         }
 
         val gameDto = dto.game
@@ -95,6 +98,9 @@ class StageProcessor(
                         StageMaintainer.of(stage, student.studentId)
 
             stageMaintainerRepository.saveAll(maintainers)
+        } else {
+            val maintainer = StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.save(maintainer)
         }
 
         val games = dto.game.map { Game.of(stage, it.category, it.name, it.system, it.teamMinCapacity, it.teamMaxCapacity) }
@@ -239,4 +245,3 @@ class StageProcessor(
     }
 
 }
-
