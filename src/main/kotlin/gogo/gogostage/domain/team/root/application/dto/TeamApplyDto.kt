@@ -28,4 +28,5 @@ data class GameTeamDto(
     val teamId: Long,
     val teamName: String,
     val participantCount: Int,
+    val winCount: Int,
 )
