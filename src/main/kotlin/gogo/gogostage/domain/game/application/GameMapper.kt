@@ -15,6 +15,8 @@ class GameMapper {
                 gameId = it.id,
                 gameName = it.name,
                 teamCount = it.teamCount,
+                teamMinCapacity = it.teamMinCapacity,
+                teamMaxCapacity = it.teamMaxCapacity,
                 category = it.category,
                 system = it.system
             )
