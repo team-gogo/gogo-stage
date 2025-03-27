@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardReader
+import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.comment.application.CommentReader
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
@@ -30,8 +31,8 @@ class CommunityReader(
         return communityRepository.searchCommunityBoardPage(stageId, size, category, sort, pageRequest)
     }
 
-    fun readBoardInfo(boardId: Long, student: StudentByIdStub): GetCommunityBoardInfoResDto =
-        communityRepository.getCommunityBoardInfo(boardId, student)
+    fun readBoardInfo(board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto =
+        communityRepository.getCommunityBoardInfo(board, student)
 
     fun readBoardByBoardId(boardId: Long) =
         boardReader.read(boardId)
