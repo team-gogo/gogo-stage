@@ -6,6 +6,7 @@ data class TicketPointMinusEvent(
     val id: String,
     val stageId: Long,
     val studentId: Long,
+    val shopReceiptId: Long,
     val shopMiniGameId: Long,
     val ticketType: TicketType,
     val ticketPrice: Long,

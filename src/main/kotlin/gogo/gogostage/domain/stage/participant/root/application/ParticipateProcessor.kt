@@ -59,6 +59,7 @@ class ParticipateProcessor(
                 ticketType = event.ticketType,
                 ticketPrice = event.ticketPrice,
                 purchaseQuantity = event.purchaseQuantity,
+                shopReceiptId = event.shopReceiptId,
             )
         )
     }
