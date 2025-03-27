@@ -24,13 +24,19 @@ class CommunityCustomRepositoryImpl(
     private val boardLikeRepository: BoardLikeRepository
 ): CommunityCustomRepository {
 
-    override fun searchCommunityBoardPage(stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto {
+    override fun searchCommunityBoardPage(isActiveProfanityFilter: Boolean, stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto {
         val predicate = BooleanBuilder()
 
         predicate.and(community.stage.id.eq(stageId))
 
         category?.let {
             predicate.and(community.category.eq(it))
+        }
+
+        if(isActiveProfanityFilter) {
+            predicate.and(board.isFiltered.eq(true))
+        } else {
+            predicate.and(board.isFiltered.eq(false))
         }
 
         val boards = queryFactory
@@ -98,7 +104,7 @@ class CommunityCustomRepositoryImpl(
         return GetCommunityBoardResDto(infoDto, boardDtoList)
     }
 
-    override fun getCommunityBoardInfo(board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto {
+    override fun getCommunityBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto {
         val stageDto = StageDto(board.community.stage.name, board.community.category)
 
         val boardAuthorList = listOf(board.studentId)
@@ -110,6 +116,12 @@ class CommunityCustomRepositoryImpl(
         val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(boardAuthorDto.studentId, board.id)
 
         val predicate = BooleanBuilder()
+
+        if(isAuthorBoardLike) {
+            predicate.and(comment.isFiltered.eq(true))
+        } else {
+            predicate.and(comment.isFiltered.eq(false))
+        }
 
         predicate.and(comment.board.id.eq(board.id))
 

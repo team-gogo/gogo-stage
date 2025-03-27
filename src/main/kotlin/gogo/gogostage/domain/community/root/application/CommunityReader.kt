@@ -26,13 +26,13 @@ class CommunityReader(
         communityRepository.findByStageIdAndCategory(stageId, gameCategory)
             ?: throw StageException("Community Not Found, stageId=$stageId gameCategory=$gameCategory", HttpStatus.NOT_FOUND.value())
 
-    fun readBoards(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
+    fun readBoards(isActiveProfanityFilter: Boolean, stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
         val pageRequest = PageRequest.of(page, size)
-        return communityRepository.searchCommunityBoardPage(stageId, size, category, sort, pageRequest)
+        return communityRepository.searchCommunityBoardPage(isActiveProfanityFilter, stageId, size, category, sort, pageRequest)
     }
 
-    fun readBoardInfo(board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto =
-        communityRepository.getCommunityBoardInfo(board, student)
+    fun readBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto =
+        communityRepository.getCommunityBoardInfo(isActiveProfanityFilter, board, student)
 
     fun readBoardByBoardId(boardId: Long) =
         boardReader.read(boardId)

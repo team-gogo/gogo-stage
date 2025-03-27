@@ -36,7 +36,8 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)
         communityValidator.validPageAndSize(page, size)
-        return communityReader.readBoards(stageId, page, size, category, sort)
+        val isActiveProfanityFilter = student.isActiveProfanityFilter
+        return communityReader.readBoards(isActiveProfanityFilter, stageId, page, size, category, sort)
     }
 
     @Transactional(readOnly = true)
@@ -44,7 +45,8 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         val board = boardReader.read(boardId)
         stageValidator.validStage(student, board.community.stage.id)
-        return communityReader.readBoardInfo(board, student)
+        val isActiveProfanityFilter = student.isActiveProfanityFilter
+        return communityReader.readBoardInfo(isActiveProfanityFilter, board, student)
     }
 
     @Transactional

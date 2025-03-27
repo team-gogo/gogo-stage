@@ -8,6 +8,6 @@ import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.domain.Pageable
 
 interface CommunityCustomRepository {
-    fun searchCommunityBoardPage(stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto
-    fun getCommunityBoardInfo(board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto
+    fun searchCommunityBoardPage(isActiveProfanityFilter: Boolean, stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto
+    fun getCommunityBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto
 }
