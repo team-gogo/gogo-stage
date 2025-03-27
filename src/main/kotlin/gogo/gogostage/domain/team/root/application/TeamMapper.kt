@@ -12,7 +12,8 @@ class TeamMapper {
         val gameTeamListDto = teams.map {GameTeamDto(
                 teamId = it.id,
                 teamName = it.name,
-                participantCount = it.participantCount
+                participantCount = it.participantCount,
+                winCount = it.winCount,
             )}
 
         return GameTeamResDto(
