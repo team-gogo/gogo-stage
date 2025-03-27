@@ -1,9 +1,8 @@
 package gogo.gogostage.domain.community.root.persistence
 
 import com.querydsl.core.BooleanBuilder
-import com.querydsl.core.types.dsl.BooleanExpression
-import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
+import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.board.persistence.BoardRepository
 import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
@@ -13,12 +12,9 @@ import gogo.gogostage.domain.community.commentlike.persistence.QCommentLike.comm
 import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.persistence.QCommunity.community
 import gogo.gogostage.domain.game.persistence.GameCategory
-import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.api.StudentApi
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.domain.Pageable
-import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 
 import org.springframework.stereotype.Repository
 
@@ -26,11 +22,10 @@ import org.springframework.stereotype.Repository
 class CommunityCustomRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
     private val studentApi: StudentApi,
-    private val boardRepository: BoardRepository,
     private val boardLikeRepository: BoardLikeRepository
 ): CommunityCustomRepository {
 
-    override fun searchCommunityBoardPage(stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto {
+    override fun searchCommunityBoardPage(isActiveProfanityFilter: Boolean, stageId: Long, size: Int, category: GameCategory?, sort: SortType, pageable: Pageable): GetCommunityBoardResDto {
         val predicate = BooleanBuilder()
 
         predicate.and(community.stage.id.eq(stageId))
@@ -38,6 +33,8 @@ class CommunityCustomRepositoryImpl(
         category?.let {
             predicate.and(community.category.eq(it))
         }
+
+        predicate.and(board.isFiltered.eq(isActiveProfanityFilter))
 
         val boards = queryFactory
             .selectFrom(board)
@@ -104,10 +101,7 @@ class CommunityCustomRepositoryImpl(
         return GetCommunityBoardResDto(infoDto, boardDtoList)
     }
 
-    override fun getCommunityBoardInfo(boardId: Long, student: StudentByIdStub): GetCommunityBoardInfoResDto {
-        val board = boardRepository.findByIdOrNull(boardId)
-            ?: throw StageException("Board Not Found, boardId = $boardId", HttpStatus.NOT_FOUND.value())
-
+    override fun getCommunityBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto {
         val stageDto = StageDto(board.community.stage.name, board.community.category)
 
         val boardAuthorList = listOf(board.studentId)
@@ -120,7 +114,9 @@ class CommunityCustomRepositoryImpl(
 
         val predicate = BooleanBuilder()
 
-        predicate.and(comment.board.id.eq(boardId))
+        predicate.and(comment.isFiltered.eq(isActiveProfanityFilter))
+
+        predicate.and(comment.board.id.eq(board.id))
 
         val comments = queryFactory.selectFrom(comment)
             .where(predicate)
@@ -130,7 +126,7 @@ class CommunityCustomRepositoryImpl(
 
         val commentLikeCommentIds = queryFactory.select(commentLike.comment.id)
             .from(commentLike)
-            .where(commentLike.comment.board.id.eq(boardId).and(
+            .where(commentLike.comment.board.id.eq(board.id).and(
                 commentLike.studentId.eq(student.studentId)
             ))
             .fetch()
