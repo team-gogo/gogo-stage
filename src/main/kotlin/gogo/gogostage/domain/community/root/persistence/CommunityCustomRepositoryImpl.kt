@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.board.persistence.BoardRepository
+import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.QComment.comment
@@ -33,11 +34,7 @@ class CommunityCustomRepositoryImpl(
             predicate.and(community.category.eq(it))
         }
 
-        if(isActiveProfanityFilter) {
-            predicate.and(board.isFiltered.eq(true))
-        } else {
-            predicate.and(board.isFiltered.eq(false))
-        }
+        predicate.and(board.isFiltered.eq(isActiveProfanityFilter))
 
         val boards = queryFactory
             .selectFrom(board)
@@ -117,11 +114,7 @@ class CommunityCustomRepositoryImpl(
 
         val predicate = BooleanBuilder()
 
-        if(isAuthorBoardLike) {
-            predicate.and(comment.isFiltered.eq(true))
-        } else {
-            predicate.and(comment.isFiltered.eq(false))
-        }
+        predicate.and(comment.isFiltered.eq(isActiveProfanityFilter))
 
         predicate.and(comment.board.id.eq(board.id))
 
