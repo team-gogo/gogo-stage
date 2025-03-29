@@ -42,4 +42,7 @@ class CommunityReader(
     fun readCommentByCommentId(commentId: Long) =
         commentReader.read(commentId)
 
+    fun readCommentByCommentIdForWrite(commentId: Long) =
+        commentReader.readForWrite(commentId)
+
 }
