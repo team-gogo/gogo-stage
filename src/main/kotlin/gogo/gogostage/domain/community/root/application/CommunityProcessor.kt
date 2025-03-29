@@ -25,7 +25,6 @@ class CommunityProcessor(
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
-        // 동시성 문제
         val isExistBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(studentId, board.id)
 
         if (isExistBoardLike) {
