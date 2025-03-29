@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.community.root.application
 
 import gogo.gogostage.domain.community.board.application.BoardReader
+import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.comment.application.CommentReader
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardInfoResDto
 import gogo.gogostage.domain.community.root.application.dto.GetCommunityBoardResDto
@@ -25,13 +26,13 @@ class CommunityReader(
         communityRepository.findByStageIdAndCategory(stageId, gameCategory)
             ?: throw StageException("Community Not Found, stageId=$stageId gameCategory=$gameCategory", HttpStatus.NOT_FOUND.value())
 
-    fun readBoards(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
+    fun readBoards(isActiveProfanityFilter: Boolean, stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
         val pageRequest = PageRequest.of(page, size)
-        return communityRepository.searchCommunityBoardPage(stageId, size, category, sort, pageRequest)
+        return communityRepository.searchCommunityBoardPage(isActiveProfanityFilter, stageId, size, category, sort, pageRequest)
     }
 
-    fun readBoardInfo(boardId: Long, student: StudentByIdStub): GetCommunityBoardInfoResDto =
-        communityRepository.getCommunityBoardInfo(boardId, student)
+    fun readBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto =
+        communityRepository.getCommunityBoardInfo(isActiveProfanityFilter, board, student)
 
     fun readBoardByBoardId(boardId: Long) =
         boardReader.read(boardId)
