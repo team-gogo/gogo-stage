@@ -52,7 +52,7 @@ class CommunityServiceImpl(
     @Transactional
     override fun likeStageBoard(boardId: Long): LikeResDto {
         val student = userUtil.getCurrentStudent()
-        val board = communityReader.readBoardByBoardId(boardId)
+        val board = communityReader.readBoardByBoardIdForWrite(boardId)
         stageValidator.validStage(student, board.community.stage.id)
         return communityProcessor.likeBoard(student.studentId, board)
     }
@@ -69,7 +69,7 @@ class CommunityServiceImpl(
     @Transactional
     override fun likeBoardComment(commentId: Long): LikeResDto {
         val student = userUtil.getCurrentStudent()
-        val comment = communityReader.readCommentByCommentId(commentId)
+        val comment = communityReader.readCommentByCommentIdForWrite(commentId)
         stageValidator.validStage(student, comment.board.community.stage.id)
         return communityProcessor.likeBoardComment(student, comment)
     }
