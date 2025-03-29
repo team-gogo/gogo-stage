@@ -4,7 +4,10 @@ import gogo.gogostage.domain.game.application.GameReader
 import gogo.gogostage.domain.stage.root.application.StageValidator
 import gogo.gogostage.domain.team.root.application.dto.GameTeamResDto
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
+import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.util.UserContextUtil
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,6 +23,7 @@ class TeamServiceImpl(
 ) : TeamService {
 
     @Transactional
+    @CacheEvict(value = [CacheConstant.TEMP_TEAM_CACHE_VALUE], key = "#gameId", cacheManager = "cacheManager")
     override fun apply(gameId: Long, dto: TeamApplyDto) {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
@@ -29,6 +33,7 @@ class TeamServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.TEAM_CACHE_VALUE], key = "#gameId", cacheManager = "cacheManager")
     override fun getGameTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
@@ -38,6 +43,7 @@ class TeamServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.TEMP_TEAM_CACHE_VALUE], key = "#gameId", cacheManager = "cacheManager")
     override fun getGameTempTeam(gameId: Long): GameTeamResDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)

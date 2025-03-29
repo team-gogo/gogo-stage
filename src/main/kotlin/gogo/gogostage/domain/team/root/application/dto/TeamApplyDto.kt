@@ -20,13 +20,13 @@ data class TeamParticipantDto(
 )
 
 data class GameTeamResDto(
-    val count: Int,
-    val team: List<GameTeamDto>
+    val count: Int = 0,
+    val team: List<GameTeamDto> = emptyList(),
 )
 
 data class GameTeamDto(
-    val teamId: Long,
-    val teamName: String,
-    val participantCount: Int,
-    val winCount: Int,
+    val teamId: Long = 0L,
+    val teamName: String = "",
+    val participantCount: Int = 0,
+    val winCount: Int = 0,
 )
