@@ -38,7 +38,7 @@ class Game(
     var firstPlaceTeam: Team? = null,
 
     @Column(name = "team_count", nullable = false)
-    val teamCount: Int = 0, // 팀 신청시 ++
+    var teamCount: Int = 0,
 
     @Column(name = "league_count", nullable = true)
     var leagueCount: Int? = null,
@@ -78,6 +78,10 @@ class Game(
     fun endRollBack() {
         this.isEnd = false
         this.firstPlaceTeam = null
+    }
+
+    fun addTeam() {
+        this.teamCount++
     }
 
 }
