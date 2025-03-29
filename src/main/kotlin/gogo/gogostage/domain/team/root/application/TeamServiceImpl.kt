@@ -5,6 +5,8 @@ import gogo.gogostage.domain.stage.root.application.StageValidator
 import gogo.gogostage.domain.team.root.application.dto.GameTeamResDto
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
 import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.domain.team.root.application.dto.TeamInfoDto
+import gogo.gogostage.global.internal.student.api.StudentApi
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -19,7 +21,8 @@ class TeamServiceImpl(
     private val teamProcessor: TeamProcessor,
     private val teamReader: TeamReader,
     private val teamMapper: TeamMapper,
-    private val stageValidator: StageValidator
+    private val stageValidator: StageValidator,
+    private val studentApi: StudentApi
 ) : TeamService {
 
     @Transactional
@@ -50,6 +53,18 @@ class TeamServiceImpl(
         stageValidator.validStage(student, game.stage.id)
         val tempTeams = teamReader.readParticipatingTeamByGameId(game.id, false)
         return teamMapper.mapGameTeam(tempTeams)
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.TEAM_INFO_CACHE_VALUE], key = "#teamId", cacheManager = "cacheManager")
+    override fun getTeamInfo(teamId: Long): TeamInfoDto {
+        val student = userUtil.getCurrentStudent()
+        val team = teamReader.read(teamId)
+        stageValidator.validStage(student, team.game.stage.id)
+        val studentIds = teamMapper.mapStudentIds(team)
+        val students = studentApi.queryByStudentsIds(studentIds).students
+        val participantDto = teamMapper.mapParticipantInfoDto(team, students)
+        return teamMapper.mapTeamInfoDto(team, participantDto)
     }
 
 }
