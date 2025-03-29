@@ -36,6 +36,9 @@ class CommunityReader(
     fun readBoardByBoardId(boardId: Long) =
         boardReader.read(boardId)
 
+    fun readBoardByBoardIdForWrite(boardId: Long) =
+        boardReader.readForWrite(boardId)
+
     fun readCommentByCommentId(commentId: Long) =
         commentReader.read(commentId)
 
