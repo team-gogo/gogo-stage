@@ -30,3 +30,19 @@ data class GameTeamDto(
     val participantCount: Int,
     val winCount: Int,
 )
+
+data class TeamInfoDto(
+    val teamId: Long,
+    val teamName: String,
+    val participantCount: Int,
+    val participant: List<ParticipantDto>
+)
+
+data class ParticipantDto(
+    val studentId: Long,
+    val name: String,
+    val classNumber: Int,
+    val studentNumber: Int,
+    val positionX: String,
+    val positionY: String,
+)
