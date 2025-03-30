@@ -24,6 +24,9 @@ repositories {
 extra["springCloudVersion"] = "2024.0.0-RC1"
 
 dependencies {
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
