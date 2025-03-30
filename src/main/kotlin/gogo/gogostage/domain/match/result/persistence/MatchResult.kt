@@ -17,7 +17,7 @@ class MatchResult(
     @JoinColumn(name = "match_id", nullable = false)
     val match: Match,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "victory_team_id", nullable = false)
     val victoryTeam: Team,
 
