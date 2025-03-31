@@ -184,7 +184,7 @@ class StageProcessor(
                         )
                     }
 
-                    val matchCount = factorial(teamCount - 1)
+                    val matchCount = (teamCount * (teamCount - 1)) / 2
                     if (matchCount != fullLeague.size) {
                         throw StageException("풀 리그 경기의 매치의 수가 맞지 않습니다. 에상 = ${matchCount}, 실제 = ${fullLeague.size}", HttpStatus.BAD_REQUEST.value())
                     }
