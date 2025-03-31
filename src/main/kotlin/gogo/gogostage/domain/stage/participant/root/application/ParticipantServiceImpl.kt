@@ -28,7 +28,7 @@ class ParticipantServiceImpl(
         val student = userUtil.getCurrentStudent()
         val stage = stageReader.read(stageId)
         val stageParticipant = participantReader.readStageParticipantByStageIdAndStudentId(stage.id, student.studentId)
-        val tempPointList = participantReader.readTempPointList(stageParticipant.id)
+        val tempPointList = participantReader.readTempPointNotAppliedList(stageParticipant.id)
         return participantMapper.mapMyTempPointDto(tempPointList)
     }
 
