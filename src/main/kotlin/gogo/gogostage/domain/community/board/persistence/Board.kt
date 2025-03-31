@@ -19,10 +19,10 @@ class Board(
     @Column(name = "student_id", nullable = false)
     val studentId: Long,
 
-    @Column(name = "title", nullable = false)
+    @Column(name = "title", length = 30, nullable = false)
     val title: String,
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 1000, nullable = false)
     val content: String,
 
     @Column(name = "comment_count", nullable = false)
