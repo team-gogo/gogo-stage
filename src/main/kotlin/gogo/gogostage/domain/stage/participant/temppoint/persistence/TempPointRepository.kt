@@ -15,5 +15,5 @@ interface TempPointRepository: JpaRepository<TempPoint, Long> {
     @Query("SELECT t FROM TempPoint t WHERE t.isApplied = false AND t.tempPointExpiredDate > :now AND t.batchId = :batchId")
     fun findNotAppliedByBatchId(now: LocalDateTime, batchId: Long): List<TempPoint>
 
-    fun findByStageParticipantId(stageParticipantId: Long): List<TempPoint>
+    fun findByStageParticipantIdAndIsAppliedIsFalse(stageParticipantId: Long): List<TempPoint>
 }
