@@ -54,10 +54,6 @@ class GlobalExceptionHandler {
     fun handleConstraintViolationException(e: ConstraintViolationException): ResponseEntity<ErrorResponse> =
         ResponseEntity(ErrorResponse.of("필드 유효성 검사에 실패했습니다: ${e.message}", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST)
 
-    @ExceptionHandler(MaxUploadSizeExceededException::class)
-    fun handleMaxUploadSizeExceededException(e: MaxUploadSizeExceededException): ResponseEntity<ErrorResponse> =
-        ResponseEntity(ErrorResponse.of("파일 크기가 너무 큽니다. 허용된 최대 크기를 초과했습니다.", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST)
-
     @ExceptionHandler(FeignException::class)
     fun handleFeignException(e: FeignException): ResponseEntity<ErrorResponse> =
         ResponseEntity(ErrorResponse.of("서버 내부 통신 중 오류가 발생하였습니다.", HttpStatus.INTERNAL_SERVER_ERROR), HttpStatus.INTERNAL_SERVER_ERROR)
