@@ -22,7 +22,7 @@ class Board(
     @Column(name = "title", nullable = false)
     val title: String,
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 1000)
     val content: String,
 
     @Column(name = "comment_count", nullable = false)
