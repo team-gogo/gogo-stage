@@ -19,7 +19,7 @@ class Comment(
     @Column(name = "student_id", nullable = false)
     val studentId: Long,
 
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", length = 300, nullable = false)
     val content: String,
 
     @Column(name = "is_filtered", nullable = false)
