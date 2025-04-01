@@ -134,6 +134,10 @@ class MatchProcessor(
             throw StageException("임시포인트가 이미 반영되었습니다.", HttpStatus.FORBIDDEN.value())
         }
 
+        val victoryTeam = match.matchResult!!.victoryTeam
+        victoryTeam.rollbackWinCount()
+        teamRepository.save(victoryTeam)
+
         match.batchRollback()
         matchRepository.save(match)
 
