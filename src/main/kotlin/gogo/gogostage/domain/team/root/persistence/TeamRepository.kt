@@ -9,4 +9,6 @@ interface TeamRepository: JpaRepository<Team, Long> {
 
     @Query("SELECT t FROM Team t WHERE t.game.id = :gameId ORDER BY t.winCount DESC LIMIT 1")
     fun findTop1Teams(gameId: Long): Team
+
+    fun existsByGameIdAndName(gameId: Long, name: String): Boolean
 }
