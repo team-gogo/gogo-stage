@@ -1,6 +1,5 @@
 package gogo.gogostage.domain.stage.root.application
 
-import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
@@ -83,12 +82,6 @@ class StageValidator(
         val gameCount = gameRepository.countByStageId(stage.id)
         if (gameCount != dto.games.size) {
             throw StageException("해당 스테이지의 게임 수와 확정된 게임 수가 일치하지 않습니다.", HttpStatus.BAD_REQUEST.value())
-        }
-    }
-
-    fun validProfanityFilter(student: StudentByIdStub, board: Board) {
-        if (board.isFiltered && student.isActiveProfanityFilter) {
-            throw StageException("해당 게시글은 욕설 필터가 켜져있어 볼 수 없습니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 
