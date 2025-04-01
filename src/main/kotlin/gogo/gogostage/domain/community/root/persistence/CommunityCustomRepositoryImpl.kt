@@ -34,7 +34,9 @@ class CommunityCustomRepositoryImpl(
             predicate.and(community.category.eq(it))
         }
 
-        predicate.and(board.isFiltered.eq(isActiveProfanityFilter))
+        if (isActiveProfanityFilter) {
+            predicate.and(board.isFiltered.eq(false))
+        }
 
         val boards = queryFactory
             .selectFrom(board)
@@ -110,11 +112,13 @@ class CommunityCustomRepositoryImpl(
 
         val boardAuthorDto = AuthorDto(boardAuthor.studentId, boardAuthor.name, boardAuthor.classNumber, boardAuthor.studentNumber)
 
-        val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(boardAuthorDto.studentId, board.id)
+        val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(student.studentId, board.id)
 
         val predicate = BooleanBuilder()
 
-        predicate.and(comment.isFiltered.eq(isActiveProfanityFilter))
+        if (isActiveProfanityFilter) {
+            predicate.and(comment.isFiltered.eq(false))
+        }
 
         predicate.and(comment.board.id.eq(board.id))
 

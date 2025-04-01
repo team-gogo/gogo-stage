@@ -45,6 +45,7 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         val board = boardReader.read(boardId)
         stageValidator.validStage(student, board.community.stage.id)
+        stageValidator.validProfanityFilter(student, board)
         val isActiveProfanityFilter = student.isActiveProfanityFilter
         return communityReader.readBoardInfo(isActiveProfanityFilter, board, student)
     }
