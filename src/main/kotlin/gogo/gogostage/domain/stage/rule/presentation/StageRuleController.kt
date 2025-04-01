@@ -16,7 +16,7 @@ class StageRuleController(
 
     @GetMapping("/rule/{stage_id}")
     fun query(
-        @PathVariable("stage_id") stageId: String,
+        @PathVariable("stage_id") stageId: Long,
     ): ResponseEntity<StageRuleDto> {
         val response = stageRuleService.query(stageId)
         return ResponseEntity.ok(response)
