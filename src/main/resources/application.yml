@@ -18,3 +18,13 @@ spring:
     activate:
       on-profile: stage
     import: "optional:configserver:http://host.docker.internal:8888/"
+
+---
+
+spring:
+  application:
+    name: stage-service
+  config:
+    activate:
+      on-profile: prod
+    import: "optional:configserver:http://10.0.143.204:8888/"
