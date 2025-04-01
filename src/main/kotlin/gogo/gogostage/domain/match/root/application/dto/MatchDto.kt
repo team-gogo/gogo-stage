@@ -51,6 +51,8 @@ data class MatchSearchInfoDto(
     val gameName: String,
     val system: GameSystem,
     val turn: Int?,
+    val isNotice: Boolean,
+    val isPlayer: Boolean,
     val betting: MatchBettingInfoDto?,
     val result: MatchResultInfoDto?
 )
@@ -84,5 +86,6 @@ data class MatchResultInfoDto(
     val aTeamScore: Int,
     val bTeamScore: Int,
     val isPredictionSuccess: Boolean?,
-    val earnedPoint: Long?
+    val earnedPoint: Long?,
+    val tempPointExpiredDate: LocalDateTime,
 )

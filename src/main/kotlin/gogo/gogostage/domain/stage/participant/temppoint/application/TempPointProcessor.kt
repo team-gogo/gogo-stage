@@ -1,6 +1,5 @@
 package gogo.gogostage.domain.stage.participant.temppoint.application
 
-import gogo.gogostage.domain.match.result.persistence.MatchResultRepository
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.participant.temppoint.persistence.TempPoint
@@ -18,7 +17,6 @@ class TempPointProcessor(
     private val matchRepository: MatchRepository,
     private val stageParticipantRepository: StageParticipantRepository,
     private val tempPointRepository: TempPointRepository,
-    private val matchResultRepository: MatchResultRepository,
 ) {
 
     fun addTempPoint(event: MatchBatchEvent) {
@@ -51,11 +49,9 @@ class TempPointProcessor(
         val now = LocalDateTime.now()
         val tempPoints = tempPointRepository.findNotAppliedByBatchId(now, event.batchId)
 
-        if (tempPoints.isEmpty()) {
-            throw StageException("임시 포인트가 이미 반영되었습니다.", HttpStatus.NOT_FOUND.value())
+        if (tempPoints.isNotEmpty()) {
+            tempPointRepository.deleteAll(tempPoints)
         }
-
-        tempPointRepository.deleteAll(tempPoints)
     }
 
 }

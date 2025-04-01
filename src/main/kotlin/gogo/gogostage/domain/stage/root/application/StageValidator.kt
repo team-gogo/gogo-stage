@@ -63,7 +63,7 @@ class StageValidator(
         }
 
         val isSchool = stage.schoolId == student.schoolId
-        if (isSchool) {
+        if (isSchool.not()) {
             throw StageException("해당 스테이지는 현재 소속 중인 학교의 스테이지가 아닙니다.", HttpStatus.BAD_REQUEST.value())
         }
     }

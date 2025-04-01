@@ -1,0 +1,11 @@
+FROM openjdk:17-jdk
+
+EXPOSE 8082
+
+WORKDIR /home/ubuntu/gogo-stage
+
+COPY build/libs/gogo-stage-0.0.1-SNAPSHOT.jar stage-stage.jar
+
+RUN ln -snf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+
+ENTRYPOINT ["java", "-jar", "stage-stage.jar", "--spring.profiles.active=stage"]

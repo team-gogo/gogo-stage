@@ -3,6 +3,7 @@ package gogo.gogostage.domain.stage.participant.root.presentation
 import gogo.gogostage.domain.stage.participant.root.application.ParticipantService
 import gogo.gogostage.domain.stage.participant.root.application.dto.MyTempPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.IsParticipantDto
+import gogo.gogostage.domain.stage.participant.root.application.dto.MyPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.PointDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -36,6 +37,14 @@ class StageParticipantController(
         @RequestParam("studentId") studentId: Long
     ): ResponseEntity<IsParticipantDto> {
         val response = participantService.isParticipant(stageId, studentId)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/point/me/{stage_id}")
+    fun getMyPoint(
+        @PathVariable("stage_id") stageId: Long,
+    ): ResponseEntity<MyPointDto> {
+        val response = participantService.getMyPoint(stageId)
         return ResponseEntity.ok(response)
     }
 

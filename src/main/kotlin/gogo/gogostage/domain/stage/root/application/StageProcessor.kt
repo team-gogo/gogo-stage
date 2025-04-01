@@ -53,12 +53,17 @@ class StageProcessor(
         val stageRule = StageRule.of(stage, dto.rule)
         stageRuleRepository.save(stageRule)
 
-        val maintainers =
-            dto.maintainer.toSet().toList()
-                .filter { student.studentId != it }
-                .map { StageMaintainer.of(stage, it) } +
-                    StageMaintainer.of(stage, student.studentId)
-        stageMaintainerRepository.saveAll(maintainers)
+        if (dto.maintainer.isNotEmpty()) {
+            val maintainers =
+                dto.maintainer.toSet().toList()
+                    .filter { student.studentId != it }
+                    .map { StageMaintainer.of(stage, it) } +
+                        StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.saveAll(maintainers)
+        } else {
+            val maintainer = StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.save(maintainer)
+        }
 
         val gameDto = dto.game
         val game = Game.of(stage, gameDto.category, gameDto.name, gameDto.system, gameDto.teamMinCapacity, gameDto.teamMaxCapacity)
@@ -85,12 +90,18 @@ class StageProcessor(
         val stageRule = StageRule.of(stage, dto.rule)
         stageRuleRepository.save(stageRule)
 
-        val maintainers =
-            dto.maintainer.toSet().toList()
-                .filter { student.studentId != it }
-                .map { StageMaintainer.of(stage, it) } +
-                    StageMaintainer.of(stage, student.studentId)
-        stageMaintainerRepository.saveAll(maintainers)
+        if (dto.maintainer.isNotEmpty()) {
+            val maintainers =
+                dto.maintainer.toSet().toList()
+                    .filter { student.studentId != it }
+                    .map { StageMaintainer.of(stage, it) } +
+                        StageMaintainer.of(stage, student.studentId)
+
+            stageMaintainerRepository.saveAll(maintainers)
+        } else {
+            val maintainer = StageMaintainer.of(stage, student.studentId)
+            stageMaintainerRepository.save(maintainer)
+        }
 
         val games = dto.game.map { Game.of(stage, it.category, it.name, it.system, it.teamMinCapacity, it.teamMaxCapacity) }
         gameRepository.saveAll(games)
@@ -173,7 +184,7 @@ class StageProcessor(
                         )
                     }
 
-                    val matchCount = factorial(teamCount - 1)
+                    val matchCount = (teamCount * (teamCount - 1)) / 2
                     if (matchCount != fullLeague.size) {
                         throw StageException("풀 리그 경기의 매치의 수가 맞지 않습니다. 에상 = ${matchCount}, 실제 = ${fullLeague.size}", HttpStatus.BAD_REQUEST.value())
                     }
@@ -234,4 +245,3 @@ class StageProcessor(
     }
 
 }
-

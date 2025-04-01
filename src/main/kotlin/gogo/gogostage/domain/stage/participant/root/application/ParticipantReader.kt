@@ -19,12 +19,13 @@ class ParticipantReader(
         participantRepository.queryStudentPoint(stageId, studentId, StageStatus.CONFIRMED)
             ?: throw StageException("Not Found Stage Participant stageId = $stageId, studentid = $stageId", HttpStatus.NOT_FOUND.value())
 
-    fun readTempPointList(stageParticipantId: Long): List<TempPoint> =
-        tempPointRepository.findByStageParticipantId(stageParticipantId)
+    fun readTempPointNotAppliedList(stageParticipantId: Long): List<TempPoint> =
+        tempPointRepository.findByStageParticipantIdAndIsAppliedIsFalse(stageParticipantId)
 
     fun readStageParticipantByStageIdAndStudentId(stageId: Long, studentId: Long) =
         participantRepository.findByStageIdAndStudentId(stageId, studentId)
             ?: throw StageException("StageParticipant Not Found, stageId = $stageId, studentid = $studentId", HttpStatus.NOT_FOUND.value())
+
     fun isParticipant(stageId: Long, studentId: Long): Boolean =
         participantRepository.existsByStageIdAndStudentId(stageId, studentId)
 

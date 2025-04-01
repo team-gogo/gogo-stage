@@ -1,6 +1,9 @@
 package gogo.gogostage.global.error
 
+import jakarta.validation.ConstraintViolationException
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.http.HttpStatus
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindingResult
 import org.springframework.web.servlet.NoHandlerFoundException
 
@@ -15,14 +18,11 @@ data class ErrorResponse(
                 status = e.status
             )
 
-        fun of(e: BindingResult): ValidationErrorResponse {
-            val fieldErrorMap = e.fieldErrors.associateBy({ it.field }, { it.defaultMessage })
-
-            return ValidationErrorResponse(
-                fieldErrorMap,
-                ErrorCode.BAD_REQUEST.status.value()
+        fun of(message: String?, status: HttpStatus) =
+            ErrorResponse(
+                message = message ?: "Unknown Exception",
+                status = status.value()
             )
-        }
 
         fun of(e: DataIntegrityViolationException) = DataErrorResponse(
             message = e.message.toString(),

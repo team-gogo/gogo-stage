@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.match.root.application
 
+import gogo.gogostage.domain.match.notification.persistence.MatchNotificationRepository
 import gogo.gogostage.domain.match.root.application.dto.*
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
@@ -13,6 +14,7 @@ class MatchMapper(
     private val maintainerRepository: StageMaintainerRepository,
     private val bettingApi: BettingApi,
     private val studentApi: StudentApi,
+    private val matchNotificationRepository: MatchNotificationRepository,
 ) {
 
     fun mapApiInfo(match: Match): MatchApiInfoDto {
@@ -41,7 +43,8 @@ class MatchMapper(
                     aTeamScore = matchEntity.matchResult!!.aTeamScore,
                     bTeamScore = matchEntity.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
-                    earnedPoint = it.earnedPoint
+                    earnedPoint = it.earnedPoint,
+                    tempPointExpiredDate = matchEntity.matchResult!!.tempPointExpiredDate,
                 )
             } ?: matchEntity.matchResult?.let {
                 MatchResultInfoDto(
@@ -49,9 +52,14 @@ class MatchMapper(
                     aTeamScore = it.aTeamScore,
                     bTeamScore = it.bTeamScore,
                     isPredictionSuccess = null,
-                    earnedPoint = null
+                    earnedPoint = null,
+                    tempPointExpiredDate = matchEntity.matchResult!!.tempPointExpiredDate,
                 )
             }
+
+            val isPlayer = matchEntity.aTeam?.participants?.any { it.studentId == studentId } == true ||
+                    matchEntity.bTeam?.participants?.any { it.studentId == studentId } == true
+            val isNotice = matchNotificationRepository.existsByMatchIdAndStudentId(matchEntity.id, studentId)
 
             MatchSearchInfoDto(
                 matchId = matchEntity.id,
@@ -75,6 +83,8 @@ class MatchMapper(
                 gameName = matchEntity.game.name,
                 system = matchEntity.game.system,
                 turn = matchEntity.turn,
+                isPlayer = isPlayer,
+                isNotice = isNotice,
                 betting = bettingInfo?.let {
                     MatchBettingInfoDto(
                         isBetting = true,
@@ -93,7 +103,7 @@ class MatchMapper(
         return MatchSearchDto(count = matchInfoList.size, matches = matchInfoList)
     }
 
-    fun mapMy(bettingBundle: BettingBundleDto, matches: List<Match>): MatchSearchDto {
+    fun mapMy(bettingBundle: BettingBundleDto, matches: List<Match>, studentId: Long): MatchSearchDto {
         val bettingMap = bettingBundle.bettings.associateBy { it.matchId }
 
         val matchSearchInfoList = matches.map { match ->
@@ -106,13 +116,27 @@ class MatchMapper(
                 )
             }
 
+            val isPlayer = match.aTeam?.participants?.any { it.studentId == studentId } == true ||
+                    match.bTeam?.participants?.any { it.studentId == studentId } == true
+            val isNotice = matchNotificationRepository.existsByMatchIdAndStudentId(match.id, studentId)
+
             val resultDto = bettingInfo?.result?.let {
                 MatchResultInfoDto(
                     victoryTeamId = match.matchResult!!.victoryTeam.id,
                     aTeamScore = match.matchResult!!.aTeamScore,
                     bTeamScore = match.matchResult!!.bTeamScore,
                     isPredictionSuccess = it.isPredicted,
-                    earnedPoint = it.earnedPoint
+                    earnedPoint = it.earnedPoint,
+                    tempPointExpiredDate = match.matchResult!!.tempPointExpiredDate,
+                )
+            } ?: match.matchResult?.let {
+                MatchResultInfoDto(
+                    victoryTeamId = it.victoryTeam.id,
+                    aTeamScore = it.aTeamScore,
+                    bTeamScore = it.bTeamScore,
+                    isPredictionSuccess = null,
+                    earnedPoint = null,
+                    tempPointExpiredDate = match.matchResult!!.tempPointExpiredDate,
                 )
             }
 
@@ -138,6 +162,8 @@ class MatchMapper(
                 gameName = match.game.name,
                 system = match.game.system,
                 turn = match.turn,
+                isPlayer = isPlayer,
+                isNotice = isNotice,
                 betting = bettingDto,
                 result = resultDto
             )

@@ -44,7 +44,7 @@ class KafkaConsumerConfig(
         return ConcurrentKafkaListenerContainerFactory<String, String>().apply {
             consumerFactory = consumerFactory()
             containerProperties.ackMode = kafkaProperties.listener.ackMode
-            setConcurrency(3)
+            setConcurrency(1)
             containerProperties.messageListener = listener
             containerProperties.pollTimeout = 5000
         }

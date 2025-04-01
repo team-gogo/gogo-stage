@@ -3,13 +3,16 @@ package gogo.gogostage.domain.community.root.application.dto
 import com.fasterxml.jackson.annotation.JsonFormat
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.stage.root.persistence.StageType
+import jakarta.validation.constraints.Size
 import org.jetbrains.annotations.NotNull
 import java.time.LocalDateTime
 
 data class WriteCommunityBoardDto(
     @NotNull
+    @Size(max = 30)
     val title: String,
     @NotNull
+    @Size(max = 1000)
     val content: String,
     @NotNull
     val gameCategory: GameCategory
@@ -34,6 +37,7 @@ data class BoardDto(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val stageType: StageType,
+    val commentCount: Int,
     val author: AuthorDto
 )
 
@@ -80,6 +84,7 @@ data class LikeResDto(
 
 data class WriteBoardCommentReqDto(
     @NotNull
+    @Size(max = 300)
     val content: String,
 )
 

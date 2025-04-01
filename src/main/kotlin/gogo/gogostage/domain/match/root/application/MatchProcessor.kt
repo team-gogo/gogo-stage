@@ -21,6 +21,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Component
 class MatchProcessor(
@@ -115,6 +116,7 @@ class MatchProcessor(
             victoryTeam = victoryTeam,
             aTeamScore = event.aTeamScore,
             bTeamScore = event.bTeamScore,
+            tempPointExpiredDate = LocalDateTime.now().plusMinutes(5)
         )
         matchResultRepository.save(matchResult)
 
@@ -125,6 +127,13 @@ class MatchProcessor(
     fun cancelBatch(event: BatchCancelEvent) {
         val match = (matchRepository.findByIdOrNull(event.matchId)
             ?: throw StageException("매치를 찾을 수 없습니다. Match Id = ${event.matchId}.", HttpStatus.NOT_FOUND.value()))
+
+        val now = LocalDateTime.now()
+        val tempPointExpiredDate = match.matchResult!!.tempPointExpiredDate
+        if (now.isAfter(tempPointExpiredDate)) {
+            throw StageException("임시포인트가 이미 반영되었습니다.", HttpStatus.FORBIDDEN.value())
+        }
+
         match.batchRollback()
         matchRepository.save(match)
 

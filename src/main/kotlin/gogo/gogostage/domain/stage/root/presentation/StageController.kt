@@ -22,7 +22,7 @@ class StageController(
     }
 
     @PostMapping("/official")
-    fun createFast(
+    fun createOfficial(
         @RequestBody @Valid dto: CreateOfficialStageDto,
     ): ResponseEntity<Unit> {
         stageService.createOfficial(dto)
@@ -30,7 +30,7 @@ class StageController(
     }
 
     @PostMapping("/join/{stage_id}")
-    fun createFast(
+    fun join(
         @PathVariable("stage_id") stageId: Long,
         @RequestBody dto: StageJoinDto,
     ): ResponseEntity<Unit> {

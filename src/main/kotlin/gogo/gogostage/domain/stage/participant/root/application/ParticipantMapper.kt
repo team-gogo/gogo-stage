@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.stage.participant.root.application
 
+import gogo.gogostage.domain.stage.participant.root.application.dto.MyPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.MyTempPointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.PointDto
 import gogo.gogostage.domain.stage.participant.root.application.dto.TempPointDto
@@ -23,4 +24,9 @@ class ParticipantMapper {
 
         return MyTempPointDto(tempPointDtoList)
     }
+
+    fun mapMyPointDto(point: Long): MyPointDto =
+        MyPointDto(
+            point = point
+        )
 }
