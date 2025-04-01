@@ -61,7 +61,7 @@ jobs:
 
               ./gradlew clean build
 
-              docker build -f DockerFileStage -t gogo-stage-prod .
+              docker build -f DockerFileProd -t gogo-stage-prod .
 
               docker stop gogo-stage-prod || true
               docker rm gogo-stage-prod || true
