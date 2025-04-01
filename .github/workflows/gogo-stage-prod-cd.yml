@@ -49,14 +49,14 @@ jobs:
       - name: SSH Command to Deploy using Bastion and Target Instance
         run: |
           ssh -i "$HOME/bastion_key.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.PROD_BASTION_HOST }} << 'EOF'
-            ssh -i gogo-prod.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PROD_TARGET_HOST }} << 'EOF2'
+            ssh -i gogo-prod-ms.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PROD_TARGET_HOST }} << 'EOF2'
               mkdir -p /home/ubuntu/gogo-stage
               cd /home/ubuntu/gogo-stage
 
               if [ ! -d ".git" ]; then
-                git clone -b develop https://github.com/team-gogo/gogo-stage.git .
+                git clone -b master https://github.com/team-gogo/gogo-stage.git .
               else
-                git pull origin develop
+                git pull origin master
               fi
 
               ./gradlew clean build
