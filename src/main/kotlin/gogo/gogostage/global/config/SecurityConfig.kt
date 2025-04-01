@@ -72,6 +72,7 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/maintainer/me/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/temp-point/me/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/point/me/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/rule/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // match
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/match/search/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
