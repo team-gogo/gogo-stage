@@ -1,0 +1,87 @@
+name: GOGO Stage prod CD Workflow
+
+on:
+  push:
+    branches:
+      - 'master'
+  workflow_dispatch:
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Setup Gradle's permission
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean build
+
+  deploy:
+    needs: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install sshpass and OpenSSH
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass openssh-client
+
+      - name: Create SSH key for Bastion and Target
+        run: |
+          echo "${{ secrets.PROD_BASTION_SSH_KEY }}" > $HOME/bastion_key.pem
+          chmod 600 $HOME/bastion_key.pem
+
+      - name: SSH Command to Deploy using Bastion and Target Instance
+        run: |
+          ssh -i "$HOME/bastion_key.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.PROD_BASTION_HOST }} << 'EOF'
+            ssh -i gogo-prod-ms.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.PROD_TARGET_HOST }} << 'EOF2'
+              mkdir -p /home/ubuntu/gogo-stage
+              cd /home/ubuntu/gogo-stage
+
+              if [ ! -d ".git" ]; then
+                git clone -b master https://github.com/team-gogo/gogo-stage.git .
+              else
+                git pull origin master
+              fi
+
+              ./gradlew clean build
+
+              docker build -f DockerFileStage -t gogo-stage-prod .
+
+              docker stop gogo-stage-prod || true
+              docker rm gogo-stage-prod || true
+
+              docker run -d -p 8082:8082 --add-host host.docker.internal:host-gateway --name gogo-stage-prod gogo-stage-prod
+
+      - name: SSH Success Notification
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          color: 0x4CAF50
+          title: "배포 성공"
+          message: "GOGO Stage prod deployment completed successfully."
+
+      - name: SSH Failure Notification
+        if: failure()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          color: 0xFF4C4C
+          title: "배포 실패"
+          message: "GOGO Stage prod deployment failed. Check the logs for details."
