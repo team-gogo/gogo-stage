@@ -16,7 +16,7 @@ class CommentReader(
             ?: throw StageException("Comment Not Found, commentId=$commentId", HttpStatus.NOT_FOUND.value())
 
     fun readForWrite(commentId: Long) =
-        commentRepository.findByIdOrNull(commentId)
+        commentRepository.findByIdForWrite(commentId)
             ?: throw StageException("Comment Not Found, commentId=$commentId", HttpStatus.NOT_FOUND.value())
 
 }
