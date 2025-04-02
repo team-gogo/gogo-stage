@@ -5,4 +5,5 @@ object CacheConstant {
     const val TEMP_TEAM_CACHE_VALUE = "temp_team"
     const val TEAM_INFO_CACHE_VALUE = "team_info"
     const val COMMUNITY_INFO_CACHE_VALUE = "community_info"
+    const val STAGE_RULE_CACHE_VALE = "stage_rule"
 }

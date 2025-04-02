@@ -11,7 +11,7 @@ class MatchNotification(
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "match_id", nullable = false)
     val match: Match,
 

@@ -10,8 +10,8 @@ class MatchNotificationReader(
     private val matchNotificationRepository: MatchNotificationRepository
 ) {
 
-    fun readByMatchIdAndStudentId(matchId: Long, studentId: Long) =
-        matchNotificationRepository.findByMatchIdAndStudentId(matchId, studentId)
+    fun readByMatchIdAndStudentIdForWrite(matchId: Long, studentId: Long) =
+        matchNotificationRepository.findByMatchIdAndStudentIdForWrite(matchId, studentId)
             ?: throw StageException("MatchNotification Not Found, matchId=$matchId, studentId=$studentId", HttpStatus.NOT_FOUND.value())
 
 }

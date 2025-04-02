@@ -12,7 +12,7 @@ class StageRule(
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false, unique = true)
     val stage: Stage,
 

@@ -36,6 +36,11 @@ class TeamValidator(
             throw StageException("해당 경기의 팀 인원이 맞지 않습니다.", HttpStatus.BAD_REQUEST.value())
         }
 
+        val isDuplicateTeamName = teamRepository.existsByGameIdAndName(game.id, dto.teamName)
+        if (isDuplicateTeamName) {
+            throw StageException("해당 팀 이름은 이미 등록되었습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
         val participantIds = teamRepository.findAllByGameId(game.id)
             .flatMap { it.participants.map { participant -> participant.studentId } }
             .toList()
