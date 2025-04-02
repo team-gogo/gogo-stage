@@ -54,4 +54,8 @@ class Team(
         this.winCount++
     }
 
+    fun rollbackWinCount() {
+        this.winCount--
+    }
+
 }
