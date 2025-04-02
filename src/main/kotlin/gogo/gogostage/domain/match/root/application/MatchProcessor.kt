@@ -5,6 +5,7 @@ import gogo.gogostage.domain.match.notification.persistence.MatchNotificationRep
 import gogo.gogostage.domain.match.root.application.dto.MatchToggleDto
 import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.game.persistence.GameSystem
+import gogo.gogostage.domain.match.notification.application.MatchNotificationReader
 import gogo.gogostage.domain.match.result.persistence.MatchResult
 import gogo.gogostage.domain.match.result.persistence.MatchResultRepository
 import gogo.gogostage.domain.match.root.persistence.Match
@@ -30,13 +31,13 @@ class MatchProcessor(
     private val teamRepository: TeamRepository,
     private val matchResultRepository: MatchResultRepository,
     private val tempPointProcessor: TempPointProcessor,
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
+    private val matchNotificationReader: MatchNotificationReader
 ) {
 
     fun toggleMatchNotification(match: Match, student: StudentByIdStub): MatchToggleDto {
         if (matchNotificationRepository.existsByMatchIdAndStudentId(match.id, student.studentId)) {
-            val matchNotification = matchNotificationRepository.findByMatchIdAndStudentId(match.id, student.studentId)
-                ?: throw StageException("MatchNotification Not Found, matchId=${match.id}, studentId=${student.studentId}", HttpStatus.NOT_FOUND.value())
+            val matchNotification = matchNotificationReader.readByMatchIdAndStudentIdForWrite(match.id, student.studentId)
 
             matchNotificationRepository.delete(matchNotification)
 
