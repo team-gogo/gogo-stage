@@ -159,7 +159,7 @@ class CommunityCustomRepositoryImpl(
             content = board.content,
             likeCount = board.likeCount,
             isLiked = isAuthorBoardLike,
-            createdAt = board.createdAt,
+            createdAt = board.createdAt.toString(),
             stage = stageDto,
             author = boardAuthorDto,
             commentCount = board.commentCount,
