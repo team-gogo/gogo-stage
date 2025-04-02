@@ -42,30 +42,30 @@ data class BoardDto(
 )
 
 data class AuthorDto(
-    val studentId: Long,
-    val name: String,
-    val classNumber: Int,
-    val studentNumber: Int
+    val studentId: Long = 0,
+    val name: String = "",
+    val classNumber: Int = 0,
+    val studentNumber: Int = 0
 )
 
 data class GetCommunityBoardInfoResDto(
-    val boardId: Long,
-    val title: String,
-    val content: String,
-    val likeCount: Int,
-    val isLiked: Boolean,
+    val boardId: Long = 0L,
+    val title: String = "",
+    val content: String = "",
+    val likeCount: Int = 0,
+    val isLiked: Boolean = false,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime? = null,
     val stage: StageDto,
     val author: AuthorDto,
-    val commentCount: Int,
-    val comment: List<CommentDto>
+    val commentCount: Int = 0,
+    val comment: List<CommentDto> = emptyList()
 
 )
 
 data class StageDto(
-    val name: String,
-    val category: GameCategory
+    val name: String = "",
+    val category: GameCategory = GameCategory.SOCCER
 )
 
 data class CommentDto(

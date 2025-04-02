@@ -9,8 +9,10 @@ import gogo.gogostage.domain.community.comment.persistence.CommentRepository
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
 import gogo.gogostage.domain.community.root.application.dto.*
+import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -78,6 +80,7 @@ class CommunityProcessor(
         return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 
+    @CacheEvict(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#comment.board.id", cacheManager = "cacheManager")
     fun likeBoardComment(student: StudentByIdStub, comment: Comment): LikeResDto {
         val isExistCommentLike = commentLikeRepository.existsByCommentIdAndStudentId(comment.id, student.studentId)
 

@@ -3,8 +3,6 @@ package gogo.gogostage.domain.community.root.persistence
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.Board
-import gogo.gogostage.domain.community.board.persistence.BoardRepository
-import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.QComment.comment
