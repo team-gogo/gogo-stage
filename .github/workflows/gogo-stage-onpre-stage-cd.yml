@@ -1,10 +1,10 @@
-name: GOGO Stage stage CD Workflow
+name: GOGO Stage On-premise stage CD Workflow
 
-#on:
-#  push:
-#    branches:
-#      - 'develop'
-#  workflow_dispatch:
+on:
+  push:
+    branches:
+      - 'develop'
+  workflow_dispatch:
 
 jobs:
   CI:
@@ -41,32 +41,26 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y sshpass openssh-client
 
-      - name: Create SSH key for Bastion and Target
-        run: |
-          echo "${{ secrets.STAGE_BASTION_SSH_KEY }}" > $HOME/bastion_key.pem
-          chmod 600 $HOME/bastion_key.pem
-
       - name: SSH Command to Deploy using Bastion and Target Instance
         run: |
-          ssh -i "$HOME/bastion_key.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.STAGE_BASTION_HOST }} << 'EOF'
-            ssh -i gogo-stage.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.STAGE_TARGET_HOST }} << 'EOF2'
-              mkdir -p /home/ubuntu/gogo-stage
-              cd /home/ubuntu/gogo-stage
+            sshpass -p "${{ secrets.STAGE_ON_PREMISE_PASSWORD }}" ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.STAGE_ON_PREMISE_HOST }} << 'EOF'
+            mkdir -p /home/ubuntu/gogo-stage
+            cd /home/ubuntu/gogo-stage
 
-              if [ ! -d ".git" ]; then
-                git clone -b develop https://github.com/team-gogo/gogo-stage.git .
-              else
-                git pull origin develop
-              fi
+            if [ ! -d ".git" ]; then
+              git clone -b develop https://github.com/team-gogo/gogo-stage.git .
+            else
+              git pull origin develop
+            fi
 
-              ./gradlew clean build
+            ./gradlew clean build
 
-              docker build -f DockerFileStage -t gogo-stage-stage .
+            docker build -f DockerFileStage -t gogo-stage-stage .
 
-              docker stop gogo-stage-stage || true
-              docker rm gogo-stage-stage || true
+            docker stop gogo-stage-stage || true
+            docker rm gogo-stage-stage || true
 
-              docker run -d -p 8082:8082 --add-host host.docker.internal:host-gateway --name gogo-stage-stage gogo-stage-stage
+            docker run -d -p 8082:8082 --add-host host.docker.internal:host-gateway --name gogo-stage-stage gogo-stage-stage
 
       - name: SSH Success Notification
         if: success()
@@ -75,7 +69,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0x4CAF50
           title: "배포 성공"
-          message: "GOGO Stage stage deployment completed successfully."
+          message: "GOGO Stage On-premise stage deployment completed successfully."
 
       - name: SSH Failure Notification
         if: failure()
@@ -84,4 +78,4 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           color: 0xFF4C4C
           title: "배포 실패"
-          message: "GOGO Stage stage deployment failed. Check the logs for details."
+          message: "GOGO Stage On-premise stage deployment failed. Check the logs for details."
