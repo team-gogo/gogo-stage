@@ -31,7 +31,6 @@ class TeamServiceImpl(
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
         teamValidator.validApply(student, game, dto)
-
         teamProcessor.apply(game, dto)
     }
 
