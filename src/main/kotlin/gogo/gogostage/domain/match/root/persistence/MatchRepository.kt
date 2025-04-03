@@ -10,7 +10,7 @@ interface MatchRepository: JpaRepository<Match, Long>, MatchCustomRepository {
     @Query("SELECT m FROM Match m WHERE m.game.stage.id = :stageId")
     fun findByStageId(stageId: Long): List<Match>
 
-    fun findByGameIdAndRoundAndTurn(matchId: Long, round: Round, turn: Int): Match?
+    fun findByGameIdAndRoundAndTurn(gameId: Long, round: Round, turn: Int): Match?
 
     @Query("""
             SELECT DISTINCT m 
