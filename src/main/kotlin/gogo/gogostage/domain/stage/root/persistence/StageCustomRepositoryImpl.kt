@@ -37,7 +37,7 @@ class StageCustomRepositoryImpl(
 
             PointRankDto(
                 rank = pageable.offset.toInt() + index + 1,
-                studentId = stageParticipant.id,
+                studentId = stageParticipant.studentId,
                 point = stageParticipant.point,
                 name = student.name,
                 classNumber = student.classNumber,
