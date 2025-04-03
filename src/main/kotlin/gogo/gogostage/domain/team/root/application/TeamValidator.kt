@@ -18,6 +18,12 @@ class TeamValidator(
 ) {
 
     fun validApply(student: StudentByIdStub, game: Game, dto: TeamApplyDto) {
+
+        val maxTeamNameLength = 6
+        if (dto.teamName.length > maxTeamNameLength) {
+            throw StageException("팀 이름은 ${maxTeamNameLength}글자를 넘을 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+
         val isParticipant = stageParticipantRepository.existsByStageIdAndStudentId(
             stageId = game.stage.id,
             studentId = student.studentId
