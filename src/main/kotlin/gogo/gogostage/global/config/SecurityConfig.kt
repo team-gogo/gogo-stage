@@ -56,7 +56,7 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 
             // stage
-            httpRequests.requestMatchers(HttpMethod.POST, "/stage/fast").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+//            httpRequests.requestMatchers(HttpMethod.POST, "/stage/fast").hasAnyRole(Authority.USER.name, Authority.STAFF.name) // GOGO for GSM 에서는 사용되지 않는 기능
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/official").hasAnyRole(Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/join/{stage_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/team/{game_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
