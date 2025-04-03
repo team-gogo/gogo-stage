@@ -41,14 +41,9 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y sshpass openssh-client
 
-      - name: Create SSH key for Bastion and Target
-        run: |
-          echo "${{ secrets.STAGE_BASTION_SSH_KEY }}" > $HOME/bastion_key.pem
-          chmod 600 $HOME/bastion_key.pem
-
       - name: SSH Command to Deploy using Bastion and Target Instance
         run: |
-          ssh -i "$HOME/bastion_key.pem" -o StrictHostKeyChecking=no ubuntu@${{ secrets.STAGE_ON_PREMISE_HOST }} << 'EOF'
+            sshpass -p "${{ secrets.STAGE_ON_PREMISE_PASSWORD }}" ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.STAGE_ON_PREMISE_HOST }} << 'EOF'
             mkdir -p /home/ubuntu/gogo-stage
             cd /home/ubuntu/gogo-stage
 
