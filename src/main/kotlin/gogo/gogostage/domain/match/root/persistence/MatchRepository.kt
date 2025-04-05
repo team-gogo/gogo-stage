@@ -23,4 +23,13 @@ interface MatchRepository: JpaRepository<Match, Long>, MatchCustomRepository {
             WHERE m.id IN (:matchIds)
        """)
     fun findMy(matchIds: List<Long>): List<Match>
+
+    @Query("""
+        SELECT m 
+        FROM Match m 
+        LEFT JOIN FETCH m.matchResult mr
+        LEFT JOIN FETCH m.game g
+        WHERE g.id = :gameId
+    """)
+    fun findAllByGameId(gameId: Long): List<Match>
 }
