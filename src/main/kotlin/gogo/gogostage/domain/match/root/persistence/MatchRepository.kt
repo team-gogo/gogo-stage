@@ -23,4 +23,6 @@ interface MatchRepository: JpaRepository<Match, Long>, MatchCustomRepository {
             WHERE m.id IN (:matchIds)
        """)
     fun findMy(matchIds: List<Long>): List<Match>
+
+    fun findAllByGameId(gameId: Long): List<Match>
 }

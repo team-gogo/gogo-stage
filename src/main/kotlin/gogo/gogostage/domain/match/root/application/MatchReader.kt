@@ -26,4 +26,7 @@ class MatchReader(
     fun info(matchId: Long): Match =
         matchRepository.info(matchId)
             ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
+
+    fun readAllByGameId(gameId: Long): List<Match> = matchRepository.findAllByGameId(gameId)
+
 }
