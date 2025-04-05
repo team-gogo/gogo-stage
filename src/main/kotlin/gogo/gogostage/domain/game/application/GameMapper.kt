@@ -26,11 +26,11 @@ class GameMapper {
 
     fun mapFormat(matches: List<Match>): QueryGameFormatDto {
         val rounds = listOf(Round.ROUND_OF_32, Round.ROUND_OF_32, Round.QUARTER_FINALS, Round.SEMI_FINALS, Round.FINALS)
-        val format = rounds.map { makeFormatMatch(matches, it) }
+        val format = rounds.mapNotNull { makeFormatMatch(matches, it) }
         return QueryGameFormatDto(format)
     }
 
-    fun makeFormatMatch(matches: List<Match>, round: Round): QueryGameFormatInfoDto {
+    fun makeFormatMatch(matches: List<Match>, round: Round): QueryGameFormatInfoDto? {
         val formatMatches = matches
             .filter { it.round == round }
             .map {
@@ -45,6 +45,8 @@ class GameMapper {
                     winTeamId = it.matchResult?.victoryTeam?.id
                 )
             }
+
+        if (formatMatches.isEmpty()) return null
 
         return QueryGameFormatInfoDto(
             round = round,

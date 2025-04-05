@@ -2,7 +2,6 @@ package gogo.gogostage.domain.game.application.dto
 
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
-import gogo.gogostage.domain.match.root.application.dto.MatchBettingInfoDto
 import gogo.gogostage.domain.match.root.persistence.Round
 
 data class QueryGameDto(

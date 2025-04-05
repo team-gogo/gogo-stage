@@ -28,9 +28,9 @@ class GameServiceImpl(
 
     @Transactional(readOnly = true)
     override fun queryFormat(gameId: Long): QueryGameFormatDto {
-        val student = userUtil.getCurrentStudent()
+//        val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)
-        stageValidator.validStage(student, game.stage.id)
+//        stageValidator.validStage(student, game.stage.id)
         gameValidator.validFormat(game)
         val matches = matchReader.readAllByGameId(gameId)
         return gameMapper.mapFormat(matches)
