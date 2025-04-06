@@ -37,10 +37,10 @@ class GameMapper {
                 QueryGameFormatMatchInfoDto(
                     matchId = it.id,
                     turn = it.turn!!,
-                    aTeamId = it.aTeam!!.id,
-                    aTeamName = it.aTeam!!.name,
-                    bTeamId = it.bTeam!!.id,
-                    bTeamName = it.bTeam!!.name,
+                    aTeamId = it.aTeam?.id,
+                    aTeamName = it.aTeam?.name ?: "TBD",
+                    bTeamId = it.bTeam?.id,
+                    bTeamName = it.bTeam?.name ?: "TBD",
                     isEnd = it.isEnd,
                     winTeamId = it.matchResult?.victoryTeam?.id
                 )
