@@ -31,9 +31,9 @@ data class QueryGameFormatInfoDto(
 data class QueryGameFormatMatchInfoDto(
     val matchId: Long,
     val turn: Int,
-    val aTeamId: Long,
+    val aTeamId: Long?,
     val aTeamName: String,
-    val bTeamId: Long,
+    val bTeamId: Long?,
     val bTeamName: String,
     val isEnd: Boolean,
     val winTeamId: Long?
