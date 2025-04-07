@@ -21,7 +21,7 @@ class GameServiceImpl(
 ) : GameService {
 
     @Transactional(readOnly = true)
-    @Cacheable(value = [CacheConstant.STAGE_GAME_CACHE_VALE], key = "#stageId", cacheManager = "cacheManager")
+    @Cacheable(value = [CacheConstant.GAME_CACHE_VALE], key = "#stageId", cacheManager = "cacheManager")
     override fun queryAll(stageId: Long): QueryGameDto {
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)
@@ -30,6 +30,7 @@ class GameServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.GAME_FORMAT_CACHE_VALUE], key = "#gameId", cacheManager = "cacheManager")
     override fun queryFormat(gameId: Long): QueryGameFormatDto {
         val student = userUtil.getCurrentStudent()
         val game = gameReader.read(gameId)

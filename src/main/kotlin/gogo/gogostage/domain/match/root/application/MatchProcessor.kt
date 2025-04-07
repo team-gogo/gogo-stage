@@ -125,6 +125,7 @@ class MatchProcessor(
         matchResultRepository.save(matchResult)
 
         redisCacheService.deleteFromCache("${CacheConstant.TEAM_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.GAME_FORMAT_CACHE_VALUE}::${match.game.id}")
 
         tempPointProcessor.addTempPoint(event)
     }
@@ -179,6 +180,7 @@ class MatchProcessor(
         matchResultRepository.deleteByMatchId(match.id)
 
         redisCacheService.deleteFromCache("${CacheConstant.TEAM_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.GAME_FORMAT_CACHE_VALUE}::${match.game.id}")
 
         tempPointProcessor.deleteTempPoint(event)
     }
