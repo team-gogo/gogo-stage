@@ -5,18 +5,18 @@ import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
 
 data class QueryGameDto(
-    val count: Int,
-    val games: List<QueryGameInfoDto>
+    val count: Int = 0,
+    val games: List<QueryGameInfoDto> = emptyList(),
 )
 
 data class QueryGameInfoDto(
-    val gameId: Long,
-    val gameName: String,
-    val teamCount: Int,
-    val teamMinCapacity: Int,
-    val teamMaxCapacity: Int,
-    val category: GameCategory,
-    val system: GameSystem,
+    val gameId: Long = 0L,
+    val gameName: String = "",
+    val teamCount: Int = 0,
+    val teamMinCapacity: Int = 0,
+    val teamMaxCapacity: Int = 0,
+    val category: GameCategory = GameCategory.ETC,
+    val system: GameSystem = GameSystem.SINGLE,
 )
 
 data class QueryGameFormatDto(

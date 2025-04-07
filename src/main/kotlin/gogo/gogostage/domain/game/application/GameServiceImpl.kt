@@ -4,7 +4,9 @@ import gogo.gogostage.domain.game.application.dto.QueryGameDto
 import gogo.gogostage.domain.game.application.dto.QueryGameFormatDto
 import gogo.gogostage.domain.match.root.application.MatchReader
 import gogo.gogostage.domain.stage.root.application.StageValidator
+import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.util.UserContextUtil
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,6 +21,7 @@ class GameServiceImpl(
 ) : GameService {
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.STAGE_GAME_CACHE_VALE], key = "#stageId", cacheManager = "cacheManager")
     override fun queryAll(stageId: Long): QueryGameDto {
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)
