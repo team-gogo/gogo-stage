@@ -39,25 +39,17 @@ class MatchProcessor(
 ) {
 
     fun toggleMatchNotification(match: Match, student: StudentByIdStub): MatchToggleDto {
-        if (matchNotificationRepository.existsByMatchIdAndStudentId(match.id, student.studentId)) {
-            val matchNotification = matchNotificationReader.readByMatchIdAndStudentIdForWrite(match.id, student.studentId)
+        val matchNotification = matchNotificationReader.readByMatchIdAndStudentIdForWrite(match.id, student.studentId)
 
+        if (matchNotification != null) {
             matchNotificationRepository.delete(matchNotification)
-
-            return MatchToggleDto(
-                isNotice = false
-            )
+            return MatchToggleDto(isNotice = false)
         } else {
-            val matchNotification = MatchNotification(
+            matchNotificationRepository.save(MatchNotification(
                 match = match,
                 studentId = student.studentId
-            )
-
-            matchNotificationRepository.save(matchNotification)
-
-            return MatchToggleDto(
-                isNotice = true
-            )
+            ))
+            return MatchToggleDto(isNotice = true)
         }
     }
 
