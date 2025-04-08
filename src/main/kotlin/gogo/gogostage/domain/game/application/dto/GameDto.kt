@@ -1,5 +1,6 @@
 package gogo.gogostage.domain.game.application.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
@@ -20,21 +21,26 @@ data class QueryGameInfoDto(
 )
 
 data class QueryGameFormatDto(
-    val format: List<QueryGameFormatInfoDto>
+    val format: List<QueryGameFormatInfoDto> = emptyList(),
 )
 
 data class QueryGameFormatInfoDto(
-    val round: Round,
-    val match: List<QueryGameFormatMatchInfoDto>,
+    val round: Round = Round.FINALS,
+    val match: List<QueryGameFormatMatchInfoDto> = emptyList(),
 )
 
 data class QueryGameFormatMatchInfoDto(
-    val matchId: Long,
-    val turn: Int,
-    val aTeamId: Long?,
-    val aTeamName: String,
-    val bTeamId: Long?,
-    val bTeamName: String,
-    val isEnd: Boolean,
-    val winTeamId: Long?
+    val matchId: Long = 0L,
+    val turn: Int = 0,
+    @field:JsonProperty("ateamId")
+    val aTeamId: Long? = null,
+    @field:JsonProperty("ateamName")
+    val aTeamName: String = "",
+    @field:JsonProperty("bteamId")
+    val bTeamId: Long? = null,
+    @field:JsonProperty("bteamName")
+    val bTeamName: String = "",
+    @field:JsonProperty("end")
+    val isEnd: Boolean = false,
+    val winTeamId: Long? = null,
 )
