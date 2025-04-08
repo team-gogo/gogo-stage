@@ -14,6 +14,8 @@ import gogo.gogostage.domain.match.root.persistence.Round
 import gogo.gogostage.domain.stage.participant.temppoint.application.TempPointProcessor
 import gogo.gogostage.domain.team.root.persistence.Team
 import gogo.gogostage.domain.team.root.persistence.TeamRepository
+import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.global.cache.RedisCacheService
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import gogo.gogostage.global.kafka.consumer.dto.BatchCancelEvent
@@ -32,7 +34,8 @@ class MatchProcessor(
     private val matchResultRepository: MatchResultRepository,
     private val tempPointProcessor: TempPointProcessor,
     private val gameRepository: GameRepository,
-    private val matchNotificationReader: MatchNotificationReader
+    private val matchNotificationReader: MatchNotificationReader,
+    private val redisCacheService: RedisCacheService
 ) {
 
     fun toggleMatchNotification(match: Match, student: StudentByIdStub): MatchToggleDto {
@@ -121,6 +124,10 @@ class MatchProcessor(
         )
         matchResultRepository.save(matchResult)
 
+        redisCacheService.deleteFromCache("${CacheConstant.TEAM_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.GAME_FORMAT_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.MATCH_INFO_CACHE_VALUE}::${match.id}")
+
         tempPointProcessor.addTempPoint(event)
     }
 
@@ -172,6 +179,10 @@ class MatchProcessor(
         }
 
         matchResultRepository.deleteByMatchId(match.id)
+
+        redisCacheService.deleteFromCache("${CacheConstant.TEAM_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.GAME_FORMAT_CACHE_VALUE}::${match.game.id}")
+        redisCacheService.deleteFromCache("${CacheConstant.MATCH_INFO_CACHE_VALUE}::${match.id}")
 
         tempPointProcessor.deleteTempPoint(event)
     }

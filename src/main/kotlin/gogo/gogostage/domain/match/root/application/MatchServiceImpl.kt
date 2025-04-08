@@ -6,7 +6,9 @@ import gogo.gogostage.global.util.UserContextUtil
 import gogo.gogostage.domain.match.root.application.dto.MatchInfoDto
 import gogo.gogostage.domain.match.root.application.dto.MatchSearchDto
 import gogo.gogostage.domain.stage.root.application.StageValidator
+import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.internal.betting.api.BettingApi
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -35,6 +37,7 @@ class MatchServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.MATCH_INFO_CACHE_VALUE], key = "#matchId", cacheManager = "cacheManager")
     override fun info(matchId: Long): MatchInfoDto {
         val student = userUtil.getCurrentStudent()
         val match = matchReader.info(matchId)
