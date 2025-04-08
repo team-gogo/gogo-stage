@@ -88,6 +88,7 @@ class StageServiceImpl(
         val student = userUtil.getCurrentStudent()
         val stage = stageReader.read(stageId)
         stageValidator.validStage(student, stage.id)
+        stageValidator.validPageAndSize(page, size)
         return stageReader.readPointRank(stage, page, size)
     }
 
