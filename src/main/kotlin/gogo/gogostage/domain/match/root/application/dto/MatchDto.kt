@@ -21,17 +21,17 @@ data class MatchToggleDto(
 )
 
 data class MatchInfoDto(
-    val matchId: Long,
-    val aTeam: MatchTeamInfoDto,
-    val bTeam: MatchTeamInfoDto,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
-    val isEnd: Boolean,
-    val round: Round?,
-    val category: GameCategory,
-    val system: GameSystem,
-    val gameName: String,
-    val turn: Int?
+    val matchId: Long = 0L,
+    val aTeam: MatchTeamInfoDto = MatchTeamInfoDto(),
+    val bTeam: MatchTeamInfoDto = MatchTeamInfoDto(),
+    val startDate: LocalDateTime = LocalDateTime.now(),
+    val endDate: LocalDateTime = LocalDateTime.now(),
+    val isEnd: Boolean = false,
+    val round: Round? = null,
+    val category: GameCategory = GameCategory.ETC,
+    val system: GameSystem = GameSystem.SINGLE,
+    val gameName: String = "",
+    val turn: Int? = null
 )
 
 data class MatchSearchDto(
@@ -58,10 +58,10 @@ data class MatchSearchInfoDto(
 )
 
 data class MatchTeamInfoDto(
-    val teamId: Long?,
-    val teamName: String,
-    val bettingPoint: Long?,
-    val winCount: Int?,
+    val teamId: Long? = null,
+    val teamName: String = "",
+    val bettingPoint: Long? = null,
+    val winCount: Int? = null,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val participants: List<MatchTeamParticipantInfoDto>? = null
 )
