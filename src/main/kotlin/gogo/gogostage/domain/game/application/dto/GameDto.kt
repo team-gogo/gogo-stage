@@ -32,15 +32,14 @@ data class QueryGameFormatInfoDto(
 data class QueryGameFormatMatchInfoDto(
     val matchId: Long,
     val turn: Int,
-    @field:JsonProperty("ateamId")
+    @field:JsonProperty("aTeamId")
     val aTeamId: Long?,
-    @field:JsonProperty("ateamName")
+    @field:JsonProperty("aTeamName")
     val aTeamName: String,
-    @field:JsonProperty("bteamId")
+    @field:JsonProperty("bTeamId")
     val bTeamId: Long?,
-    @field:JsonProperty("bteamName")
+    @field:JsonProperty("bTeamName")
     val bTeamName: String,
-    @field:JsonProperty("end")
     val isEnd: Boolean,
     val winTeamId: Long?
 )

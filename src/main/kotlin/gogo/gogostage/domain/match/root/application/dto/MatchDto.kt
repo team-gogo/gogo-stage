@@ -23,13 +23,12 @@ data class MatchToggleDto(
 
 data class MatchInfoDto(
     val matchId: Long,
-    @field:JsonProperty("ateam")
+    @field:JsonProperty("aTeam")
     val aTeam: MatchTeamInfoDto,
-    @field:JsonProperty("bteam")
+    @field:JsonProperty("bTeam")
     val bTeam: MatchTeamInfoDto,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    @field:JsonProperty("end")
     val isEnd: Boolean,
     val round: Round?,
     val category: GameCategory,
