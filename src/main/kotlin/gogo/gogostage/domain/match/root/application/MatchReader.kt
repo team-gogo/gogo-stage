@@ -18,6 +18,8 @@ class MatchReader(
 
     fun readByStageId(stageId: Long): List<Match> = matchRepository.findByStageId(stageId)
 
+    fun readNotEndByStageId(stageId: Long): List<Match> = matchRepository.findAllNotEndMatchByStageId(stageId)
+
     fun readMy(matchIds: List<Long>): List<Match> = matchRepository.findMy(matchIds)
 
     fun search(stageId: Long, studentId: Long, y: Int, m: Int, d: Int): List<Match> =
