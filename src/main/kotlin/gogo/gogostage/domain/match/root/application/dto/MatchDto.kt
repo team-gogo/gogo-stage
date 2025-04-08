@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.match.root.application.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
@@ -21,17 +22,20 @@ data class MatchToggleDto(
 )
 
 data class MatchInfoDto(
-    val matchId: Long = 0L,
-    val aTeam: MatchTeamInfoDto = MatchTeamInfoDto(),
-    val bTeam: MatchTeamInfoDto = MatchTeamInfoDto(),
-    val startDate: LocalDateTime = LocalDateTime.now(),
-    val endDate: LocalDateTime = LocalDateTime.now(),
-    val isEnd: Boolean = false,
-    val round: Round? = null,
-    val category: GameCategory = GameCategory.ETC,
-    val system: GameSystem = GameSystem.SINGLE,
-    val gameName: String = "",
-    val turn: Int? = null
+    val matchId: Long,
+    @field:JsonProperty("ateam")
+    val aTeam: MatchTeamInfoDto,
+    @field:JsonProperty("bteam")
+    val bTeam: MatchTeamInfoDto,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
+    @field:JsonProperty("end")
+    val isEnd: Boolean,
+    val round: Round?,
+    val category: GameCategory,
+    val system: GameSystem,
+    val gameName: String,
+    val turn: Int?
 )
 
 data class MatchSearchDto(
@@ -58,10 +62,10 @@ data class MatchSearchInfoDto(
 )
 
 data class MatchTeamInfoDto(
-    val teamId: Long? = null,
-    val teamName: String = "",
-    val bettingPoint: Long? = null,
-    val winCount: Int? = null,
+    val teamId: Long?,
+    val teamName: String,
+    val bettingPoint: Long?,
+    val winCount: Int?,
     @JsonInclude(JsonInclude.Include.NON_NULL)
     val participants: List<MatchTeamParticipantInfoDto>? = null
 )

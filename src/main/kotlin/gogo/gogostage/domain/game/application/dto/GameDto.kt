@@ -6,41 +6,41 @@ import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
 
 data class QueryGameDto(
-    val count: Int = 0,
-    val games: List<QueryGameInfoDto> = emptyList(),
+    val count: Int,
+    val games: List<QueryGameInfoDto>,
 )
 
 data class QueryGameInfoDto(
-    val gameId: Long = 0L,
-    val gameName: String = "",
-    val teamCount: Int = 0,
-    val teamMinCapacity: Int = 0,
-    val teamMaxCapacity: Int = 0,
-    val category: GameCategory = GameCategory.ETC,
-    val system: GameSystem = GameSystem.SINGLE,
+    val gameId: Long,
+    val gameName: String,
+    val teamCount: Int,
+    val teamMinCapacity: Int,
+    val teamMaxCapacity: Int,
+    val category: GameCategory,
+    val system: GameSystem,
 )
 
 data class QueryGameFormatDto(
-    val format: List<QueryGameFormatInfoDto> = emptyList(),
+    val format: List<QueryGameFormatInfoDto>
 )
 
 data class QueryGameFormatInfoDto(
-    val round: Round = Round.FINALS,
-    val match: List<QueryGameFormatMatchInfoDto> = emptyList(),
+    val round: Round,
+    val match: List<QueryGameFormatMatchInfoDto>
 )
 
 data class QueryGameFormatMatchInfoDto(
-    val matchId: Long = 0L,
-    val turn: Int = 0,
+    val matchId: Long,
+    val turn: Int,
     @field:JsonProperty("ateamId")
-    val aTeamId: Long? = null,
+    val aTeamId: Long?,
     @field:JsonProperty("ateamName")
-    val aTeamName: String = "",
+    val aTeamName: String,
     @field:JsonProperty("bteamId")
-    val bTeamId: Long? = null,
+    val bTeamId: Long?,
     @field:JsonProperty("bteamName")
-    val bTeamName: String = "",
+    val bTeamName: String,
     @field:JsonProperty("end")
-    val isEnd: Boolean = false,
-    val winTeamId: Long? = null,
+    val isEnd: Boolean,
+    val winTeamId: Long?
 )

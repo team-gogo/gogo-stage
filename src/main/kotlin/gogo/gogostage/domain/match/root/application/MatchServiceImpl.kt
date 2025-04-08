@@ -37,7 +37,7 @@ class MatchServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = [CacheConstant.MATCH_INFO_CACHE_VALUE], key = "#matchId")
+    @Cacheable(value = [CacheConstant.MATCH_INFO_CACHE_VALUE], key = "#matchId", cacheManager = "cacheManager")
     override fun info(matchId: Long): MatchInfoDto {
         val student = userUtil.getCurrentStudent()
         val match = matchReader.info(matchId)
