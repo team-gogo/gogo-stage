@@ -77,4 +77,12 @@ class StageController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/wasted/me/{stage_id}")
+    fun wasted(
+        @PathVariable("stage_id") stageId: Long,
+    ): ResponseEntity<QueryMyWastedDto> {
+        val response = stageService.wasted(stageId)
+        return ResponseEntity.ok(response)
+    }
+
 }

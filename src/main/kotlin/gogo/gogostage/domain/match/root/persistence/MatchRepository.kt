@@ -7,6 +7,9 @@ interface MatchRepository: JpaRepository<Match, Long>, MatchCustomRepository {
     @Query("SELECT m FROM Match m WHERE m.id = :matchId AND m.isEnd = false")
     fun findNotEndMatchById(matchId: Long): Match?
 
+    @Query("SELECT m FROM Match m WHERE m.game.stage.id = :stageId AND m.isEnd = false")
+    fun findAllNotEndMatchByStageId(stageId: Long): List<Match>
+
     @Query("SELECT m FROM Match m WHERE m.game.stage.id = :stageId")
     fun findByStageId(stageId: Long): List<Match>
 

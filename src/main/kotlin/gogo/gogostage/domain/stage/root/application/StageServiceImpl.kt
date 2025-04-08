@@ -1,10 +1,14 @@
 package gogo.gogostage.domain.stage.root.application
 
+import gogo.gogostage.domain.match.root.application.MatchReader
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
+import gogo.gogostage.domain.stage.participant.root.application.ParticipantReader
 import gogo.gogostage.domain.stage.root.application.dto.*
 import gogo.gogostage.domain.stage.root.event.*
 import gogo.gogostage.domain.stage.root.persistence.StageRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.internal.betting.api.BettingApi
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.HttpStatus
@@ -21,7 +25,10 @@ class StageServiceImpl(
     private val applicationEventPublisher: ApplicationEventPublisher,
     private val stageRepository: StageRepository,
     private val stageReader: StageReader,
-    private val stageMaintainerRepository: StageMaintainerRepository
+    private val stageMaintainerRepository: StageMaintainerRepository,
+    private val matchReader: MatchReader,
+    private val bettingApi: BettingApi,
+    private val participantReader: ParticipantReader
 ) : StageService {
 
     @Transactional
@@ -111,6 +118,14 @@ class StageServiceImpl(
         val stage = stageReader.read(stageId)
         val isMaintainer = stageMaintainerRepository.existsByStageIdAndStudentId(stage.id, student.studentId)
         return stageMapper.mapCheckMaintainerDto(isMaintainer)
+    }
+
+    @Transactional(readOnly = true)
+    override fun wasted(stageId: Long): QueryMyWastedDto {
+        val student = userUtil.getCurrentStudent()
+        stageValidator.validStage(student, stageId)
+        val isWasted = stageProcessor.isWasted(student, stageId)
+        return QueryMyWastedDto(isWasted)
     }
 
 }

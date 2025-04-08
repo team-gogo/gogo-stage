@@ -192,3 +192,7 @@ data class PointRankDto(
 data class CheckStageMaintainerDto(
     val isMaintainer: Boolean
 )
+
+data class QueryMyWastedDto(
+    val isWasted: Boolean
+)
