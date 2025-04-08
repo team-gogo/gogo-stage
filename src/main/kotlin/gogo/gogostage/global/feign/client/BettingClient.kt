@@ -16,6 +16,7 @@ interface BettingClient {
 
     @GetMapping("/betting/point")
     fun totalBettingPoint(
-        matchIds: List<Long>, studentId: Long
+        @RequestParam("matchIds") matchIds: List<Long>,
+        @RequestParam("studentId") studentId: Long
     ): TotalBettingPointDto
 }
