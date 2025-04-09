@@ -6,7 +6,9 @@ import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.stage.root.application.StageValidator
+import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.util.UserContextUtil
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -41,6 +43,7 @@ class CommunityServiceImpl(
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId", cacheManager = "cacheManager")
     override fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
         val student = userUtil.getCurrentStudent()
         val board = boardReader.read(boardId)
