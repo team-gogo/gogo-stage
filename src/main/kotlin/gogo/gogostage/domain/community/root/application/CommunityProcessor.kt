@@ -24,6 +24,7 @@ class CommunityProcessor(
     private val commentLikeRepository: CommentLikeRepository,
     private val commentMapper: CommunityMapper,
     private val boardRepository: BoardRepository,
+    private val redisCacheService: RedisCacheService
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
@@ -89,6 +90,8 @@ class CommunityProcessor(
 
             commentLikeRepository.delete(commentLike)
 
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}")
+
             comment.minusLikeCount()
             commentRepository.save(comment)
 
@@ -102,6 +105,8 @@ class CommunityProcessor(
             )
 
             commentLikeRepository.save(boardLike)
+
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}")
 
             comment.plusLikeCount()
             commentRepository.save(comment)
