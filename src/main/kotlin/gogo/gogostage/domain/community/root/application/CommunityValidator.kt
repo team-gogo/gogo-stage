@@ -9,7 +9,7 @@ class CommunityValidator {
 
     fun validPageAndSize(page: Int, size: Int) {
         if (page < 0 || size < 0) {
-            throw StageException("page와 size는 음수일 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+            throw StageException("page 혹은 size는 음수일 수 없습니다.", HttpStatus.BAD_REQUEST.value())
         }
     }
 

@@ -17,7 +17,7 @@ class StageRuleServiceImpl(
 ) : StageRuleService {
 
     @Transactional(readOnly = true)
-    @Cacheable(value = [CacheConstant.STAGE_RULE_CACHE_VALE], key = "#stageId")
+    @Cacheable(value = [CacheConstant.STAGE_RULE_CACHE_VALE], key = "#stageId", cacheManager = "cacheManager")
     override fun query(stageId: Long): StageRuleDto {
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)

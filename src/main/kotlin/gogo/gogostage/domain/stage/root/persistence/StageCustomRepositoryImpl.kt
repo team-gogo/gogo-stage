@@ -1,10 +1,12 @@
 package gogo.gogostage.domain.stage.root.persistence
 
 import com.querydsl.core.BooleanBuilder
+import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.stage.participant.root.persistence.QStageParticipant.stageParticipant
 import gogo.gogostage.domain.stage.root.application.dto.PageDto
 import gogo.gogostage.domain.stage.root.application.dto.PointRankDto
+import gogo.gogostage.domain.stage.root.application.dto.StageParticipantPointOnly
 import gogo.gogostage.domain.stage.root.application.dto.StageParticipantPointRankDto
 import gogo.gogostage.global.internal.student.api.StudentApi
 import org.springframework.data.domain.Pageable
@@ -21,7 +23,16 @@ class StageCustomRepositoryImpl(
 
         predicate.and(stageParticipant.stage.id.eq(stage.id))
 
-        val studentParticipants = queryFactory.selectFrom(stageParticipant)
+        val studentParticipants = queryFactory
+            .select(
+                Projections.constructor(
+                    StageParticipantPointOnly::class.java,
+                    stageParticipant.id,
+                    stageParticipant.studentId,
+                    stageParticipant.point
+                )
+            )
+            .from(stageParticipant)
             .where(predicate)
             .orderBy(stageParticipant.point.desc())
             .offset(pageable.offset)

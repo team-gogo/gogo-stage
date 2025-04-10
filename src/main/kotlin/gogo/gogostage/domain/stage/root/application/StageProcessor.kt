@@ -5,12 +5,14 @@ import gogo.gogostage.domain.community.root.persistence.CommunityRepository
 import gogo.gogostage.domain.game.persistence.Game
 import gogo.gogostage.domain.game.persistence.GameRepository
 import gogo.gogostage.domain.game.persistence.GameSystem
+import gogo.gogostage.domain.match.root.application.MatchReader
 import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainer
 import gogo.gogostage.domain.stage.maintainer.persistence.StageMaintainerRepository
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfo
 import gogo.gogostage.domain.stage.minigameinfo.persistence.MiniGameInfoRepository
+import gogo.gogostage.domain.stage.participant.root.application.ParticipantReader
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipant
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
 import gogo.gogostage.domain.stage.root.application.dto.CreateFastStageDto
@@ -23,6 +25,7 @@ import gogo.gogostage.domain.stage.rule.persistence.StageRule
 import gogo.gogostage.domain.stage.rule.persistence.StageRuleRepository
 import gogo.gogostage.domain.team.root.persistence.TeamRepository
 import gogo.gogostage.global.error.StageException
+import gogo.gogostage.global.internal.betting.api.BettingApi
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
@@ -39,6 +42,9 @@ class StageProcessor(
     private val communityRepository: CommunityRepository,
     private val teamRepository: TeamRepository,
     private val matchRepository: MatchRepository,
+    private val participantReader: ParticipantReader,
+    private val matchReader: MatchReader,
+    private val bettingApi: BettingApi,
 ) {
 
     fun saveFast(student: StudentByIdStub, dto: CreateFastStageDto): Stage {
@@ -236,12 +242,19 @@ class StageProcessor(
         }
     }
 
-    private fun factorial(n: Int): Int {
-        var result = 1
-        for (i in 2..n) {
-            result *= i
-        }
-        return result
+    fun isWasted(student: StudentByIdStub, stageId: Long): Boolean {
+        val stageParticipant = participantReader.read(stageId, student.studentId)
+        val point = stageParticipant.point
+        if (point > 0) return false
+
+        val totalTempPoint = participantReader.readTempPointNotAppliedList(stageParticipant.id).sumOf { it.tempPoint }
+        if (totalTempPoint > 0) return false
+
+        val matches = matchReader.readNotEndByStageId(stageId)
+        val totalBettingPoint = bettingApi.totalBettingPoint(matches.map { it.id }, student.studentId).bettingPoint
+        if (totalBettingPoint > 0) return false
+
+        return true
     }
 
 }

@@ -1,6 +1,7 @@
 package gogo.gogostage.domain.match.root.application.dto
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.annotation.JsonProperty
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.game.persistence.GameSystem
 import gogo.gogostage.domain.match.root.persistence.Round
@@ -22,7 +23,9 @@ data class MatchToggleDto(
 
 data class MatchInfoDto(
     val matchId: Long,
+    @field:JsonProperty("aTeam")
     val aTeam: MatchTeamInfoDto,
+    @field:JsonProperty("bTeam")
     val bTeam: MatchTeamInfoDto,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,

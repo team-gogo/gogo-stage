@@ -92,6 +92,12 @@ class StageValidator(
         }
     }
 
+    fun validPageAndSize(page: Int, size: Int) {
+        if (page < 0 || size < 0) {
+            throw StageException("page 혹은 size는 음수일 수 없습니다.", HttpStatus.BAD_REQUEST.value())
+        }
+    }
+
     private fun validShop(dto: CreateOfficialStageDto) {
         if (dto.shop.coinToss.isActive && (dto.shop.coinToss.price == null || dto.shop.coinToss.quantity == null)) {
             throw StageException("CoinToss 미니게임의 티켓 가격, 수량을 입력하세요.", HttpStatus.BAD_REQUEST.value())

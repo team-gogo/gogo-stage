@@ -20,3 +20,7 @@ data class BettingResultInfoDto(
     val isPredicted: Boolean,
     val earnedPoint: Long,
 )
+
+data class TotalBettingPointDto(
+    val bettingPoint: Long,
+)

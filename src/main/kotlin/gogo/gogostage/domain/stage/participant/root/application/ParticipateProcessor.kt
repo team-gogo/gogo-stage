@@ -4,6 +4,8 @@ import gogo.gogostage.domain.match.root.persistence.Match
 import gogo.gogostage.domain.match.root.persistence.MatchRepository
 import gogo.gogostage.domain.stage.participant.root.event.TicketPointMinusEvent
 import gogo.gogostage.domain.stage.participant.root.persistence.StageParticipantRepository
+import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.global.cache.RedisCacheService
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.kafka.consumer.dto.MiniGameBetCompletedEvent
 import gogo.gogostage.global.kafka.consumer.dto.TicketShopBuyEvent
@@ -18,7 +20,8 @@ import java.util.*
 class ParticipateProcessor(
     private val matchRepository: MatchRepository,
     private val stageParticipantRepository: StageParticipantRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher
+    private val applicationEventPublisher: ApplicationEventPublisher,
+    private val redisCacheService: RedisCacheService
 ) {
 
     @Transactional
@@ -34,6 +37,8 @@ class ParticipateProcessor(
 
         stageParticipant.minusPoint(point)
         updateMatchBettingPointTeam(match, predictedWinTeamId, point)
+
+        redisCacheService.deleteFromCache("${CacheConstant.MATCH_INFO_CACHE_VALUE}::${matchId}")
 
         stageParticipantRepository.save(stageParticipant)
         matchRepository.save(match)
