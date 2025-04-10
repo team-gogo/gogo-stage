@@ -74,7 +74,6 @@ class CommunityServiceImpl(
     }
 
     @Transactional
-    @CacheEvict(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId", cacheManager = "cacheManager")
     override fun likeBoardComment(commentId: Long): LikeResDto {
         val student = userUtil.getCurrentStudent()
         val comment = communityReader.readCommentByCommentIdForWrite(commentId)
