@@ -9,6 +9,8 @@ import gogo.gogostage.domain.community.comment.persistence.CommentRepository
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
 import gogo.gogostage.domain.community.root.application.dto.*
+import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.global.cache.RedisCacheService
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.http.HttpStatus
@@ -21,7 +23,7 @@ class CommunityProcessor(
     private val commentRepository: CommentRepository,
     private val commentLikeRepository: CommentLikeRepository,
     private val commentMapper: CommunityMapper,
-    private val boardRepository: BoardRepository
+    private val boardRepository: BoardRepository,
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
