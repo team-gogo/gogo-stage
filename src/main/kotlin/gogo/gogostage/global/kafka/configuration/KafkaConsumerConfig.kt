@@ -44,6 +44,9 @@ class KafkaConsumerConfig(
     fun aiBoardFilterEventListenerContainerFactory(listener: AiBoardFilterConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
         makeFactory(listener)
 
+    @Bean
+    fun aiCommentFilterEventListenerContainerFactory(listener: AiCommentFilterConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
+        makeFactory(listener)
 
     private fun makeFactory(listener: AcknowledgingMessageListener<String, String>): ConcurrentKafkaListenerContainerFactory<String, String> {
         return ConcurrentKafkaListenerContainerFactory<String, String>().apply {

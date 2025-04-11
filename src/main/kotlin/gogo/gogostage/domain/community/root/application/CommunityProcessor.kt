@@ -127,4 +127,12 @@ class CommunityProcessor(
         boardRepository.save(board)
     }
 
+    fun commentFilteredTrue(commentId: Long) {
+        val comment = commentRepository.findByIdOrNull(commentId)
+            ?: throw StageException("Comment not found, commentId=${commentId}", HttpStatus.NOT_FOUND.value())
+
+        comment.changeIsFiltered()
+
+        commentRepository.save(comment)
+    }
 }

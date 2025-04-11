@@ -19,4 +19,5 @@ object KafkaTopics {
     const val BOARD_CREATE = "board_create"
     const val COMMENT_CREATE = "comment_create"
     const val AI_BOARD_FILTER = "ai_board_filter"
+    const val AI_COMMENT_FILTER = "ai_comment_filter"
 }
