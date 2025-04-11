@@ -17,7 +17,7 @@ class BoardProcessor(
         studentId: Long,
         writeCommunityBoardDto: WriteCommunityBoardDto,
 
-    ) {
+    ): Board {
         val board = Board(
             community = community,
             studentId = studentId,
@@ -29,7 +29,7 @@ class BoardProcessor(
             createdAt = LocalDateTime.now()
         )
 
-        boardRepository.save(board)
+        return boardRepository.save(board)
     }
 
 }

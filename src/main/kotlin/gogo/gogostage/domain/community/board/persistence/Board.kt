@@ -32,7 +32,7 @@ class Board(
     var likeCount: Int,
 
     @Column(name = "is_filtered", nullable = false)
-    val isFiltered: Boolean,
+    var isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime
@@ -48,6 +48,10 @@ class Board(
 
     fun plusCommentCount() {
         commentCount += 1
+    }
+
+    fun changeBoardFilter() {
+        isFiltered = true
     }
 
 }
