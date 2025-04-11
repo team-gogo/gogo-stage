@@ -18,4 +18,5 @@ object KafkaTopics {
     const val MINIGAME_BET_COMPLETED_FAILED = "minigame_bet_completed_failed"
     const val BOARD_CREATE = "board_create"
     const val COMMENT_CREATE = "comment_create"
+    const val AI_BOARD_FILTER = "ai_board_filter"
 }

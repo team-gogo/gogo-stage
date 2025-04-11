@@ -40,6 +40,11 @@ class KafkaConsumerConfig(
     fun batchCancelEventListenerContainerFactory(listener: BatchCancelConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
         makeFactory(listener)
 
+    @Bean
+    fun aiBoardFilterEventListenerContainerFactory(listener: AiBoardFilterConsumer): ConcurrentKafkaListenerContainerFactory<String, String> =
+        makeFactory(listener)
+
+
     private fun makeFactory(listener: AcknowledgingMessageListener<String, String>): ConcurrentKafkaListenerContainerFactory<String, String> {
         return ConcurrentKafkaListenerContainerFactory<String, String>().apply {
             consumerFactory = consumerFactory()
