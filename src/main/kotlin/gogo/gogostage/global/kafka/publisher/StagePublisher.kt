@@ -137,5 +137,15 @@ class StagePublisher(
         )
     }
 
+    fun publishCommentCreateEvent(
+        event: CommentCreateEvent
+    ) {
+        val key = UUID.randomUUID().toString()
+        transactionEventPublisher.publishEvent(
+            topic = COMMENT_CREATE,
+            key = key,
+            event = event
+        )
+    }
 
 }

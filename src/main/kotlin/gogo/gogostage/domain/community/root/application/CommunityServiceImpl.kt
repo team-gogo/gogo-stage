@@ -80,8 +80,17 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         val board = communityReader.readBoardByBoardId(boardId)
         stageValidator.validStage(student, board.community.stage.id)
-        // 욕설 필터링 필요
-        return communityProcessor.saveBoardComment(student, writeBoardCommentDto, board)
+        val writeBoardCommentResDto = communityProcessor.saveBoardComment(student, writeBoardCommentDto, board)
+
+        applicationEventPublisher.publishEvent(
+            CommentCreateEvent(
+                id = UUID.randomUUID().toString(),
+                commentId = writeBoardCommentResDto.commentId,
+                content = writeBoardCommentResDto.content
+            )
+        )
+
+        return writeBoardCommentResDto
     }
 
     @Transactional
