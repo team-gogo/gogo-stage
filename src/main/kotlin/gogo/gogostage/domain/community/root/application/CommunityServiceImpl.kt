@@ -3,6 +3,8 @@ package gogo.gogostage.domain.community.root.application
 import gogo.gogostage.domain.community.board.application.BoardProcessor
 import gogo.gogostage.domain.community.board.application.BoardReader
 import gogo.gogostage.domain.community.root.application.dto.*
+import gogo.gogostage.domain.community.root.event.BoardCreateEvent
+import gogo.gogostage.domain.community.root.event.CommentCreateEvent
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.stage.root.application.StageValidator
@@ -10,8 +12,10 @@ import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class CommunityServiceImpl(
@@ -21,7 +25,8 @@ class CommunityServiceImpl(
     private val communityProcessor: CommunityProcessor,
     private val communityValidator: CommunityValidator,
     private val stageValidator: StageValidator,
-    private val boardReader: BoardReader
+    private val boardReader: BoardReader,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ): CommunityService {
 
     @Transactional
@@ -29,9 +34,15 @@ class CommunityServiceImpl(
         val student = userUtil.getCurrentStudent()
         stageValidator.validStage(student, stageId)
         val community = communityReader.readByStageIdAndGameCategory(stageId, writeCommunityBoardDto.gameCategory)
-        boardProcessor.saveCommunityBoard(community, student.studentId, writeCommunityBoardDto)
+        val board = boardProcessor.saveCommunityBoard(community, student.studentId, writeCommunityBoardDto)
 
-        // 추후 욕설 필터링 요청 처리 필요
+        applicationEventPublisher.publishEvent(
+            BoardCreateEvent(
+                id = UUID.randomUUID().toString(),
+                boardId = board.id,
+                content = board.title + board.content
+            )
+        )
     }
 
     @Transactional(readOnly = true)
