@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import gogo.gogostage.domain.community.root.application.CommunityProcessor
 import gogo.gogostage.global.kafka.consumer.dto.AiBoardFilterEvent
 import gogo.gogostage.global.kafka.properties.KafkaTopics.AI_BOARD_FILTER
-import gogo.gogostage.global.kafka.publisher.StagePublisher
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.slf4j.LoggerFactory
 import org.springframework.kafka.annotation.KafkaListener
