@@ -170,6 +170,12 @@ data class QueryMyStageInfoDto(
     val isMaintaining: Boolean
 )
 
+data class StageParticipantPointOnly(
+    val id: Long,
+    val studentId: Long,
+    val point: Long
+)
+
 data class StageParticipantPointRankDto(
     val info: PageDto,
     val rank: List<PointRankDto>
@@ -191,4 +197,8 @@ data class PointRankDto(
 
 data class CheckStageMaintainerDto(
     val isMaintainer: Boolean
+)
+
+data class QueryMyWastedDto(
+    val isWasted: Boolean
 )

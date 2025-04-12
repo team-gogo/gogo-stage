@@ -18,6 +18,8 @@ class MatchReader(
 
     fun readByStageId(stageId: Long): List<Match> = matchRepository.findByStageId(stageId)
 
+    fun readNotEndByStageId(stageId: Long): List<Match> = matchRepository.findAllNotEndMatchByStageId(stageId)
+
     fun readMy(matchIds: List<Long>): List<Match> = matchRepository.findMy(matchIds)
 
     fun search(stageId: Long, studentId: Long, y: Int, m: Int, d: Int): List<Match> =
@@ -26,4 +28,7 @@ class MatchReader(
     fun info(matchId: Long): Match =
         matchRepository.info(matchId)
             ?: throw StageException("Match not found, Match Id: $matchId", HttpStatus.NOT_FOUND.value())
+
+    fun readAllByGameId(gameId: Long): List<Match> = matchRepository.findAllByGameId(gameId)
+
 }
