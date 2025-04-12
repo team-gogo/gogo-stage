@@ -39,7 +39,7 @@ class StageCustomRepositoryImpl(
             .limit(pageable.pageSize.toLong())
             .fetch()
 
-        val studentIds = studentParticipants.map { it.studentId }
+        val studentIds = studentParticipants.map { it.studentId }.toSet().toList()
 
         val students = studentApi.queryByStudentsIds(studentIds).students
 
