@@ -3,8 +3,6 @@ package gogo.gogostage.domain.community.root.persistence
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.Board
-import gogo.gogostage.domain.community.board.persistence.BoardRepository
-import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.QComment.comment
@@ -128,11 +126,14 @@ class CommunityCustomRepositoryImpl(
 
         val commentStudentIds = comments.map { it.studentId }.toSet().toList()
 
+        val commentIds = comments.map { it.id }.toSet().toList()
+
         val commentLikeCommentIds = queryFactory.select(commentLike.comment.id)
             .from(commentLike)
-            .where(commentLike.comment.board.id.eq(board.id).and(
+            .where(
                 commentLike.studentId.eq(student.studentId)
-            ))
+                    .and(commentLike.comment.id.`in`(commentIds))
+            )
             .fetch()
 
         val commentStudents = studentApi.queryByStudentsIds(commentStudentIds)
