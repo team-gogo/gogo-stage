@@ -33,7 +33,7 @@ class AiBoardFilterConsumer(
             communityProcessor.boardFilteredTrue(event.boardId)
 
         } catch (e: Exception) {
-            log.error("Failed to Batch Addition Temp Point, Batch Id = ${event.id}", e)
+            log.error("Failed to Ai Board Filter, Batch Id = ${event.id}", e)
         }
 
         acknowledgment!!.acknowledge()

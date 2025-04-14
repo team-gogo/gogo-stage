@@ -33,7 +33,7 @@ class AiCommentFilterConsumer(
             communityProcessor.commentFilteredTrue(event.commentId)
 
         } catch (e: Exception) {
-            log.error("Failed to Batch Addition Temp Point, Batch Id = ${event.id}", e)
+            log.error("Failed to Ai Comment Filter, Batch Id = ${event.id}", e)
         }
 
         acknowledgment!!.acknowledge()
