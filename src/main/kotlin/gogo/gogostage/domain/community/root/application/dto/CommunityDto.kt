@@ -60,7 +60,6 @@ data class GetCommunityBoardInfoResDto(
     val author: AuthorDto,
     val commentCount: Int,
     val comment: List<CommentDto>
-
 )
 
 data class StageDto(
