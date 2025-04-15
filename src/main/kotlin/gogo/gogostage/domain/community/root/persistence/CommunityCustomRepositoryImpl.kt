@@ -30,7 +30,7 @@ class CommunityCustomRepositoryImpl(
             predicate.and(community.category.eq(it))
         }
 
-        if (!isActiveProfanityFilter.not()) {
+        if (isActiveProfanityFilter.not()) {
             predicate.and(board.isFiltered.eq(false))
         }
 
