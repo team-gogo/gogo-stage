@@ -1,5 +1,7 @@
 package gogo.gogostage.global.kafka.publisher
 
+import gogo.gogostage.domain.community.root.event.BoardCreateEvent
+import gogo.gogostage.domain.community.root.event.CommentCreateEvent
 import gogo.gogostage.domain.stage.participant.root.event.TicketPointMinusEvent
 import gogo.gogostage.domain.stage.root.event.CreateStageFastEvent
 import gogo.gogostage.domain.stage.root.event.CreateStageOfficialEvent
@@ -7,6 +9,8 @@ import gogo.gogostage.domain.stage.root.event.StageConfirmEvent
 import gogo.gogostage.global.kafka.consumer.dto.*
 import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_ADDITION_TEMP_POINT_FAILED
 import gogo.gogostage.global.kafka.properties.KafkaTopics.BATCH_CANCEL_DELETE_TEMP_POINT_FAILED
+import gogo.gogostage.global.kafka.properties.KafkaTopics.BOARD_CREATE
+import gogo.gogostage.global.kafka.properties.KafkaTopics.COMMENT_CREATE
 import gogo.gogostage.global.kafka.properties.KafkaTopics.STAGE_CREATE_OFFICIAL
 import gogo.gogostage.global.kafka.properties.KafkaTopics.STAGE_CREATE_FAST
 import gogo.gogostage.global.kafka.properties.KafkaTopics.MATCH_BETTING_FAILED
@@ -117,6 +121,28 @@ class StagePublisher(
         val key = UUID.randomUUID().toString()
         transactionEventPublisher.publishEvent(
             topic = MINIGAME_BET_COMPLETED_FAILED,
+            key = key,
+            event = event
+        )
+    }
+
+    fun publishBoardCreateEvent(
+        event: BoardCreateEvent
+    ) {
+        val key = UUID.randomUUID().toString()
+        transactionEventPublisher.publishEvent(
+            topic = BOARD_CREATE,
+            key = key,
+            event = event
+        )
+    }
+
+    fun publishCommentCreateEvent(
+        event: CommentCreateEvent
+    ) {
+        val key = UUID.randomUUID().toString()
+        transactionEventPublisher.publishEvent(
+            topic = COMMENT_CREATE,
             key = key,
             event = event
         )

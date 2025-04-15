@@ -13,8 +13,10 @@ import gogo.gogostage.global.cache.CacheConstant
 import gogo.gogostage.global.cache.RedisCacheService
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Component
@@ -115,5 +117,25 @@ class CommunityProcessor(
                 isLiked = true
             )
         }
+    }
+
+    @Transactional
+    fun boardFilteredTrue(boardId: Long) {
+        val board = boardRepository.findByIdOrNull(boardId)
+            ?: throw StageException("Board not found, boardId=${boardId}", HttpStatus.NOT_FOUND.value())
+
+        board.changeBoardFilter()
+
+        boardRepository.save(board)
+    }
+
+    @Transactional
+    fun commentFilteredTrue(commentId: Long) {
+        val comment = commentRepository.findByIdOrNull(commentId)
+            ?: throw StageException("Comment not found, commentId=${commentId}", HttpStatus.NOT_FOUND.value())
+
+        comment.changeIsFiltered()
+
+        commentRepository.save(comment)
     }
 }
