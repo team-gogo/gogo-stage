@@ -9,6 +9,7 @@ import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
 import gogo.gogostage.domain.stage.root.application.StageValidator
 import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import gogo.gogostage.global.util.UserContextUtil
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
@@ -40,33 +41,28 @@ class CommunityServiceImpl(
             BoardCreateEvent(
                 id = UUID.randomUUID().toString(),
                 boardId = board.id,
-                content = board.title + board.content
+                content = board.title + " " + board.content
             )
         )
     }
 
     @Transactional(readOnly = true)
-    override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType): GetCommunityBoardResDto {
-        val student = userUtil.getCurrentStudent()
+    override fun getStageBoard(stageId: Long, page: Int, size: Int, category: GameCategory?, sort: SortType, isFiltered: Boolean, student: StudentByIdStub): GetCommunityBoardResDto {
         stageValidator.validStage(student, stageId)
         communityValidator.validPageAndSize(page, size)
-        val isActiveProfanityFilter = student.isActiveProfanityFilter
-        return communityReader.readBoards(isActiveProfanityFilter, stageId, page, size, category, sort)
+        return communityReader.readBoards(isFiltered, stageId, page, size, category, sort)
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId", cacheManager = "cacheManager")
-    override fun getStageBoardInfo(boardId: Long): GetCommunityBoardInfoResDto {
-        val student = userUtil.getCurrentStudent()
+    @Cacheable(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId + ':' + #isFiltered", cacheManager = "cacheManager")
+    override fun getStageBoardInfo(boardId: Long, isFiltered: Boolean, student: StudentByIdStub): GetCommunityBoardInfoResDto {
         val board = boardReader.read(boardId)
         stageValidator.validStage(student, board.community.stage.id)
         stageValidator.validProfanityFilter(student, board)
-        val isActiveProfanityFilter = student.isActiveProfanityFilter
-        return communityReader.readBoardInfo(isActiveProfanityFilter, board, student)
+        return communityReader.readBoardInfo(isFiltered, board, student)
     }
 
     @Transactional
-    @CacheEvict(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId", cacheManager = "cacheManager")
     override fun likeStageBoard(boardId: Long): LikeResDto {
         val student = userUtil.getCurrentStudent()
         val board = communityReader.readBoardByBoardIdForWrite(boardId)
@@ -75,7 +71,6 @@ class CommunityServiceImpl(
     }
 
     @Transactional
-    @CacheEvict(value = [CacheConstant.COMMUNITY_INFO_CACHE_VALUE], key = "#boardId", cacheManager = "cacheManager")
     override fun writeBoardComment(boardId: Long, writeBoardCommentDto: WriteBoardCommentReqDto): WriteBoardCommentResDto {
         val student = userUtil.getCurrentStudent()
         val board = communityReader.readBoardByBoardId(boardId)

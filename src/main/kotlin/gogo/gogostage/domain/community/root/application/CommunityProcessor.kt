@@ -41,6 +41,9 @@ class CommunityProcessor(
             board.minusLikeCount()
             boardRepository.save(board)
 
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:true")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:false")
+
             return LikeResDto(
                 isLiked = false
             )
@@ -54,6 +57,9 @@ class CommunityProcessor(
 
             board.plusLikeCount()
             boardRepository.save(board)
+
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:true")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:false")
 
             return LikeResDto(
                 isLiked = true
@@ -80,6 +86,9 @@ class CommunityProcessor(
         board.plusCommentCount()
         boardRepository.save(board)
 
+        redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
+        redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
+
         return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 
@@ -92,7 +101,8 @@ class CommunityProcessor(
 
             commentLikeRepository.delete(commentLike)
 
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
 
             comment.minusLikeCount()
             commentRepository.save(comment)
@@ -108,7 +118,8 @@ class CommunityProcessor(
 
             commentLikeRepository.save(boardLike)
 
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
+            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
 
             comment.plusLikeCount()
             commentRepository.save(comment)

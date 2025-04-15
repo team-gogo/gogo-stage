@@ -4,6 +4,7 @@ import gogo.gogostage.domain.community.root.application.CommunityService
 import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
+import gogo.gogostage.global.util.UserContextUtil
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/stage/community")
 class CommunityController(
-    private val communityService: CommunityService
+    private val communityService: CommunityService,
+    private val userUtil: UserContextUtil
 ) {
 
     @PostMapping("/{stage_id}")
@@ -38,8 +40,10 @@ class CommunityController(
         @RequestParam(required = false) category: GameCategory? = null,
         @RequestParam(required = false) sort: SortType = SortType.LATEST
     ): ResponseEntity<GetCommunityBoardResDto> {
+        val student = userUtil.getCurrentStudent()
+        val isFiltered = student.isActiveProfanityFilter
         val response = communityService.getStageBoard(
-            stageId, page, size, category, sort)
+            stageId, page, size, category, sort, isFiltered, student)
         return ResponseEntity.ok(response)
     }
 
@@ -47,7 +51,9 @@ class CommunityController(
     fun getStageBoardInfo(
         @PathVariable("board_id") boardId: Long
     ): ResponseEntity<GetCommunityBoardInfoResDto> {
-        val response = communityService.getStageBoardInfo(boardId)
+        val student = userUtil.getCurrentStudent()
+        val isFiltered = student.isActiveProfanityFilter
+        val response = communityService.getStageBoardInfo(boardId, isFiltered, student)
         return ResponseEntity.ok(response)
     }
 
