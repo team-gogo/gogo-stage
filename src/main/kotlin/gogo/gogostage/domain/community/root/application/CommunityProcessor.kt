@@ -9,8 +9,6 @@ import gogo.gogostage.domain.community.comment.persistence.CommentRepository
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
 import gogo.gogostage.domain.community.root.application.dto.*
-import gogo.gogostage.global.cache.CacheConstant
-import gogo.gogostage.global.cache.RedisCacheService
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.repository.findByIdOrNull
@@ -26,7 +24,6 @@ class CommunityProcessor(
     private val commentLikeRepository: CommentLikeRepository,
     private val commentMapper: CommunityMapper,
     private val boardRepository: BoardRepository,
-    private val redisCacheService: RedisCacheService
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
@@ -41,9 +38,6 @@ class CommunityProcessor(
             board.minusLikeCount()
             boardRepository.save(board)
 
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:true")
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:false")
-
             return LikeResDto(
                 isLiked = false
             )
@@ -57,9 +51,6 @@ class CommunityProcessor(
 
             board.plusLikeCount()
             boardRepository.save(board)
-
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:true")
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${board.id}:false")
 
             return LikeResDto(
                 isLiked = true
@@ -86,9 +77,6 @@ class CommunityProcessor(
         board.plusCommentCount()
         boardRepository.save(board)
 
-        redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
-        redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
-
         return commentMapper.mapWriteBoardCommentResDto(comment, writeBoardCommentDto, student)
     }
 
@@ -100,10 +88,6 @@ class CommunityProcessor(
                 ?: throw StageException("CommentLike Not Found, commentId=${comment.id}, studentId=${student.studentId}", HttpStatus.NOT_FOUND.value())
 
             commentLikeRepository.delete(commentLike)
-
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
-
             comment.minusLikeCount()
             commentRepository.save(comment)
 
@@ -117,9 +101,6 @@ class CommunityProcessor(
             )
 
             commentLikeRepository.save(boardLike)
-
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:true")
-            redisCacheService.deleteFromCache("${CacheConstant.COMMUNITY_INFO_CACHE_VALUE}::${comment.board.id}:false")
 
             comment.plusLikeCount()
             commentRepository.save(comment)
