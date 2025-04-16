@@ -23,7 +23,7 @@ class Comment(
     val content: String,
 
     @Column(name = "is_filtered", nullable = false)
-    val isFiltered: Boolean,
+    var isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
     val createdAt: LocalDateTime,
@@ -40,4 +40,7 @@ class Comment(
         likeCount -= 1
     }
 
+    fun changeIsFiltered() {
+        isFiltered = true
+    }
 }

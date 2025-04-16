@@ -38,14 +38,6 @@ data class BoardDto(
     val createdAt: LocalDateTime,
     val stageType: StageType,
     val commentCount: Int,
-    val author: AuthorDto
-)
-
-data class AuthorDto(
-    val studentId: Long,
-    val name: String,
-    val classNumber: Int,
-    val studentNumber: Int
 )
 
 data class GetCommunityBoardInfoResDto(
@@ -57,10 +49,8 @@ data class GetCommunityBoardInfoResDto(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val stage: StageDto,
-    val author: AuthorDto,
     val commentCount: Int,
     val comment: List<CommentDto>
-
 )
 
 data class StageDto(
@@ -75,7 +65,6 @@ data class CommentDto(
     val createdAt: LocalDateTime,
     val likeCount: Int,
     val isLiked: Boolean,
-    val author: AuthorDto
 )
 
 data class LikeResDto(
@@ -94,5 +83,4 @@ data class WriteBoardCommentResDto(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val likeCount: Int,
-    val author: AuthorDto,
 )

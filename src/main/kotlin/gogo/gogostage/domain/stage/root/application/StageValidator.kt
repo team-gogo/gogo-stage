@@ -87,7 +87,7 @@ class StageValidator(
     }
 
     fun validProfanityFilter(student: StudentByIdStub, board: Board) {
-        if (board.isFiltered && student.isActiveProfanityFilter) {
+        if (board.isFiltered && student.isActiveProfanityFilter.not()) {
             throw StageException("해당 게시글은 욕설 필터가 켜져있어 볼 수 없습니다.", HttpStatus.BAD_REQUEST.value())
         }
     }

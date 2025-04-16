@@ -3,8 +3,6 @@ package gogo.gogostage.domain.community.root.persistence
 import com.querydsl.core.BooleanBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import gogo.gogostage.domain.community.board.persistence.Board
-import gogo.gogostage.domain.community.board.persistence.BoardRepository
-import gogo.gogostage.domain.community.board.persistence.QBoard
 import gogo.gogostage.domain.community.board.persistence.QBoard.board
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
 import gogo.gogostage.domain.community.comment.persistence.QComment.comment
@@ -12,7 +10,6 @@ import gogo.gogostage.domain.community.commentlike.persistence.QCommentLike.comm
 import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.persistence.QCommunity.community
 import gogo.gogostage.domain.game.persistence.GameCategory
-import gogo.gogostage.global.internal.student.api.StudentApi
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.domain.Pageable
 
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Repository
 @Repository
 class CommunityCustomRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
-    private val studentApi: StudentApi,
     private val boardLikeRepository: BoardLikeRepository
 ): CommunityCustomRepository {
 
@@ -34,7 +30,7 @@ class CommunityCustomRepositoryImpl(
             predicate.and(community.category.eq(it))
         }
 
-        if (isActiveProfanityFilter) {
+        if (isActiveProfanityFilter.not()) {
             predicate.and(board.isFiltered.eq(false))
         }
 
@@ -51,27 +47,7 @@ class CommunityCustomRepositoryImpl(
             .limit(pageable.pageSize.toLong())
             .fetch()
 
-
-
-        val condition = BooleanBuilder().apply {
-            stageId?.let { and(community.stage.id.eq(it)) }
-            category?.let { and(community.category.eq(it)) }
-        }
-
-        val studentIds = queryFactory
-            .select(board.studentId)
-            .from(board)
-            .where(condition)
-            .fetch()
-
-
-
-        val communityStudents = studentApi.queryByStudentsIds(studentIds.toSet().toList())
-
         val boardDtoList = boards.map { board ->
-            val author = communityStudents.students.find { it.studentId == board.studentId }?.let {
-                AuthorDto(it.studentId, it.name, it.classNumber, it.studentNumber)
-            }
 
             BoardDto(
                 boardId = board.id,
@@ -82,7 +58,6 @@ class CommunityCustomRepositoryImpl(
                 createdAt = board.createdAt,
                 stageType = board.community.stage.type,
                 commentCount = board.commentCount,
-                author = author!!
             )
         }.toList()
 
@@ -106,27 +81,18 @@ class CommunityCustomRepositoryImpl(
     override fun getCommunityBoardInfo(isActiveProfanityFilter: Boolean, board: Board, student: StudentByIdStub): GetCommunityBoardInfoResDto {
         val stageDto = StageDto(board.community.stage.name, board.community.category)
 
-        val boardAuthorList = listOf(board.studentId)
-
-        val boardAuthor = studentApi.queryByStudentsIds(boardAuthorList).students[0]
-
-        val boardAuthorDto = AuthorDto(boardAuthor.studentId, boardAuthor.name, boardAuthor.classNumber, boardAuthor.studentNumber)
-
         val isAuthorBoardLike = boardLikeRepository.existsByStudentIdAndBoardId(student.studentId, board.id)
 
         val predicate = BooleanBuilder()
+        predicate.and(comment.board.id.eq(board.id))
 
-        if (isActiveProfanityFilter) {
+        if (isActiveProfanityFilter.not()) {
             predicate.and(comment.isFiltered.eq(false))
         }
-
-        predicate.and(comment.board.id.eq(board.id))
 
         val comments = queryFactory.selectFrom(comment)
             .where(predicate)
             .fetch()
-
-        val commentStudentIds = comments.map { it.studentId }.toSet().toList()
 
         val commentLikeCommentIds = queryFactory.select(commentLike.comment.id)
             .from(commentLike)
@@ -135,13 +101,7 @@ class CommunityCustomRepositoryImpl(
             ))
             .fetch()
 
-        val commentStudents = studentApi.queryByStudentsIds(commentStudentIds)
-
         val commentDto = comments.map { comment ->
-            val author = commentStudents.students.find { it.studentId == comment.studentId }?.let {
-                AuthorDto(it.studentId, it.name, it.classNumber, it.studentNumber)
-            }
-
             val isLiked = commentLikeCommentIds.contains(comment.id)
 
             CommentDto(
@@ -150,7 +110,6 @@ class CommunityCustomRepositoryImpl(
                 createdAt = comment.createdAt,
                 likeCount = comment.likeCount,
                 isLiked = isLiked,
-                author = author!!
             )
 
         }
@@ -163,7 +122,6 @@ class CommunityCustomRepositoryImpl(
             isLiked = isAuthorBoardLike,
             createdAt = board.createdAt,
             stage = stageDto,
-            author = boardAuthorDto,
             commentCount = board.commentCount,
             comment = commentDto
         )
