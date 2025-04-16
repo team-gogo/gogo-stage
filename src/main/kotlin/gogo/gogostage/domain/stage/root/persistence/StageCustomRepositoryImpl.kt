@@ -34,7 +34,10 @@ class StageCustomRepositoryImpl(
             )
             .from(stageParticipant)
             .where(predicate)
-            .orderBy(stageParticipant.point.desc())
+            .orderBy(
+                stageParticipant.point.desc(),
+                stageParticipant.studentId.asc()
+            )
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
