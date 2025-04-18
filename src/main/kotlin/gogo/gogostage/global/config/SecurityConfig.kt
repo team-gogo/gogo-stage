@@ -1,6 +1,7 @@
 package gogo.gogostage.global.config
 
 
+import gogo.gogostage.domain.image.application.ImageMapper
 import gogo.gogostage.global.filter.AuthenticationFilter
 import gogo.gogostage.global.filter.LoggingFilter
 import gogo.gogostage.global.handler.CustomAccessDeniedHandler
@@ -89,6 +90,9 @@ class SecurityConfig(
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/board/like/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/comment/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/community/comment/like/{board_id}").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+
+            // image
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/image").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").access { _, context -> hasIpAddress(context) }
