@@ -123,7 +123,8 @@ class CommunityCustomRepositoryImpl(
             createdAt = board.createdAt,
             stage = stageDto,
             commentCount = board.commentCount,
-            comment = commentDto
+            comment = commentDto,
+            imageUrl = board.imageUrl
         )
 
         return response
