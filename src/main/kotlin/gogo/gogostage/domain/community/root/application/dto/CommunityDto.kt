@@ -15,7 +15,8 @@ data class WriteCommunityBoardDto(
     @Size(max = 1000)
     val content: String,
     @NotNull
-    val gameCategory: GameCategory
+    val gameCategory: GameCategory,
+    val imageUrl: String,
 )
 
 data class GetCommunityBoardResDto(
@@ -48,6 +49,7 @@ data class GetCommunityBoardInfoResDto(
     val isLiked: Boolean,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
+    val imageUrl: String,
     val stage: StageDto,
     val commentCount: Int,
     val comment: List<CommentDto>
