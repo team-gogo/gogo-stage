@@ -15,7 +15,8 @@ data class WriteCommunityBoardDto(
     @Size(max = 1000)
     val content: String,
     @NotNull
-    val gameCategory: GameCategory
+    val gameCategory: GameCategory,
+    val imageUrl: String,
 )
 
 data class GetCommunityBoardResDto(
