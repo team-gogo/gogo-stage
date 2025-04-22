@@ -38,7 +38,7 @@ class Board(
     val createdAt: LocalDateTime,
 
     @Column(name = "image_url", length = 800, nullable = true)
-    val imageUrl: String,
+    val imageUrl: String?,
 ) {
 
     fun minusLikeCount() {
