@@ -7,13 +7,16 @@ import gogo.gogostage.domain.team.participant.persistence.TeamParticipantReposit
 import gogo.gogostage.domain.team.root.application.dto.TeamApplyDto
 import gogo.gogostage.domain.team.root.persistence.Team
 import gogo.gogostage.domain.team.root.persistence.TeamRepository
+import gogo.gogostage.global.cache.CacheConstant
+import gogo.gogostage.global.cache.RedisCacheService
 import org.springframework.stereotype.Component
 
 @Component
 class TeamProcessor(
     private val teamRepository: TeamRepository,
     private val teamParticipantRepository: TeamParticipantRepository,
-    private val gameRepository: GameRepository
+    private val gameRepository: GameRepository,
+    private val redisCacheService: RedisCacheService
 ) {
 
     fun apply(game: Game, dto: TeamApplyDto) {
@@ -27,6 +30,8 @@ class TeamProcessor(
             TeamParticipant.of(team, it.studentId, it.positionX, it.positionY)
         }
         teamParticipantRepository.saveAll(participants)
+
+        redisCacheService.deleteFromCache("${CacheConstant.GAME_CACHE_VALE}::${game.stage.id}")
     }
 
 }
