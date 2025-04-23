@@ -9,7 +9,7 @@ class ImageValidator {
 
     fun validImage(image: MultipartFile) {
         val allowedExtensions = listOf("jpg", "png", "gif")
-        val maxFileSize = 10 * 1024 * 1024 // 10MB
+        val maxFileSize = 10 * 1024 * 1024
 
         val fileName = image.originalFilename ?: throw StageException("No file name", 400)
 
