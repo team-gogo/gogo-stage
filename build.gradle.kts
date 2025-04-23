@@ -25,6 +25,8 @@ repositories {
 extra["springCloudVersion"] = "2024.0.0-RC1"
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -49,6 +51,7 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    implementation ("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
     kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")

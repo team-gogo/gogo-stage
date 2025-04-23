@@ -35,7 +35,10 @@ class Board(
     var isFiltered: Boolean,
 
     @Column(name = "created_at", nullable = false)
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime,
+
+    @Column(name = "image_url", length = 800, nullable = true)
+    val imageUrl: String?,
 ) {
 
     fun minusLikeCount() {
