@@ -19,7 +19,7 @@ class ImageValidator {
             throw StageException("Image Extension Invalid", 400)
         }
 
-        if (image.size > maxFileSize) {
+        if (image.size >= maxFileSize) {
             throw StageException("Image Size Exceeds 10MB", 400)
         }
     }
