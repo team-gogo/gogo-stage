@@ -11,7 +11,7 @@ class Coupon (
     @Column(name = "id", nullable = false)
     val id: String,
 
-    @Column(name = "stage_id", nullable = false)
+    @JoinColumn(name = "stage_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     val stage: Stage,
 
