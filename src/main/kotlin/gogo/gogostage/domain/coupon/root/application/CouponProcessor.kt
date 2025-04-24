@@ -56,7 +56,7 @@ class CouponProcessor(
         if (isGain) {
             participant.plusPoint(coupon.earnPoint)
         } else {
-            participant.minusPoint(coupon.lostPoint!!)
+            participant.minusPointMust(coupon.lostPoint!!)
         }
     }
 
