@@ -13,7 +13,7 @@ class CouponResult (
     @Column(name = "id", nullable = false)
     val id: Long = 0,
 
-    @Column(name = "coupon_id", nullable = false)
+    @JoinColumn(name = "coupon_id", nullable = false)
     @OneToOne(cascade = [(CascadeType.ALL)], fetch = FetchType.LAZY)
     val coupon: Coupon,
 
