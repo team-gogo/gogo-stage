@@ -94,6 +94,10 @@ class SecurityConfig(
             // image
             httpRequests.requestMatchers(HttpMethod.POST, "/stage/image").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
 
+            // coupon
+            httpRequests.requestMatchers(HttpMethod.GET, "/stage/coupon").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+            httpRequests.requestMatchers(HttpMethod.POST, "/stage/coupon").hasAnyRole(Authority.USER.name, Authority.STAFF.name)
+
             // server to server
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/point/{stage_id}").access { _, context -> hasIpAddress(context) }
             httpRequests.requestMatchers(HttpMethod.GET, "/stage/api/match/info").access { _, context -> hasIpAddress(context) }

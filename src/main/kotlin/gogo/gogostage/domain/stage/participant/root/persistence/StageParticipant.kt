@@ -46,6 +46,15 @@ class StageParticipant(
         this.point -= point
     }
 
+    fun minusPointMust(point: Long) {
+        if (this.point - point < 0) {
+            this.point = 0
+            return
+        }
+
+        this.point -= point
+    }
+
     fun plusPoint(point: Long) {
         this.point += point
     }
