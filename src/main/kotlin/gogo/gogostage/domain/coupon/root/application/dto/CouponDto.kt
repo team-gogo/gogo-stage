@@ -4,8 +4,8 @@ import gogo.gogostage.domain.coupon.root.persistence.CouponType
 
 data class QueryCouponDto(
     val isUsed: Boolean,
-    val stageId: Long?,
-    val stageName: String?,
+    val stageId: Long,
+    val stageName: String,
     val couponType: CouponType,
     val point: Long?
 )
