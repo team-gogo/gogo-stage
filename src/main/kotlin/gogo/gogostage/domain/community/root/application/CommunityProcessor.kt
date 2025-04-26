@@ -4,6 +4,8 @@ import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.board.persistence.BoardRepository
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
+import gogo.gogostage.domain.community.boardview.persistence.BoardView
+import gogo.gogostage.domain.community.boardview.persistence.BoardViewRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
@@ -24,6 +26,7 @@ class CommunityProcessor(
     private val commentLikeRepository: CommentLikeRepository,
     private val commentMapper: CommunityMapper,
     private val boardRepository: BoardRepository,
+    private val boardViewRepository: BoardViewRepository,
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
@@ -129,5 +132,20 @@ class CommunityProcessor(
         comment.changeIsFiltered()
 
         commentRepository.save(comment)
+    }
+
+    fun saveBoardView(board: Board, studentId: Long) {
+        if (!boardViewRepository.existsByBoardIdAndStudentId(board.id, studentId)) {
+            val newBoardView = BoardView(
+                board = board,
+                studentId = studentId,
+            )
+
+            boardViewRepository.save(newBoardView)
+
+            board.plusViewCount()
+
+            boardRepository.save(board)
+        }
     }
 }
