@@ -4,6 +4,7 @@ import gogo.gogostage.domain.community.board.application.BoardProcessor
 import gogo.gogostage.domain.community.board.application.BoardReader
 import gogo.gogostage.domain.community.root.application.dto.*
 import gogo.gogostage.domain.community.root.event.BoardCreateEvent
+import gogo.gogostage.domain.community.root.event.BoardViewEvent
 import gogo.gogostage.domain.community.root.event.CommentCreateEvent
 import gogo.gogostage.domain.community.root.persistence.SortType
 import gogo.gogostage.domain.game.persistence.GameCategory
@@ -56,7 +57,16 @@ class CommunityServiceImpl(
         stageValidator.validStage(student, board.community.stage.id)
         stageValidator.validProfanityFilter(student, board)
         communityProcessor.saveBoardView(board, student.studentId)
-        return communityReader.readBoardInfo(isFiltered, board, student)
+        val response = communityReader.readBoardInfo(isFiltered, board, student)
+
+        applicationEventPublisher.publishEvent(
+            BoardViewEvent(
+                boardId = boardId,
+                studentId = student.studentId,
+            )
+        )
+
+        return response
     }
 
     @Transactional
