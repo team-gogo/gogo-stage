@@ -134,6 +134,7 @@ class CommunityProcessor(
         commentRepository.save(comment)
     }
 
+    @Transactional
     fun saveBoardView(board: Board, studentId: Long) {
         if (!boardViewRepository.existsByBoardIdAndStudentId(board.id, studentId)) {
             val newBoardView = BoardView(
