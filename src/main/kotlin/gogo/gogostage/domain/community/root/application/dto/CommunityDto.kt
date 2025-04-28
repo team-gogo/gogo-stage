@@ -35,6 +35,7 @@ data class BoardDto(
     val gameCategory: GameCategory,
     val title: String,
     val likeCount: Int,
+    val viewCount: Int,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val stageType: StageType,

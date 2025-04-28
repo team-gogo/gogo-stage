@@ -58,6 +58,7 @@ class CommunityCustomRepositoryImpl(
                 createdAt = board.createdAt,
                 stageType = board.community.stage.type,
                 commentCount = board.commentCount,
+                viewCount = board.viewCount,
             )
         }.toList()
 
