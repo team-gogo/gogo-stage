@@ -56,7 +56,6 @@ class CommunityServiceImpl(
         val board = boardReader.read(boardId)
         stageValidator.validStage(student, board.community.stage.id)
         stageValidator.validProfanityFilter(student, board)
-        communityProcessor.saveBoardView(board, student.studentId)
         val response = communityReader.readBoardInfo(isFiltered, board, student)
 
         applicationEventPublisher.publishEvent(
