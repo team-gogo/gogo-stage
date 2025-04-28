@@ -12,7 +12,7 @@ class BoardViewEventHandler(
     private val communityProcessor: CommunityProcessor,
 ) {
 
-    @Async
+    @Async("asyncExecutor")
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     fun eventHandler(event: BoardViewEvent) {
         communityProcessor.saveBoardView(event)
