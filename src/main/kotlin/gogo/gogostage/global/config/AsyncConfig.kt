@@ -12,7 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor
 @EnableAsync
 class AsyncConfig {
 
-    @Bean
+    @Bean(name = ["asyncExecutor"])
     fun asyncExecutor(): Executor {
         val executor = ThreadPoolTaskExecutor()
         executor.corePoolSize = 5
