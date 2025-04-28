@@ -50,6 +50,7 @@ data class GetCommunityBoardInfoResDto(
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val createdAt: LocalDateTime,
     val imageUrl: String?,
+    val viewCount: Int,
     val stage: StageDto,
     val commentCount: Int,
     val comment: List<CommentDto>

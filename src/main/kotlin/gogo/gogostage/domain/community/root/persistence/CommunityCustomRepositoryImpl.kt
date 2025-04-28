@@ -124,7 +124,8 @@ class CommunityCustomRepositoryImpl(
             stage = stageDto,
             commentCount = board.commentCount,
             comment = commentDto,
-            imageUrl = board.imageUrl
+            imageUrl = board.imageUrl,
+            viewCount = board.viewCount,
         )
 
         return response

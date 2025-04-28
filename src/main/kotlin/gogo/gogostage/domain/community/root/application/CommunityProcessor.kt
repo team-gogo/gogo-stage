@@ -1,14 +1,18 @@
 package gogo.gogostage.domain.community.root.application
 
+import gogo.gogostage.domain.community.board.application.BoardReader
 import gogo.gogostage.domain.community.board.persistence.Board
 import gogo.gogostage.domain.community.board.persistence.BoardRepository
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLike
 import gogo.gogostage.domain.community.boardlike.persistence.BoardLikeRepository
+import gogo.gogostage.domain.community.boardview.persistence.BoardView
+import gogo.gogostage.domain.community.boardview.persistence.BoardViewRepository
 import gogo.gogostage.domain.community.comment.persistence.Comment
 import gogo.gogostage.domain.community.comment.persistence.CommentRepository
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLike
 import gogo.gogostage.domain.community.commentlike.persistence.CommentLikeRepository
 import gogo.gogostage.domain.community.root.application.dto.*
+import gogo.gogostage.domain.community.root.event.BoardViewEvent
 import gogo.gogostage.global.error.StageException
 import gogo.gogostage.global.internal.student.stub.StudentByIdStub
 import org.springframework.data.repository.findByIdOrNull
@@ -24,6 +28,8 @@ class CommunityProcessor(
     private val commentLikeRepository: CommentLikeRepository,
     private val commentMapper: CommunityMapper,
     private val boardRepository: BoardRepository,
+    private val boardViewRepository: BoardViewRepository,
+    private val boardReader: BoardReader
 ) {
 
     fun likeBoard(studentId: Long, board: Board): LikeResDto {
@@ -129,5 +135,23 @@ class CommunityProcessor(
         comment.changeIsFiltered()
 
         commentRepository.save(comment)
+    }
+
+    @Transactional
+    fun saveBoardView(event: BoardViewEvent) {
+        val board = boardReader.read(event.boardId)
+
+        if (!boardViewRepository.existsByBoardIdAndStudentId(board.id, board.studentId)) {
+            val newBoardView = BoardView(
+                board = board,
+                studentId = board.studentId,
+            )
+
+            boardViewRepository.save(newBoardView)
+
+            board.plusViewCount()
+
+            boardRepository.save(board)
+        }
     }
 }
