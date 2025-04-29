@@ -144,7 +144,7 @@ class CommunityProcessor(
         if (!boardViewRepository.existsByBoardIdAndStudentId(board.id, board.studentId)) {
             val newBoardView = BoardView(
                 board = board,
-                studentId = board.studentId,
+                studentId = event.studentId,
             )
 
             boardViewRepository.save(newBoardView)
