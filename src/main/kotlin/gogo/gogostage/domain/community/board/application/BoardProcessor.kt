@@ -28,6 +28,7 @@ class BoardProcessor(
             isFiltered = false,
             createdAt = LocalDateTime.now(),
             imageUrl = writeCommunityBoardDto.imageUrl,
+            viewCount = 0
         )
 
         return boardRepository.save(board)

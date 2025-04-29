@@ -31,6 +31,9 @@ class Board(
     @Column(name = "like_count", nullable = false)
     var likeCount: Int,
 
+    @Column(name = "view_count", nullable = false)
+    var viewCount: Int,
+
     @Column(name = "is_filtered", nullable = false)
     var isFiltered: Boolean,
 
@@ -55,6 +58,10 @@ class Board(
 
     fun changeBoardFilter() {
         isFiltered = true
+    }
+
+    fun plusViewCount() {
+        viewCount += 1
     }
 
 }
