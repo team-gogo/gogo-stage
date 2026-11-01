@@ -7,12 +7,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.util.AntPathMatcher
-import org.springframework.util.StringUtils
 import org.springframework.web.filter.OncePerRequestFilter
-import org.springframework.web.util.ContentCachingRequestWrapper
-import org.springframework.web.util.ContentCachingResponseWrapper
-import java.io.IOException
-import java.nio.charset.StandardCharsets
 import java.util.*
 
 @Component
@@ -33,32 +28,27 @@ class LoggingFilter : OncePerRequestFilter() {
     ) {
 
         if (isNotLoggingURL(request.requestURI)) {
-            try {
-                filterChain.doFilter(request, response)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+            filterChain.doFilter(request, response)
             return
         }
 
-        val requestWrapper = ContentCachingRequestWrapper(request)
-        val responseWrapper = ContentCachingResponseWrapper(response)
         val logId = UUID.randomUUID()
-        val startTime = System.currentTimeMillis()
+        val startTime = System.nanoTime()
+        var completed = false
 
         try {
-            requestLogging(requestWrapper, logId)
-            filterChain.doFilter(requestWrapper, responseWrapper)
-        } catch (e: Exception) {
-            log.error("LoggingFilter의 FilterChain에서 예외가 발생했습니다.", e)
+            filterChain.doFilter(request, response)
+            completed = true
         } finally {
-            responseLogging(responseWrapper, startTime, logId)
-            try {
-                responseWrapper.copyBodyToResponse()
-            } catch (e: IOException) {
-                log.error("LoggingFilter에서 response body를 출력하는 도중 예외가 발생했습니다.", e)
-            }
+            val status = if (completed) response.status.toString() else "incomplete"
+            log.info(
+                "Log-ID: {}, Http-Method: {}, URI: {}, Status-Code: {}, Response Time: {}ms",
+                logId,
+                request.method,
+                request.requestURI,
+                status,
+                (System.nanoTime() - startTime) / 1_000_000
+            )
         }
     }
 
@@ -66,36 +56,4 @@ class LoggingFilter : OncePerRequestFilter() {
         return Arrays.stream(NOT_LOGGING_URL)
             .anyMatch { pattern: String -> matcher.match(pattern, requestURI) }
     }
-
-    private fun requestLogging(request: ContentCachingRequestWrapper, logId: UUID) {
-        log.info(
-            "Log-ID: {}, IP: {}, URI: {}, Http-Method: {}, Params: {}, Content-Type: {}, User-Agent: {}, Request-Body: {}",
-            logId,
-            request.remoteAddr,
-            request.requestURI,
-            request.method,
-            request.queryString,
-            request.contentType,
-            request.getHeader("User-Agent"),
-            getRequestBody(request.contentAsByteArray)
-        )
-    }
-
-    private fun responseLogging(response: ContentCachingResponseWrapper, startTime: Long, logId: UUID) {
-        val responseTime = System.currentTimeMillis() - startTime
-        log.info(
-            "Log-ID: {}, Status-Code: {}, Content-Type: {}, Response Time: {}ms, Response-Body: {}",
-            logId,
-            response.status,
-            response.contentType,
-            responseTime,
-            String(response.contentAsByteArray, StandardCharsets.UTF_8)
-        )
-    }
-
-    private fun getRequestBody(byteArrayContent: ByteArray): String {
-        val oneLineContent = String(byteArrayContent, StandardCharsets.UTF_8).replace(Regex("\\s"), "")
-        return if (StringUtils.hasText(oneLineContent)) oneLineContent else "[empty]"
-    }
-
 }

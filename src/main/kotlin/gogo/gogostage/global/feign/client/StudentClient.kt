@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 
-@FeignClient(name = "gogo-user")
+@FeignClient(name = "gogo-user", url = "\${clients.user.url}")
 interface StudentClient {
     @GetMapping("/user/student")
     fun queryStudentByUserId(

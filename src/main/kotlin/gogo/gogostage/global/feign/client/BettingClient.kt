@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 
-@FeignClient(name = "gogo-betting", fallbackFactory = BettingClientFallbackFactory::class)
+@FeignClient(name = "gogo-betting", url = "\${clients.betting.url}", fallbackFactory = BettingClientFallbackFactory::class)
 interface BettingClient {
     @GetMapping("/betting/bundle")
     fun bundle(
